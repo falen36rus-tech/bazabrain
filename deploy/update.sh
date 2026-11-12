@@ -40,7 +40,13 @@ mkdir -p "$backup_dir"
 stamp="$(date -u +%Y%m%dT%H%M%SZ)"
 
 # Back up the live database and uploads before changing the running version.
-if [[ -n "$(docker compose ps --status running -q db)" ]]; then
+db_container="$(docker compose ps --all -q db)"
+db_running="$(docker compose ps --status running -q db)"
+if [[ -n "$db_container" && -z "$db_running" ]]; then
+    echo "The existing database container is stopped; repair it before deploying." >&2
+    exit 1
+fi
+if [[ -n "$db_running" ]]; then
     database_backup="$backup_dir/${stamp}-${current:0:12}.sql"
     uploads_backup="$backup_dir/${stamp}-${current:0:12}-uploads.tar.gz"
     docker compose exec -T db sh -c \
