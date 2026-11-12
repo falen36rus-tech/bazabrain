@@ -1,9 +1,8 @@
 from django.contrib import admin
-from django.forms import FileInput
 from django.utils.html import format_html
 from reversion.admin import VersionAdmin
 
-from .admin_rich import ArticleRichForm, ContentBlockRichForm, SectionRichForm
+from .admin_rich import ArticleRichForm, ContentBlockRichForm, PrivateImageInput, SectionRichForm
 from .models import Article, Attachment, ContentBlock, Section
 
 
@@ -34,8 +33,8 @@ class ContentBlockInline(admin.StackedInline):
     model = ContentBlock
     form = ContentBlockRichForm
     extra = 0
-    fields = ("position", "kind", "text", "image", "video_url", "caption")
-    formfield_overrides = {ContentBlock._meta.get_field("image").__class__: {"widget": FileInput}}
+    fields = ("position", "kind", "text", "image", "extra_images", "display_width", "video_url", "caption")
+    formfield_overrides = {ContentBlock._meta.get_field("image").__class__: {"widget": PrivateImageInput}}
     verbose_name = "Блок: текст, заголовок, скриншот или Rutube"
     verbose_name_plural = "Содержимое статьи — добавьте блоки в нужном порядке"
 
@@ -84,4 +83,20 @@ class ArticleAdmin(VersionAdmin):
 
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)
+        for formset in formsets:
+            if formset.model is not ContentBlock:
+                continue
+            for inline_form in formset.forms:
+                if not inline_form.is_valid() or inline_form.cleaned_data.get("DELETE"):
+                    continue
+                extras = inline_form.cleaned_data.get("extra_images") or []
+                parent = inline_form.instance
+                if not parent.pk:
+                    continue
+                for image in extras:
+                    ContentBlock.objects.create(
+                        article=parent.article, kind=ContentBlock.IMAGE, position=parent.position,
+                        gallery_id=parent.gallery_id, image=image, caption=parent.caption,
+                        display_width=parent.display_width,
+                    )
         form.instance.rebuild_search_text()

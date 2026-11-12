@@ -86,7 +86,15 @@
   {% endblock %}
   <dialog class="image-lightbox" data-lightbox aria-label="Просмотр изображения">
     <form method="dialog"><button type="submit" class="lightbox-close" aria-label="Закрыть изображение"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5 19 19M19 5 5 19"/></svg></button></form>
-    <img src="" alt="" data-lightbox-image>
+    <div class="lightbox-tools">
+      <button type="button" data-lightbox-prev aria-label="Предыдущее изображение">←</button>
+      <span data-lightbox-count aria-live="polite"></span>
+      <button type="button" data-lightbox-next aria-label="Следующее изображение">→</button>
+      <button type="button" data-lightbox-zoom-out aria-label="Уменьшить">−</button>
+      <button type="button" data-lightbox-zoom-in aria-label="Увеличить">+</button>
+      <button type="button" data-lightbox-reset aria-label="Вписать изображение">100%</button>
+    </div>
+    <div class="lightbox-stage"><img src="" alt="" draggable="false" data-lightbox-image></div>
     <p data-lightbox-caption></p>
   </dialog>
 </body>

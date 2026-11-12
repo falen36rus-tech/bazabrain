@@ -207,18 +207,80 @@
   if (lightbox) {
     const image = lightbox.querySelector("[data-lightbox-image]");
     const caption = lightbox.querySelector("[data-lightbox-caption]");
-    document.querySelectorAll("[data-lightbox-open]").forEach((button) => {
-      button.addEventListener("click", () => {
-        if (!image || !caption) return;
-        image.src = button.dataset.lightboxSrc || "";
-        image.alt = button.dataset.lightboxCaption || "Изображение статьи";
-        caption.textContent = button.dataset.lightboxCaption || "";
-        lightbox.showModal();
-      });
+    const stage = lightbox.querySelector(".lightbox-stage");
+    const openers = [...document.querySelectorAll("[data-lightbox-open]")];
+    const count = lightbox.querySelector("[data-lightbox-count]");
+    let active = 0, zoom = 1, offsetX = 0, offsetY = 0, dragging = false, moved = false;
+    const paint = () => {
+      const maxX = stage.clientWidth * (zoom - 1) / 2;
+      const maxY = stage.clientHeight * (zoom - 1) / 2;
+      offsetX = Math.max(-maxX, Math.min(maxX, offsetX));
+      offsetY = Math.max(-maxY, Math.min(maxY, offsetY));
+      image.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${zoom})`;
+      stage.classList.toggle("is-zoomed", zoom > 1);
+      stage.classList.toggle("is-dragging", dragging);
+    };
+    const reset = () => { zoom = 1; offsetX = 0; offsetY = 0; paint(); };
+    const show = (index) => {
+      active = (index + openers.length) % openers.length;
+      const button = openers[active];
+      image.src = button.dataset.lightboxSrc || "";
+      image.alt = button.dataset.lightboxCaption || "Изображение статьи";
+      caption.textContent = button.dataset.lightboxCaption || "";
+      count.textContent = `${active + 1} / ${openers.length}`;
+      reset();
+    };
+    const changeZoom = (amount) => {
+      zoom = Math.max(1, Math.min(5, Math.round((zoom + amount) * 10) / 10));
+      if (zoom === 1) offsetX = offsetY = 0;
+      paint();
+    };
+    openers.forEach((button, index) => button.addEventListener("click", () => {
+      show(index);
+      lightbox.showModal();
+    }));
+    lightbox.querySelector("[data-lightbox-prev]").addEventListener("click", () => show(active - 1));
+    lightbox.querySelector("[data-lightbox-next]").addEventListener("click", () => show(active + 1));
+    lightbox.querySelector("[data-lightbox-zoom-in]").addEventListener("click", () => changeZoom(.25));
+    lightbox.querySelector("[data-lightbox-zoom-out]").addEventListener("click", () => changeZoom(-.25));
+    lightbox.querySelector("[data-lightbox-reset]").addEventListener("click", reset);
+    stage.addEventListener("wheel", (event) => { event.preventDefault(); changeZoom(event.deltaY < 0 ? .25 : -.25); }, { passive: false });
+    let startX = 0, startY = 0;
+    stage.addEventListener("pointerdown", (event) => {
+      if (zoom <= 1) return;
+      dragging = true; moved = false; startX = event.clientX; startY = event.clientY;
+      stage.setPointerCapture(event.pointerId); paint();
+    });
+    stage.addEventListener("pointermove", (event) => {
+      if (!dragging) return;
+      const dx = event.clientX - startX, dy = event.clientY - startY;
+      if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+      offsetX += dx; offsetY += dy; startX = event.clientX; startY = event.clientY; paint();
+    });
+    stage.addEventListener("pointerup", () => { dragging = false; paint(); });
+    stage.addEventListener("pointercancel", () => { dragging = false; paint(); });
+    stage.addEventListener("click", () => { if (!moved && zoom === 1) changeZoom(1); moved = false; });
+    lightbox.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") { event.preventDefault(); show(active - 1); }
+      if (event.key === "ArrowRight") { event.preventDefault(); show(active + 1); }
     });
     lightbox.addEventListener("click", (event) => { if (event.target === lightbox) lightbox.close(); });
-    lightbox.addEventListener("close", () => { if (image) image.removeAttribute("src"); });
+    lightbox.addEventListener("close", () => { image.removeAttribute("src"); reset(); });
   }
+
+  document.querySelectorAll("[data-gallery]").forEach((gallery) => {
+    const slides = [...gallery.querySelectorAll("[data-gallery-slide]")];
+    const counter = gallery.querySelector("[data-gallery-count]");
+    if (slides.length < 2) return;
+    let current = 0;
+    const show = (index) => {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => { slide.hidden = i !== current; });
+      counter.textContent = `${current + 1} / ${slides.length}`;
+    };
+    gallery.querySelector("[data-gallery-prev]").addEventListener("click", () => show(current - 1));
+    gallery.querySelector("[data-gallery-next]").addEventListener("click", () => show(current + 1));
+  });
 
   const tocWrap = document.querySelector("[data-toc-wrap]");
   const toc = tocWrap?.querySelector("[data-toc]");

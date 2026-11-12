@@ -183,6 +183,12 @@ class ContentBlock(models.Model):
     text = models.TextField("Текст", blank=True)
     text_is_rich = models.BooleanField(default=False, editable=False)
     image = models.ImageField("Скриншот", upload_to=image_upload_path, blank=True, validators=[validate_upload_size])
+    gallery_id = models.CharField(max_length=32, blank=True, editable=False)
+    display_width = models.PositiveSmallIntegerField(
+        "Ширина изображения на странице", default=100,
+        choices=[(value, f"{value}%") for value in range(25, 101, 5)],
+        help_text="Размер фото под текстом. При открытии его можно увеличить отдельно.",
+    )
     video_url = models.CharField("Ссылка на видео Rutube", max_length=500, blank=True)
     caption = models.CharField("Подпись", max_length=300, blank=True)
 

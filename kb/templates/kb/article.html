@@ -23,7 +23,8 @@
     </header>
 
     <div class="article-content" data-article-content>
-      {% for block in blocks %}
+      {% for item in display_blocks %}
+        {% with block=item.block %}
         {% if block.kind == 'heading' %}
           <div class="article-heading rich-content" role="heading" aria-level="2" data-toc-source>{{ block.text|rich_content:block.text_is_rich }}</div>
         {% elif block.kind == 'text' %}
@@ -33,20 +34,14 @@
             <span class="note-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg></span>
             <div class="prose rich-content">{{ block.text|rich_content:block.text_is_rich }}</div>
           </aside>
-        {% elif block.kind == 'image' %}
-          <figure class="article-figure">
-            <button type="button" class="image-open" data-lightbox-open data-lightbox-src="{% url 'kb:private_file' block.pk %}" data-lightbox-caption="{{ block.caption|default:article.title }}" aria-label="Увеличить изображение{% if block.caption %}: {{ block.caption }}{% endif %}">
-              <img src="{% url 'kb:private_file' block.pk %}" alt="{{ block.caption|default:article.title }}" loading="lazy">
-              <span class="image-expand" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"/></svg></span>
-            </button>
-            {% if block.caption %}<figcaption>{{ block.caption }}</figcaption>{% endif %}
-          </figure>
         {% elif block.kind == 'rutube' and block.embed_url %}
           <figure class="video-figure">
             <div class="video-frame"><iframe src="{{ block.embed_url }}" title="{% if block.caption %}{{ block.caption }}{% else %}Видео к статье {{ article.title }}{% endif %}" loading="lazy" allow="clipboard-write; autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
             {% if block.caption %}<figcaption>{{ block.caption }}</figcaption>{% endif %}
           </figure>
         {% endif %}
+        {% if item.images %}{% include 'kb/_image_gallery.html' %}{% endif %}
+        {% endwith %}
       {% empty %}
         {% if not article.summary and not article.featured_video_url %}<div class="empty-state article-empty"><span class="empty-state-icon" aria-hidden="true">▤</span><h2>Материал пока не заполнен</h2></div>{% endif %}
       {% endfor %}

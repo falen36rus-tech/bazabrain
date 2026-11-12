@@ -66,4 +66,14 @@
     initializeAll();
   }
   new MutationObserver(initializeAll).observe(document.documentElement, { childList: true, subtree: true });
+  document.addEventListener("change", (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || input.type !== "file" || !input.files?.length) return;
+    if (!/-(image|extra_images)$/.test(input.name)) return;
+    const inline = input.closest(".inline-related");
+    const enteredText = inline?.querySelector(".kb-rich-editor .ql-editor")?.textContent?.trim();
+    if (enteredText) return;
+    const kind = inline?.querySelector('select[name$="-kind"]');
+    if (kind) { kind.value = "image"; kind.dispatchEvent(new Event("change", { bubbles: true })); }
+  });
 })();
