@@ -9,6 +9,7 @@ from django.urls import reverse
 
 from .access import navigation_tree, visible_articles, visible_sections
 from .models import Article, Attachment, ContentBlock
+from .rich_text import rich_plain_text
 from .search import search_articles, search_sections
 
 
@@ -92,7 +93,7 @@ def suggest(request):
                 {
                     "title": section.title,
                     "section": "Раздел",
-                    "summary": section.description[:160],
+                    "summary": (rich_plain_text(section.description) if section.description_is_rich else section.description)[:160],
                     "url": reverse("kb:section", args=[section.slug]),
                 }
                 for section in sections
@@ -100,7 +101,7 @@ def suggest(request):
                 {
                     "title": article.title,
                     "section": article.section.title,
-                    "summary": article.summary[:160],
+                    "summary": (rich_plain_text(article.summary) if article.summary_is_rich else article.summary)[:160],
                     "url": reverse("kb:article", args=[article.slug]),
                 }
                 for article in articles

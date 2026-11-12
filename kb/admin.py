@@ -3,6 +3,7 @@ from django.forms import FileInput
 from django.utils.html import format_html
 from reversion.admin import VersionAdmin
 
+from .admin_rich import ArticleRichForm, ContentBlockRichForm, SectionRichForm
 from .models import Article, Attachment, ContentBlock, Section
 
 
@@ -13,6 +14,7 @@ admin.site.index_title = "Материалы и пользователи"
 
 @admin.register(Section)
 class SectionAdmin(VersionAdmin):
+    form = SectionRichForm
     history_latest_first = True
     list_display = ("title", "parent", "audience", "position", "article_count")
     list_filter = ("audience",)
@@ -30,6 +32,7 @@ class SectionAdmin(VersionAdmin):
 
 class ContentBlockInline(admin.StackedInline):
     model = ContentBlock
+    form = ContentBlockRichForm
     extra = 0
     fields = ("position", "kind", "text", "image", "video_url", "caption")
     formfield_overrides = {ContentBlock._meta.get_field("image").__class__: {"widget": FileInput}}
@@ -47,13 +50,18 @@ class AttachmentInline(admin.StackedInline):
 
 @admin.register(Article)
 class ArticleAdmin(VersionAdmin):
+    form = ArticleRichForm
     history_latest_first = True
     list_display = ("title", "section", "status", "audience", "updated_at", "view_link")
     list_filter = ("status", "audience", "section")
     search_fields = ("title", "summary", "search_text")
     ordering = ("section__title", "position", "title")
     readonly_fields = ("created_at", "updated_at")
-    fields = ("section", "title", "featured_video_url", "slug", "summary", "audience", "status", "position", "created_at", "updated_at")
+    fields = (
+        "section", "title", ("title_size", "title_alignment"),
+        ("title_bold", "title_italic"), "featured_video_url", "slug", "summary",
+        "audience", "status", "position", "created_at", "updated_at",
+    )
     inlines = [ContentBlockInline, AttachmentInline]
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):

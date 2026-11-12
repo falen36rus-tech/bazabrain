@@ -1,4 +1,5 @@
 {% extends 'kb/base.html' %}
+{% load kb_rich %}
 {% block title %}Поиск · {{ site_name|default:"База знаний 1С" }}{% endblock %}
 {% block content %}
 <nav class="breadcrumbs" aria-label="Навигационная цепочка"><a href="{% url 'kb:home' %}">Главная</a><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><span aria-current="page">Поиск</span></nav>
@@ -13,7 +14,7 @@
         <a class="search-result" href="{% url 'kb:section' item.slug %}">
           <span class="result-section">Раздел</span>
           <strong>{{ item.title }}</strong>
-          {% if item.description %}<span class="result-summary">{{ item.description|truncatechars:220 }}</span>{% endif %}
+          {% if item.description %}<span class="result-summary">{{ item.description|plain_excerpt:item.description_is_rich|truncatechars:220 }}</span>{% endif %}
         </a>
       {% endfor %}
     </div>
@@ -25,7 +26,7 @@
         <a class="search-result" href="{% url 'kb:article' item.slug %}">
           <span class="result-section">{{ item.section.title }}</span>
           <strong>{{ item.title }}</strong>
-          {% if item.summary %}<span class="result-summary">{{ item.summary|truncatechars:220 }}</span>{% endif %}
+          {% if item.summary %}<span class="result-summary">{{ item.summary|plain_excerpt:item.summary_is_rich|truncatechars:220 }}</span>{% endif %}
           <span class="result-date">Обновлено {{ item.updated_at|date:"d.m.Y" }}</span>
         </a>
       {% endfor %}

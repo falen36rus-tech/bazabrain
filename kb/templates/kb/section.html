@@ -1,9 +1,10 @@
 {% extends 'kb/base.html' %}
+{% load kb_rich %}
 {% block title %}{{ section.title }} · {{ site_name|default:"База знаний 1С" }}{% endblock %}
 {% block content %}
 <nav class="breadcrumbs" aria-label="Навигационная цепочка"><a href="{% url 'kb:home' %}">Главная</a><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><span aria-current="page">{{ section.title }}</span></nav>
 <header class="page-header">
-  <div><span class="eyebrow">Раздел</span><h1>{{ section.title }}</h1>{% if section.description %}<div class="page-lead">{{ section.description|linebreaks }}</div>{% endif %}</div>
+  <div><span class="eyebrow">Раздел</span><h1>{{ section.title }}</h1>{% if section.description %}<div class="page-lead rich-content">{{ section.description|rich_content:section.description_is_rich }}</div>{% endif %}</div>
   {% if can_edit %}<a class="secondary-button" href="{% url 'admin:kb_section_change' section.pk %}">Редактировать раздел</a>{% endif %}
 </header>
 
@@ -11,7 +12,7 @@
   <div class="section-heading-row compact"><div><h2>Подразделы</h2></div></div>
   <div class="subsection-grid">
     {% for child in child_sections %}
-      <a class="subsection-card" href="{% url 'kb:section' child.slug %}"><span class="subsection-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7.5a2 2 0 0 1 2-2H10l2 2h6.5a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-11Z"/></svg></span><span><strong>{{ child.title }}</strong>{% if child.description %}<small>{{ child.description|truncatechars:100 }}</small>{% endif %}</span><svg class="list-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+      <a class="subsection-card" href="{% url 'kb:section' child.slug %}"><span class="subsection-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7.5a2 2 0 0 1 2-2H10l2 2h6.5a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-11Z"/></svg></span><span><strong>{{ child.title }}</strong>{% if child.description %}<small>{{ child.description|plain_excerpt:child.description_is_rich|truncatechars:100 }}</small>{% endif %}</span><svg class="list-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
     {% endfor %}
   </div>
 {% endif %}
@@ -22,7 +23,7 @@
     {% for item in articles %}
       <a class="article-list-item" href="{% url 'kb:article' item.slug %}">
         <span class="article-list-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3.5h9l3 3V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14.5 3.5v3.8H18M8 12h8M8 16h6"/></svg></span>
-        <span class="article-list-copy"><strong>{{ item.title }}</strong>{% if item.summary %}<span>{{ item.summary|truncatechars:180 }}</span>{% endif %}<small>Обновлено {{ item.updated_at|date:"d.m.Y" }}</small></span>
+        <span class="article-list-copy"><strong>{{ item.title }}</strong>{% if item.summary %}<span>{{ item.summary|plain_excerpt:item.summary_is_rich|truncatechars:180 }}</span>{% endif %}<small>Обновлено {{ item.updated_at|date:"d.m.Y" }}</small></span>
         <svg class="list-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
       </a>
     {% endfor %}

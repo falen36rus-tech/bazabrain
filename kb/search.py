@@ -4,6 +4,7 @@ from django.db import connection
 from django.db.models import Q
 
 from .access import visible_articles, visible_sections
+from .rich_text import rich_plain_text
 
 
 def search_articles(user, raw_query, limit=40):
@@ -33,7 +34,7 @@ def search_articles(user, raw_query, limit=40):
     ranked = []
     for article in queryset:
         title = article.title.casefold()
-        summary = article.summary.casefold()
+        summary = (rich_plain_text(article.summary) if article.summary_is_rich else article.summary).casefold()
         body = article.search_text.casefold()
         section = article.section.title.casefold()
         if not all(any(term in field for field in (title, summary, body, section)) for term in terms):
@@ -52,7 +53,7 @@ def search_sections(user, raw_query, limit=20):
     ranked = []
     for section in visible_sections(user):
         title = section.title.casefold()
-        description = section.description.casefold()
+        description = (rich_plain_text(section.description) if section.description_is_rich else section.description).casefold()
         if not all(term in title or term in description for term in terms):
             continue
         score = sum(5 * (term in title) + (term in description) for term in terms)

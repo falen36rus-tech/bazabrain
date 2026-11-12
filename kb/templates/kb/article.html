@@ -1,4 +1,5 @@
 {% extends 'kb/base.html' %}
+{% load kb_rich %}
 {% block title %}{{ article.title }} · {{ site_name|default:"База знаний 1С" }}{% endblock %}
 {% block content %}
 <nav class="breadcrumbs" aria-label="Навигационная цепочка">
@@ -13,24 +14,24 @@
   <article class="article-document" aria-labelledby="article-title">
     <header class="article-header">
       <span class="eyebrow">{{ article.section.title }}</span>
-      <h1 id="article-title">{{ article.title }}</h1>
+      <h1 id="article-title" class="title-size-{{ article.title_size }} title-align-{{ article.title_alignment }}{% if not article.title_bold %} title-regular{% endif %}{% if article.title_italic %} title-italic{% endif %}">{{ article.title }}</h1>
       {% with video_url=article.featured_video_embed_url %}
         {% if video_url %}<figure class="video-figure article-featured-video"><div class="video-frame"><iframe src="{{ video_url }}" title="Видео к статье {{ article.title }}" loading="lazy" allow="clipboard-write; autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></figure>{% endif %}
       {% endwith %}
-      {% if article.summary %}<div class="article-summary">{{ article.summary|linebreaks }}</div>{% endif %}
+      {% if article.summary %}<div class="article-summary"><div class="rich-content">{{ article.summary|rich_content:article.summary_is_rich }}</div></div>{% endif %}
       <div class="article-meta"><span>Обновлено {{ article.updated_at|date:"d.m.Y" }}</span>{% if can_edit %}<a href="{% url 'admin:kb_article_change' article.pk %}">Редактировать</a>{% endif %}</div>
     </header>
 
     <div class="article-content" data-article-content>
       {% for block in blocks %}
         {% if block.kind == 'heading' %}
-          <h2 class="article-heading" data-toc-source>{{ block.text }}</h2>
+          <div class="article-heading rich-content" role="heading" aria-level="2" data-toc-source>{{ block.text|rich_content:block.text_is_rich }}</div>
         {% elif block.kind == 'text' %}
-          <div class="article-text prose">{{ block.text|linebreaks }}</div>
+          <div class="article-text prose rich-content">{{ block.text|rich_content:block.text_is_rich }}</div>
         {% elif block.kind == 'note' %}
           <aside class="note-block">
             <span class="note-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg></span>
-            <div class="prose">{{ block.text|linebreaks }}</div>
+            <div class="prose rich-content">{{ block.text|rich_content:block.text_is_rich }}</div>
           </aside>
         {% elif block.kind == 'image' %}
           <figure class="article-figure">

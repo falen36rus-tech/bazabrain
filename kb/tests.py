@@ -26,6 +26,8 @@ from .models import (
     Section,
 )
 from .rutube import embed_url
+from .rich_text import clean_rich_html, rich_plain_text
+from .admin_rich import ArticleRichForm, ContentBlockRichForm, SectionRichForm
 
 
 @override_settings(SECURE_SSL_REDIRECT=False)
@@ -234,6 +236,9 @@ class KnowledgeBaseAccessTests(TestCase):
             "title": "Маркер обновлённая инструкция",
             "slug": self.public_article.slug,
             "summary": "Исправлено редактором",
+            "title_size": "normal",
+            "title_alignment": "left",
+            "title_bold": "on",
             "audience": AUDIENCE_STAFF,
             "status": Article.PUBLISHED,
             "position": 0,
@@ -315,6 +320,84 @@ class KnowledgeBaseAccessTests(TestCase):
         self.assertEqual([item.pk for item in response.context["section_results"]], [self.developer_section.pk])
         suggestions = self.client.get(reverse("kb:suggest"), {"q": "Закрытый отдел разработчиков"})
         self.assertIn(self.developer_section.get_absolute_url(), {item["url"] for item in suggestions.json()["results"]})
+
+
+@override_settings(SECURE_SSL_REDIRECT=False)
+class RichFormattingTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user("rich-reader", password="example-password")
+        cls.owner = get_user_model().objects.create_superuser("rich-owner", "rich@example.com", "example-password")
+        cls.section = Section.objects.create(title="Раздел форматирования", slug="rich-section")
+        cls.article = Article.objects.create(
+            section=cls.section, title="Оформленный заголовок", slug="rich-article",
+            status=Article.PUBLISHED, summary="<p>Текст <strong>важный</strong></p>",
+            summary_is_rich=True, title_alignment="center", title_size="large",
+            title_bold=False, title_italic=True,
+        )
+
+    def test_rich_text_is_sanitized_without_losing_formatting(self):
+        source = '<p class="ql-align-center" onclick="alert(1)">Привет <strong>мир</strong><span class="ql-size-large" style="color:red">!</span><script>alert(2)</script></p>'
+        cleaned = clean_rich_html(source)
+        self.assertIn('class="ql-align-center"', cleaned)
+        self.assertIn('<strong>мир</strong>', cleaned)
+        self.assertIn('class="ql-size-large"', cleaned)
+        self.assertNotIn('onclick', cleaned)
+        self.assertNotIn('style=', cleaned)
+        self.assertNotIn('script', cleaned)
+        self.assertNotIn('alert', cleaned)
+        self.assertEqual(rich_plain_text(source), 'Привет мир!')
+
+    def test_formatted_article_and_plain_previews(self):
+        ContentBlock.objects.create(
+            article=self.article, kind=ContentBlock.TEXT, position=1,
+            text='<p class="ql-align-justify">Текст <span class="ql-size-huge">крупнее</span><script>alert(1)</script></p>',
+            text_is_rich=True,
+        )
+        self.client.force_login(self.user)
+        response = self.client.get(self.article.get_absolute_url())
+        self.assertContains(response, 'title-size-large title-align-center title-regular title-italic')
+        self.assertContains(response, '<strong>важный</strong>', html=True)
+        self.assertContains(response, 'class="ql-align-justify"')
+        self.assertContains(response, 'class="ql-size-huge"')
+        self.assertNotContains(response, 'alert(1)')
+        self.assertNotContains(response, '&lt;strong&gt;')
+        response = self.client.get(self.section.get_absolute_url())
+        self.assertContains(response, 'Текст важный')
+        self.assertNotContains(response, '<strong>важный</strong>')
+
+    def test_rich_admin_editor_and_form_cleaning(self):
+        self.client.force_login(self.owner)
+        response = self.client.get(reverse('admin:kb_article_change', args=[self.article.pk]))
+        self.assertContains(response, 'kb/vendor/quill/quill.js')
+        self.assertContains(response, 'data-kb-rich-editor="1"')
+        form = ArticleRichForm(data={
+            'section': self.section.pk, 'title': self.article.title, 'slug': self.article.slug,
+            'summary': '<p class="ql-align-right">Шаг <em>один</em><img src=x onerror=alert(1)></p>',
+            'summary__rich': '1', 'title_alignment': 'right', 'title_size': 'huge',
+            'audience': AUDIENCE_STAFF, 'status': Article.PUBLISHED, 'position': 0,
+        }, instance=self.article)
+        self.assertTrue(form.is_valid(), form.errors)
+        item = form.save()
+        self.assertTrue(item.summary_is_rich)
+        self.assertIn('ql-align-right', item.summary)
+        self.assertNotIn('<img', item.summary)
+        self.assertNotIn('onerror', item.summary)
+
+        section_form = SectionRichForm(data={
+            'title': self.section.title, 'slug': self.section.slug,
+            'description': '<p class="ql-align-center">Описание <strong>раздела</strong></p>',
+            'description__rich': '1', 'audience': AUDIENCE_STAFF, 'position': 0,
+        }, instance=self.section)
+        self.assertTrue(section_form.is_valid(), section_form.errors)
+        self.assertTrue(section_form.save().description_is_rich)
+
+        block_form = ContentBlockRichForm(data={
+            'article': self.article.pk, 'kind': ContentBlock.TEXT, 'position': 0,
+            'text': '<p>Новый <em>блок</em></p>', 'text__rich': '1',
+        })
+        self.assertTrue(block_form.is_valid(), block_form.errors)
+        self.assertTrue(block_form.save().text_is_rich)
 
 
 class InitialTreeTests(TestCase):

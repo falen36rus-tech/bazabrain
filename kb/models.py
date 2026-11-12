@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from .rutube import embed_url as rutube_embed_url
+from .rich_text import rich_plain_text
 
 
 AUDIENCE_STAFF = "staff"
@@ -54,6 +55,7 @@ class Section(models.Model):
     title = models.CharField("Название", max_length=200)
     slug = models.SlugField("Адрес", max_length=200, unique=True, allow_unicode=True, blank=True)
     description = models.TextField("Описание", blank=True)
+    description_is_rich = models.BooleanField(default=False, editable=False)
     parent = models.ForeignKey("self", verbose_name="Родительский раздел", null=True, blank=True, related_name="children", on_delete=models.PROTECT)
     audience = models.CharField("Кому доступен", max_length=20, choices=AUDIENCES, default=AUDIENCE_STAFF)
     position = models.PositiveIntegerField("Порядок", default=0)
@@ -94,6 +96,17 @@ class Article(models.Model):
     title = models.CharField("Заголовок", max_length=240)
     slug = models.SlugField("Адрес", max_length=200, unique=True, allow_unicode=True, blank=True)
     summary = models.TextField("Краткое описание", blank=True, help_text="Показывается в поиске и в списке статей.")
+    summary_is_rich = models.BooleanField(default=False, editable=False)
+    title_alignment = models.CharField(
+        "Выравнивание заголовка", max_length=10, default="left",
+        choices=[("left", "Слева"), ("center", "По центру"), ("right", "Справа"), ("justify", "По ширине")],
+    )
+    title_size = models.CharField(
+        "Размер заголовка", max_length=10, default="normal",
+        choices=[("normal", "Обычный"), ("large", "Крупный"), ("huge", "Очень крупный")],
+    )
+    title_bold = models.BooleanField("Жирный заголовок", default=True)
+    title_italic = models.BooleanField("Курсивный заголовок", default=False)
     featured_video_url = models.CharField(
         "Видео под заголовком (Rutube)", max_length=500, blank=True,
         help_text="Вставьте ссылку на видео Rutube. Плеер появится сразу под названием статьи.",
@@ -139,7 +152,10 @@ class Article(models.Model):
             return ""
 
     def rebuild_search_text(self):
-        pieces = list(self.blocks.exclude(text="").values_list("text", flat=True))
+        pieces = [
+            rich_plain_text(text) if is_rich else text
+            for text, is_rich in self.blocks.exclude(text="").values_list("text", "text_is_rich")
+        ]
         pieces += list(self.blocks.exclude(caption="").values_list("caption", flat=True))
         pieces += list(self.attachments.values_list("title", flat=True))
         self.search_text = "\n".join(pieces)
@@ -165,6 +181,7 @@ class ContentBlock(models.Model):
     kind = models.CharField("Тип блока", max_length=20, choices=KINDS, default=TEXT)
     position = models.PositiveIntegerField("Порядок", default=0)
     text = models.TextField("Текст", blank=True)
+    text_is_rich = models.BooleanField(default=False, editable=False)
     image = models.ImageField("Скриншот", upload_to=image_upload_path, blank=True, validators=[validate_upload_size])
     video_url = models.CharField("Ссылка на видео Rutube", max_length=500, blank=True)
     caption = models.CharField("Подпись", max_length=300, blank=True)
@@ -179,7 +196,8 @@ class ContentBlock(models.Model):
 
     def clean(self):
         super().clean()
-        if self.kind in {self.HEADING, self.TEXT, self.NOTE} and not self.text.strip():
+        text = rich_plain_text(self.text) if self.text_is_rich else self.text.strip()
+        if self.kind in {self.HEADING, self.TEXT, self.NOTE} and not text:
             raise ValidationError({"text": "Для этого блока укажите текст."})
         if self.kind == self.IMAGE and not self.image:
             raise ValidationError({"image": "Загрузите скриншот."})

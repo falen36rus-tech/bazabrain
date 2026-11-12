@@ -1,0 +1,9 @@
+.kb-rich-editor { width: min(100%, 880px); margin: 3px 0 10px; }
+.kb-rich-editor .ql-toolbar.ql-snow { border-color: var(--border-color, #c5c5c5); border-radius: 5px 5px 0 0; background: var(--darkened-bg, #f7f7f7); }
+.kb-rich-editor .ql-container.ql-snow { min-height: 145px; border-color: var(--border-color, #c5c5c5); border-radius: 0 0 5px 5px; background: var(--body-bg, #fff); color: var(--body-fg, #222); font: 14px/1.65 Arial, sans-serif; }
+.kb-rich-editor .ql-editor { min-height: 145px; }
+.kb-rich-editor .ql-editor.ql-blank::before { color: var(--body-quiet-color, #777); }
+.kb-rich-editor .ql-snow .ql-stroke { stroke: var(--body-fg, #333); }
+.kb-rich-editor .ql-snow .ql-fill { fill: var(--body-fg, #333); }
+.kb-rich-editor .ql-snow .ql-picker { color: var(--body-fg, #333); }
+.kb-rich-editor .ql-snow .ql-picker-options { background: var(--body-bg, #fff); border-color: var(--border-color, #c5c5c5); }
