@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>{% block title %}{{ site_name|default:"База знаний 1С" }}{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'kb/site.css' %}?v=20261001-tree">
+  <link rel="stylesheet" href="{% static 'kb/site.css' %}?v=20261112-service-chevron">
   <script src="{% static 'kb/site.js' %}?v=20261001-tree" defer></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -23,7 +23,7 @@
           <span class="brand-copy"><strong>{{ site_name|default:"База знаний 1С" }}</strong><small>Корпоративный справочник</small></span>
         </a>
         <details class="service-menu">
-          <summary aria-label="Выбрать сервис">Сервисы <span aria-hidden="true">⌄</span></summary>
+          <summary aria-label="Выбрать сервис">Сервисы <svg class="service-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary>
           <div class="service-options" role="navigation" aria-label="Базы знаний по сервисам">
             {% for slug, name in services %}
               {% if slug == '1c' %}<a href="{% url 'kb:home' %}"{% if service_slug == slug %} aria-current="page"{% endif %}>{{ name }}</a>
