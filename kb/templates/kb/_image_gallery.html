@@ -1,0 +1,18 @@
+<section class="image-gallery image-width-{{ block.display_width }}" data-gallery aria-label="Изображения статьи">
+  {% for picture in item.images %}
+    <figure class="article-figure gallery-slide" data-gallery-slide{% if not forloop.first %} hidden{% endif %}>
+      <button type="button" class="image-open" data-lightbox-open data-lightbox-src="{% url 'kb:private_file' picture.pk %}" data-lightbox-caption="{{ picture.caption|default:article.title }}" aria-label="Открыть изображение {{ forloop.counter }} из {{ item.images|length }}">
+        <img src="{% url 'kb:private_file' picture.pk %}" alt="{{ picture.caption|default:article.title }}" loading="lazy">
+        <span class="image-expand" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"/></svg></span>
+      </button>
+      {% if picture.caption %}<figcaption>{{ picture.caption }}</figcaption>{% endif %}
+    </figure>
+  {% endfor %}
+  {% if item.images|length > 1 %}
+    <div class="gallery-controls">
+      <button type="button" data-gallery-prev aria-label="Предыдущее фото">←</button>
+      <span data-gallery-count aria-live="polite">1 / {{ item.images|length }}</span>
+      <button type="button" data-gallery-next aria-label="Следующее фото">→</button>
+    </div>
+  {% endif %}
+</section>
