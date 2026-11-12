@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from .rutube import embed_url as rutube_embed_url
+from .catalog import SERVICES
 from .rich_text import rich_plain_text
 
 
@@ -16,7 +17,7 @@ AUDIENCE_STAFF = "staff"
 AUDIENCE_MANAGER = "manager"
 AUDIENCE_DEVELOPER = "developer"
 AUDIENCES = [
-    (AUDIENCE_STAFF, "Все сотрудники"),
+    (AUDIENCE_STAFF, "Все посетители"),
     (AUDIENCE_MANAGER, "Руководители"),
     (AUDIENCE_DEVELOPER, "Разработчики"),
 ]
@@ -24,6 +25,7 @@ AUDIENCES = [
 GROUP_MANAGERS = "Руководители"
 GROUP_DEVELOPERS = "Разработчики"
 GROUP_EDITORS = "Редакторы"
+GROUP_READERS = "Пользователи базы знаний"
 
 
 def unique_slug(model, title, instance_pk=None):
@@ -56,6 +58,9 @@ class Section(models.Model):
     slug = models.SlugField("Адрес", max_length=200, unique=True, allow_unicode=True, blank=True)
     description = models.TextField("Описание", blank=True)
     description_is_rich = models.BooleanField(default=False, editable=False)
+    service_slug = models.CharField("Сервис", max_length=40, choices=SERVICES, default="1c")
+    catalog = models.CharField("Каталог", max_length=20, choices=(("main", "Разделы 1С"), ("discipline", "Дисциплины")), default="main")
+    manager = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Ответственный руководитель", null=True, blank=True, on_delete=models.SET_NULL, related_name="managed_kb_sections")
     parent = models.ForeignKey("self", verbose_name="Родительский раздел", null=True, blank=True, related_name="children", on_delete=models.PROTECT)
     audience = models.CharField("Кому доступен", max_length=20, choices=AUDIENCES, default=AUDIENCE_STAFF)
     position = models.PositiveIntegerField("Порядок", default=0)
@@ -73,6 +78,8 @@ class Section(models.Model):
 
     def clean(self):
         super().clean()
+        if self.parent and (self.parent.service_slug != self.service_slug or self.parent.catalog != self.catalog):
+            raise ValidationError({"parent": "Родитель должен находиться в том же сервисе и каталоге."})
         seen = {self.pk}
         ancestor = self.parent
         while ancestor:

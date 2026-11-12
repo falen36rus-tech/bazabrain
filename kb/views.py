@@ -1,13 +1,14 @@
 import mimetypes
 from pathlib import Path
 
-from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from .access import navigation_tree, visible_articles, visible_sections
+from .access import editable_section_ids
+from .catalog import SERVICES, SERVICE_NAMES
 from .models import Article, Attachment, ContentBlock
 from .rich_text import rich_plain_text
 from .search import search_articles, search_sections
@@ -16,10 +17,19 @@ from .search import search_articles, search_sections
 SITE_NAME = "База знаний 1С"
 
 
-def base_context(request, *, sections=None, articles=None):
+def base_context(request, *, sections=None, articles=None, service_slug="1c", catalog="main"):
     sections = visible_sections(request.user) if sections is None else sections
+    sections = [section for section in sections if section.service_slug == service_slug and section.catalog == catalog]
+    current_service = SERVICE_NAMES.get(service_slug, SERVICE_NAMES["1c"])
+    home_url = reverse("kb:disciplines") if catalog == "discipline" else (reverse("kb:home") if service_slug == "1c" else reverse("kb:service", args=[service_slug]))
     return {
-        "site_name": SITE_NAME,
+        "site_name": SITE_NAME if service_slug == "1c" else f"База знаний · {current_service}",
+        "services": SERVICES,
+        "service_slug": service_slug,
+        "current_service": current_service,
+        "catalog": catalog,
+        "catalog_name": "Дисциплины" if catalog == "discipline" else "Разделы 1С" if service_slug == "1c" else "Разделы",
+        "home_url": home_url,
         "nav_tree": navigation_tree(request.user, sections, articles),
         "current_article": None,
         "current_section": None,
@@ -27,11 +37,24 @@ def base_context(request, *, sections=None, articles=None):
     }
 
 
-@login_required
 def home(request):
-    sections = visible_sections(request.user)
+    return catalog_home(request, "1c", "main")
+
+
+def service_home(request, slug):
+    if slug not in SERVICE_NAMES or slug == "1c":
+        raise Http404
+    return catalog_home(request, slug, "main")
+
+
+def discipline_home(request):
+    return catalog_home(request, "1c", "discipline")
+
+
+def catalog_home(request, service_slug, catalog):
+    sections = [section for section in visible_sections(request.user) if section.service_slug == service_slug and section.catalog == catalog]
     articles = visible_articles(request.user, sections)
-    context = base_context(request, sections=sections)
+    context = base_context(request, sections=sections, service_slug=service_slug, catalog=catalog)
     filled_articles = articles.filter(Q(blocks__isnull=False) | Q(attachments__isnull=False)).distinct()
     context.update(
         sections=[section for section in sections if section.parent_id is None],
@@ -41,24 +64,24 @@ def home(request):
     return render(request, "kb/home.html", context)
 
 
-@login_required
 def section_detail(request, slug):
     sections = visible_sections(request.user)
     section = next((item for item in sections if item.slug == slug), None)
     if section is None:
         raise Http404
-    articles = list(visible_articles(request.user, sections).filter(section_id=section.pk))
-    context = base_context(request, sections=sections)
+    catalog_sections = [item for item in sections if item.service_slug == section.service_slug and item.catalog == section.catalog]
+    articles = list(visible_articles(request.user, catalog_sections).filter(section_id=section.pk))
+    context = base_context(request, sections=catalog_sections, service_slug=section.service_slug, catalog=section.catalog)
     context.update(
         section=section,
         current_section=section,
-        child_sections=[item for item in sections if item.parent_id == section.pk],
+        child_sections=[item for item in catalog_sections if item.parent_id == section.pk],
         articles=articles,
+        can_edit=section.pk in editable_section_ids(request.user),
     )
     return render(request, "kb/section.html", context)
 
 
-@login_required
 def article_detail(request, slug):
     article = get_object_or_404(visible_articles(request.user), slug=slug)
     blocks = list(article.blocks.all())
@@ -76,28 +99,30 @@ def article_detail(request, slug):
             display_blocks.append({"block": block, "images": galleries[block.gallery_id]})
         else:
             display_blocks.append({"block": block, "images": [block] if block.image else []})
-    context = base_context(request)
+    context = base_context(request, service_slug=article.section.service_slug, catalog=article.section.catalog)
     context.update(
         article=article,
         display_blocks=display_blocks,
         attachments=list(article.attachments.all()),
         current_article=article,
         current_section=article.section,
+        can_edit=article.section_id in editable_section_ids(request.user),
     )
     return render(request, "kb/article.html", context)
 
 
-@login_required
 def search(request):
     query = request.GET.get("q", "")[:160].strip()
-    context = base_context(request)
+    service_slug = request.GET.get("service", "1c")
+    if service_slug not in SERVICE_NAMES:
+        service_slug = "1c"
+    context = base_context(request, service_slug=service_slug)
     section_results = search_sections(request.user, query)
     search_results = search_articles(request.user, query)
     context.update(q=query, section_results=section_results, search_results=search_results, result_count=len(section_results) + len(search_results))
     return render(request, "kb/search.html", context)
 
 
-@login_required
 def suggest(request):
     query = request.GET.get("q", "")[:160]
     sections = search_sections(request.user, query, limit=3) if len(query.strip()) >= 2 else []
@@ -125,7 +150,6 @@ def suggest(request):
     )
 
 
-@login_required
 def private_file(request, pk):
     block = get_object_or_404(ContentBlock.objects.select_related("article"), pk=pk)
     if not visible_articles(request.user).filter(pk=block.article_id).exists() or not block.image:
@@ -142,7 +166,6 @@ def private_file(request, pk):
     return response
 
 
-@login_required
 def private_attachment(request, pk):
     attachment = get_object_or_404(Attachment.objects.select_related("article"), pk=pk)
     if not visible_articles(request.user).filter(pk=attachment.article_id).exists():

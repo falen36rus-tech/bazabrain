@@ -6,6 +6,8 @@ from . import views
 app_name = "kb"
 urlpatterns = [
     path("", views.home, name="home"),
+    path("disciplines/", views.discipline_home, name="disciplines"),
+    path("services/<str:slug>/", views.service_home, name="service"),
     path("search/", views.search, name="search"),
     path("api/search/suggest/", views.suggest, name="suggest"),
     path("sections/<str:slug>/", views.section_detail, name="section"),

@@ -1,6 +1,6 @@
 """The single visibility rule used by pages, search and private files."""
 
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 
 from .models import (
     AUDIENCE_DEVELOPER,
@@ -16,7 +16,7 @@ from .models import (
 
 def allowed_audiences(user):
     if not user.is_authenticated:
-        return set()
+        return {AUDIENCE_STAFF}
     if user.is_superuser:
         return {AUDIENCE_STAFF, AUDIENCE_MANAGER, AUDIENCE_DEVELOPER}
     audiences = {AUDIENCE_STAFF}
@@ -28,6 +28,16 @@ def allowed_audiences(user):
     if GROUP_DEVELOPERS in group_names:
         audiences.add(AUDIENCE_DEVELOPER)
     return audiences
+
+
+def filled_article_filter():
+    """A title alone is not enough to publish an article to anonymous visitors."""
+    return (
+        Q(summary__regex=r"\S")
+        | Q(featured_video_url__regex=r"\S")
+        | Q(blocks__isnull=False)
+        | Q(attachments__isnull=False)
+    )
 
 
 def visible_sections(user):
@@ -48,18 +58,36 @@ def visible_sections(user):
         memo[section.pk] = not section.parent_id or (parent is not None and can_see(parent))
         return memo[section.pk]
 
-    return [section for section in sections if can_see(section)]
+    accessible = [section for section in sections if can_see(section)]
+    if user.is_authenticated:
+        return accessible
+
+    accessible_ids = {section.pk for section in accessible}
+    filled_section_ids = Article.objects.filter(
+        status=Article.PUBLISHED,
+        audience=AUDIENCE_STAFF,
+        section_id__in=accessible_ids,
+    ).filter(filled_article_filter()).values_list("section_id", flat=True).distinct()
+    visible_ids = set()
+    for section_id in filled_section_ids:
+        while section_id in accessible_ids and section_id not in visible_ids:
+            visible_ids.add(section_id)
+            section_id = by_id[section_id].parent_id
+    return [section for section in accessible if section.pk in visible_ids]
 
 
 def visible_articles(user, sections=None) -> QuerySet[Article]:
     section_ids = [section.pk for section in (visible_sections(user) if sections is None else sections)]
     if not section_ids:
         return Article.objects.none()
-    return Article.objects.filter(
+    queryset = Article.objects.filter(
         status=Article.PUBLISHED,
         section_id__in=section_ids,
         audience__in=allowed_audiences(user),
-    ).select_related("section")
+    )
+    if not user.is_authenticated:
+        queryset = queryset.filter(filled_article_filter()).distinct()
+    return queryset.select_related("section")
 
 
 def navigation_tree(user, sections=None, articles=None):
@@ -78,3 +106,20 @@ def navigation_tree(user, sections=None, articles=None):
         if article.section_id in nodes:
             nodes[article.section_id]["articles"].append(article)
     return roots
+
+
+def editable_section_ids(user):
+    if not user.is_authenticated or not user.is_staff:
+        return set()
+    if user.is_superuser or user.groups.filter(name=GROUP_EDITORS).exists():
+        return set(Section.objects.values_list("pk", flat=True))
+    if not user.groups.filter(name=GROUP_MANAGERS).exists():
+        return set()
+    sections = list(Section.objects.values_list("pk", "parent_id", "manager_id"))
+    result = {pk for pk, _, manager_id in sections if manager_id == user.pk}
+    changed = True
+    while changed:
+        old_size = len(result)
+        result.update(pk for pk, parent_id, _ in sections if parent_id in result)
+        changed = len(result) != old_size
+    return result

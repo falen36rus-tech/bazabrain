@@ -3,7 +3,7 @@
 {% block title %}{{ article.title }} · {{ site_name|default:"База знаний 1С" }}{% endblock %}
 {% block content %}
 <nav class="breadcrumbs" aria-label="Навигационная цепочка">
-  <a href="{% url 'kb:home' %}">Главная</a>
+  <a href="{{ home_url }}">{{ catalog_name }}</a>
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
   <a href="{% url 'kb:section' article.section.slug %}">{{ article.section.title }}</a>
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
