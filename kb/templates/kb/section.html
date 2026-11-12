@@ -2,7 +2,7 @@
 {% load kb_rich %}
 {% block title %}{{ section.title }} · {{ site_name|default:"База знаний 1С" }}{% endblock %}
 {% block content %}
-<nav class="breadcrumbs" aria-label="Навигационная цепочка"><a href="{% url 'kb:home' %}">Главная</a><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><span aria-current="page">{{ section.title }}</span></nav>
+<nav class="breadcrumbs" aria-label="Навигационная цепочка"><a href="{{ home_url }}">{{ catalog_name }}</a><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><span aria-current="page">{{ section.title }}</span></nav>
 <header class="page-header">
   <div><span class="eyebrow">Раздел</span><h1>{{ section.title }}</h1>{% if section.description %}<div class="page-lead rich-content">{{ section.description|rich_content:section.description_is_rich }}</div>{% endif %}</div>
   {% if can_edit %}<a class="secondary-button" href="{% url 'admin:kb_section_change' section.pk %}">Редактировать раздел</a>{% endif %}

@@ -3,7 +3,7 @@
 {% block title %}Главная · {{ site_name|default:"База знаний 1С" }}{% endblock %}
 {% block content %}
 <header class="home-heading">
-  <div><span class="eyebrow">Каталог</span><h1>Разделы базы знаний</h1><p>Выберите раздел или найдите материал через строку поиска.</p></div>
+  <div><span class="eyebrow">{{ current_service }}</span><h1>{{ catalog_name }}</h1><p>Выберите раздел или найдите материал через строку поиска.</p></div>
   <div class="home-heading-actions">{% if sections %}<span class="subtle-count">{{ sections|length }} на верхнем уровне</span>{% endif %}<a href="{% url 'kb:search' %}">Открыть поиск <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></div>
 </header>
 

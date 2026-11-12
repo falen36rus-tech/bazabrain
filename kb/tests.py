@@ -18,6 +18,7 @@ from .access import visible_articles, visible_sections
 from .models import (
     AUDIENCE_DEVELOPER,
     AUDIENCE_MANAGER,
+    AUDIENCE_PUBLIC,
     AUDIENCE_STAFF,
     GROUP_DEVELOPERS,
     GROUP_EDITORS,
@@ -148,6 +149,58 @@ class KnowledgeBaseAccessTests(TestCase):
             [self.public_article],
             [self.public_section],
         )
+
+    def test_guest_sees_only_public_material_and_can_sign_in(self):
+        self.public_section.audience = AUDIENCE_PUBLIC
+        self.public_section.save(update_fields=["audience"])
+        self.public_article.audience = AUDIENCE_PUBLIC
+        self.public_article.save(update_fields=["audience"])
+        self.client.logout()
+        self.assertEqual(self.client.get(reverse("kb:home")).status_code, 200)
+        self.assertEqual(self.client.get(self.public_article.get_absolute_url()).status_code, 200)
+        self.assertEqual(self.client.get(self.manager_article.get_absolute_url()).status_code, 404)
+        self.assertEqual(self.client.get(self.developer_article.get_absolute_url()).status_code, 404)
+        self.assertContains(self.client.get(reverse("kb:home")), "Войти")
+
+    def test_regular_user_has_no_edit_controls(self):
+        self.client.force_login(self.staff)
+        self.assertNotContains(self.client.get(self.public_article.get_absolute_url()), "Редактировать")
+        self.assertEqual(self.client.get(reverse("admin:kb_article_change", args=[self.public_article.pk])).status_code, 302)
+
+    def test_manager_edits_only_assigned_section(self):
+        self.manager.is_staff = True
+        self.manager.save(update_fields=["is_staff"])
+        self.public_section.manager = self.manager
+        self.public_section.save(update_fields=["manager"])
+        self.client.force_login(self.manager)
+        self.assertEqual(self.client.get(reverse("admin:kb_section_change", args=[self.public_section.pk])).status_code, 200)
+        self.assertNotEqual(self.client.get(reverse("admin:kb_section_change", args=[self.manager_section.pk])).status_code, 200)
+        self.assertEqual(self.client.get(reverse("admin:kb_article_change", args=[self.public_article.pk])).status_code, 200)
+        self.assertNotEqual(self.client.get(reverse("admin:kb_article_change", args=[self.manager_article.pk])).status_code, 200)
+        self.assertEqual(self.client.get(reverse("admin:kb_section_add")).status_code, 403)
+        self.assertEqual(self.client.get(reverse("admin:kb_article_add")).status_code, 200)
+        self.assertContains(self.client.get(self.public_article.get_absolute_url()), "Редактировать")
+        self.assertNotContains(self.client.get(self.manager_article.get_absolute_url()), "Редактировать")
+        response = self.client.post(reverse("admin:kb_article_change", args=[self.public_article.pk]), {
+            "section": self.manager_section.pk, "title": self.public_article.title,
+            "slug": self.public_article.slug, "summary": self.public_article.summary,
+            "title_size": "normal", "title_alignment": "left", "title_bold": "on",
+            "audience": AUDIENCE_STAFF, "status": Article.PUBLISHED, "position": 0,
+            "blocks-TOTAL_FORMS": 0, "blocks-INITIAL_FORMS": 0,
+            "blocks-MIN_NUM_FORMS": 0, "blocks-MAX_NUM_FORMS": 1000,
+            "attachments-TOTAL_FORMS": 0, "attachments-INITIAL_FORMS": 0,
+            "attachments-MIN_NUM_FORMS": 0, "attachments-MAX_NUM_FORMS": 1000,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.public_article.refresh_from_db()
+        self.assertEqual(self.public_article.section_id, self.public_section.pk)
+
+    def test_admin_logout_returns_to_public_site(self):
+        self.client.force_login(self.owner)
+        response = self.client.post("/admin/logout/")
+        self.assertRedirects(response, "/")
+        self.assertEqual(self.client.get("/").status_code, 200)
+        self.assertContains(self.client.get("/"), "Войти")
 
     def test_manager_cannot_see_developer_material(self):
         self.assert_visible_everywhere(
@@ -470,6 +523,7 @@ class RichFormattingTests(TestCase):
             'title': self.section.title, 'slug': self.section.slug,
             'description': '<p class="ql-align-center">Описание <strong>раздела</strong></p>',
             'description__rich': '1', 'audience': AUDIENCE_STAFF, 'position': 0,
+            'service_slug': '1c', 'catalog': 'main',
         }, instance=self.section)
         self.assertTrue(section_form.is_valid(), section_form.errors)
         self.assertTrue(section_form.save().description_is_rich)
@@ -484,10 +538,25 @@ class RichFormattingTests(TestCase):
 
 
 class InitialTreeTests(TestCase):
+    def test_service_catalog_and_disciplines(self):
+        from .catalog import SERVICES
+        self.assertEqual(len(SERVICES), 18)
+        self.assertTrue(Group.objects.filter(name="Пользователи базы знаний").exists())
+        self.assertEqual(self.client.get(reverse("kb:service", args=["cis"])).status_code, 200)
+        self.assertEqual(self.client.get(reverse("kb:service", args=["unknown"])).status_code, 404)
+        response = self.client.get(reverse("kb:disciplines"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Общестроительные работы")
+        self.assertEqual(Section.objects.filter(service_slug="1c", catalog="discipline", parent__isnull=True).count(), 7)
+        self.assertNotContains(self.client.get(reverse("kb:home")), 'href="/sections/discipline-construction/"')
+        section = Section.objects.create(title="Руководство по CIS", slug="cis-guide", service_slug="cis", audience=AUDIENCE_PUBLIC)
+        self.assertContains(self.client.get(reverse("kb:service", args=["cis"])), section.title)
+        self.assertNotContains(self.client.get(reverse("kb:home")), section.title)
+
     def test_revised_document_tree_matches_all_titles_and_parent_links(self):
-        self.assertEqual(Section.objects.count(), 57)
+        self.assertEqual(Section.objects.filter(service_slug="1c", catalog="main").count(), 57)
         self.assertEqual(Article.objects.count(), 290)
-        self.assertEqual(Section.objects.filter(parent__isnull=True).count(), 11)
+        self.assertEqual(Section.objects.filter(parent__isnull=True, service_slug="1c", catalog="main").count(), 11)
         self.assertEqual(Article.objects.filter(status=Article.PUBLISHED).count(), 290)
 
         source = Path(__file__).parent / "data" / "tree_2026_10_01_revision.json"
@@ -529,7 +598,7 @@ class InitialTreeTests(TestCase):
                 )
             return result
 
-        self.assertEqual(actual(Section.objects.filter(parent__isnull=True)), expected(expected_roots))
+        self.assertEqual(actual(Section.objects.filter(parent__isnull=True, service_slug="1c", catalog="main")), expected(expected_roots))
         for number in (55, 56, *range(99, 110), *range(111, 118)):
             self.assertTrue(Article.objects.filter(slug=f"tree-article-{number:03d}").exists())
             self.assertFalse(Section.objects.filter(slug=f"tree-section-{number:03d}").exists())

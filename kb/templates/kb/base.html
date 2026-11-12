@@ -18,10 +18,19 @@
         <button class="icon-button mobile-menu-button" type="button" aria-label="Открыть разделы" aria-controls="site-sidebar" aria-expanded="false" data-sidebar-toggle>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
         </button>
-        <a class="brand-link" href="{% url 'kb:home' %}" aria-label="На главную страницу">
+        <a class="brand-link" href="{{ home_url }}" aria-label="На главную страницу">
           <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
           <span class="brand-copy"><strong>{{ site_name|default:"База знаний 1С" }}</strong><small>Корпоративный справочник</small></span>
         </a>
+        <details class="service-menu">
+          <summary aria-label="Выбрать сервис">Сервисы <span aria-hidden="true">⌄</span></summary>
+          <div class="service-options" role="navigation" aria-label="Базы знаний по сервисам">
+            {% for slug, name in services %}
+              {% if slug == '1c' %}<a href="{% url 'kb:home' %}"{% if service_slug == slug %} aria-current="page"{% endif %}>{{ name }}</a>
+              {% else %}<a href="{% url 'kb:service' slug %}"{% if service_slug == slug %} aria-current="page"{% endif %}>{{ name }}</a>{% endif %}
+            {% endfor %}
+          </div>
+        </details>
       </div>
 
       <div class="global-search" data-search-root data-suggest-url="{% url 'kb:suggest' %}">
@@ -29,6 +38,7 @@
           <label class="sr-only" for="global-search-input">Поиск по базе знаний</label>
           <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.3 4.3"/></svg>
           <input id="global-search-input" name="q" type="search" value="{{ q|default:'' }}" placeholder="Найти инструкцию, ошибку или термин" autocomplete="off" aria-autocomplete="list" aria-controls="global-search-suggestions" aria-expanded="false" data-search-input>
+          <input type="hidden" name="service" value="{{ service_slug|default:'1c' }}">
           <kbd class="search-shortcut" aria-hidden="true">/</kbd>
           <button class="search-submit" type="submit">Найти</button>
         </form>
@@ -64,11 +74,12 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5 19 19M19 5 5 19"/></svg>
         </button>
       </div>
-      <a class="sidebar-home{% if request.resolver_match.url_name == 'home' %} is-active{% endif %}" href="{% url 'kb:home' %}"{% if request.resolver_match.url_name == 'home' %} aria-current="page"{% endif %}>
+      {% if service_slug == '1c' %}<nav class="catalog-tabs" aria-label="Каталоги 1С"><a href="{% url 'kb:home' %}"{% if catalog == 'main' %} aria-current="page"{% endif %}>Разделы 1С</a><a href="{% url 'kb:disciplines' %}"{% if catalog == 'discipline' %} aria-current="page"{% endif %}>Дисциплины</a></nav>{% endif %}
+      <a class="sidebar-home{% if request.path == home_url %} is-active{% endif %}" href="{{ home_url }}"{% if request.path == home_url %} aria-current="page"{% endif %}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10Z"/><path d="M9 21v-7h6v7"/></svg>
         <span>Главная</span>
       </a>
-      <div class="sidebar-group-label">Разделы</div>
+      <div class="sidebar-group-label">{{ catalog_name|default:"Разделы" }}</div>
       <nav class="sidebar-nav" aria-label="Оглавление">
         {% if nav_tree %}
           {% include 'kb/_nav_nodes.html' with nodes=nav_tree depth=0 %}

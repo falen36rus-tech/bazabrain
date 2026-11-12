@@ -5,6 +5,7 @@ from django.db.models import QuerySet
 from .models import (
     AUDIENCE_DEVELOPER,
     AUDIENCE_MANAGER,
+    AUDIENCE_PUBLIC,
     AUDIENCE_STAFF,
     GROUP_DEVELOPERS,
     GROUP_EDITORS,
@@ -16,13 +17,13 @@ from .models import (
 
 def allowed_audiences(user):
     if not user.is_authenticated:
-        return set()
+        return {AUDIENCE_PUBLIC}
     if user.is_superuser:
-        return {AUDIENCE_STAFF, AUDIENCE_MANAGER, AUDIENCE_DEVELOPER}
-    audiences = {AUDIENCE_STAFF}
+        return {AUDIENCE_PUBLIC, AUDIENCE_STAFF, AUDIENCE_MANAGER, AUDIENCE_DEVELOPER}
+    audiences = {AUDIENCE_PUBLIC, AUDIENCE_STAFF}
     group_names = set(user.groups.values_list("name", flat=True))
     if GROUP_EDITORS in group_names:
-        return {AUDIENCE_STAFF, AUDIENCE_MANAGER, AUDIENCE_DEVELOPER}
+        return {AUDIENCE_PUBLIC, AUDIENCE_STAFF, AUDIENCE_MANAGER, AUDIENCE_DEVELOPER}
     if GROUP_MANAGERS in group_names:
         audiences.add(AUDIENCE_MANAGER)
     if GROUP_DEVELOPERS in group_names:
@@ -78,3 +79,20 @@ def navigation_tree(user, sections=None, articles=None):
         if article.section_id in nodes:
             nodes[article.section_id]["articles"].append(article)
     return roots
+
+
+def editable_section_ids(user):
+    if not user.is_authenticated or not user.is_staff:
+        return set()
+    if user.is_superuser or user.groups.filter(name=GROUP_EDITORS).exists():
+        return set(Section.objects.values_list("pk", flat=True))
+    if not user.groups.filter(name=GROUP_MANAGERS).exists():
+        return set()
+    sections = list(Section.objects.values_list("pk", "parent_id", "manager_id"))
+    result = {pk for pk, _, manager_id in sections if manager_id == user.pk}
+    changed = True
+    while changed:
+        old_size = len(result)
+        result.update(pk for pk, parent_id, _ in sections if parent_id in result)
+        changed = len(result) != old_size
+    return result

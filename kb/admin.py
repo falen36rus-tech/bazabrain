@@ -1,9 +1,17 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
+from django.core.exceptions import PermissionDenied
 from django.utils.html import format_html
 from reversion.admin import VersionAdmin
 
 from .admin_rich import ArticleRichForm, ContentBlockRichForm, PrivateImageInput, SectionRichForm
 from .models import Article, Attachment, ContentBlock, Section
+from .access import editable_section_ids
+from .models import GROUP_EDITORS, GROUP_MANAGERS
+
+
+def scoped_manager(user):
+    return user.is_authenticated and not user.is_superuser and not user.groups.filter(name=GROUP_EDITORS).exists() and user.groups.filter(name=GROUP_MANAGERS).exists()
 
 
 admin.site.site_header = "Управление базой знаний 1С"
@@ -15,11 +23,32 @@ admin.site.index_title = "Материалы и пользователи"
 class SectionAdmin(VersionAdmin):
     form = SectionRichForm
     history_latest_first = True
-    list_display = ("title", "parent", "audience", "position", "article_count")
-    list_filter = ("audience",)
+    list_display = ("title", "service_slug", "catalog", "parent", "manager", "audience", "position", "article_count")
+    list_filter = ("service_slug", "catalog", "audience")
     search_fields = ("title", "description")
     ordering = ("parent__title", "position", "title")
-    fields = ("title", "slug", "description", "parent", "audience", "position")
+    fields = ("title", "slug", "description", "service_slug", "catalog", "parent", "manager", "audience", "position")
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "manager":
+            kwargs["queryset"] = get_user_model().objects.filter(is_staff=True, groups__name=GROUP_MANAGERS).distinct()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.filter(pk__in=editable_section_ids(request.user)) if scoped_manager(request.user) else queryset
+
+    def get_readonly_fields(self, request, obj=None):
+        return ("service_slug", "catalog", "parent", "manager") if scoped_manager(request.user) else ()
+
+    def has_add_permission(self, request):
+        return not scoped_manager(request.user) and super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        return super().has_change_permission(request, obj) and (obj is None or not scoped_manager(request.user) or obj.pk in editable_section_ids(request.user))
+
+    def has_view_permission(self, request, obj=None):
+        return super().has_view_permission(request, obj) and (obj is None or not scoped_manager(request.user) or obj.pk in editable_section_ids(request.user))
 
     def has_delete_permission(self, request, obj=None):
         return request.user.is_superuser
@@ -62,6 +91,33 @@ class ArticleAdmin(VersionAdmin):
         "audience", "status", "position", "created_at", "updated_at",
     )
     inlines = [ContentBlockInline, AttachmentInline]
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.filter(section_id__in=editable_section_ids(request.user)) if scoped_manager(request.user) else queryset
+
+    def get_list_filter(self, request):
+        return ("status", "audience") if scoped_manager(request.user) else super().get_list_filter(request)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if scoped_manager(request.user) and "section" in form.base_fields:
+            form.base_fields["section"].queryset = Section.objects.filter(pk__in=editable_section_ids(request.user))
+        return form
+
+    def has_add_permission(self, request):
+        return super().has_add_permission(request) and (not scoped_manager(request.user) or bool(editable_section_ids(request.user)))
+
+    def has_change_permission(self, request, obj=None):
+        return super().has_change_permission(request, obj) and (obj is None or not scoped_manager(request.user) or obj.section_id in editable_section_ids(request.user))
+
+    def has_view_permission(self, request, obj=None):
+        return super().has_view_permission(request, obj) and (obj is None or not scoped_manager(request.user) or obj.section_id in editable_section_ids(request.user))
+
+    def save_model(self, request, obj, form, change):
+        if scoped_manager(request.user) and obj.section_id not in editable_section_ids(request.user):
+            raise PermissionDenied
+        super().save_model(request, obj, form, change)
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
