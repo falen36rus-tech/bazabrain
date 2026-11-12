@@ -2,9 +2,11 @@
 
 Сервер получает только проверенную ветку `production`. Ветка `main` обновляет её после ручного запуска **Actions → Выпустить обновление → Run workflow** в GitHub. Редакторские статьи и файлы находятся в PostgreSQL и томе `uploads`; Git их не хранит.
 
-## 1. Подготовить доступ к закрытому репозиторию
+## 1. Выбрать способ получения кода
 
-На сервере под отдельной учётной записью для сайта создайте SSH-ключ:
+Если GitHub-репозиторий **Public**, доступ к нему по HTTPS не требует учётной записи или ключа. Перейдите сразу к разделу 2 и используйте HTTPS-команду клонирования.
+
+Если репозиторий **Private**, настройте ключ для чтения. На сервере под отдельной учётной записью для сайта создайте SSH-ключ:
 
 ```bash
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
@@ -28,15 +30,17 @@ Host github-bazabrain
 
 ## 2. Запустить сайт после первого выпуска
 
-Нужны Git, Docker Engine с Compose, `curl` и `flock`. Учётной записи для сайта нужен доступ к Docker. Выполните первый ручной выпуск в GitHub, чтобы появилась ветка `production`, затем:
+Нужны Git, Docker Engine с Compose, `curl` и `flock`. Учётной записи для сайта нужен доступ к Docker. Выполните первый ручной выпуск в GitHub, чтобы появилась ветка `production`, затем для **публичного** репозитория:
 
 ```bash
 git clone --branch production --single-branch \
-  git@github-bazabrain:falen36rus-tech/bazabrain.git ~/bazabrain
+  https://github.com/falen36rus-tech/bazabrain.git ~/bazabrain
 cd ~/bazabrain
 cp .env.example .env
 chmod 600 .env
 ```
+
+Для **закрытого** репозитория используйте вместо HTTPS-адреса `git@github-bazabrain:falen36rus-tech/bazabrain.git` после настройки ключа из раздела 1.
 
 В `.env` замените образцовые значения `DJANGO_SECRET_KEY`, `POSTGRES_PASSWORD`, домен и HTTPS-адрес. В `DJANGO_ALLOWED_HOSTS` сохраните `127.0.0.1` рядом с доменом для локальной проверки. Организуйте reverse proxy с HTTPS перед портом `127.0.0.1:8000`; не публикуйте том `uploads` и путь `/private/` напрямую. Запуск:
 
