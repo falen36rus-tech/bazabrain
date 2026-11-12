@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='article',
             name='audience',
-            field=models.CharField(choices=[('public', 'Открыто без входа'), ('staff', 'Все сотрудники'), ('manager', 'Руководители'), ('developer', 'Разработчики')], default='staff', max_length=20, verbose_name='Кому доступна'),
+            field=models.CharField(choices=[('staff', 'Все посетители'), ('manager', 'Руководители'), ('developer', 'Разработчики')], default='staff', max_length=20, verbose_name='Кому доступна'),
         ),
         migrations.AlterField(
             model_name='section',
             name='audience',
-            field=models.CharField(choices=[('public', 'Открыто без входа'), ('staff', 'Все сотрудники'), ('manager', 'Руководители'), ('developer', 'Разработчики')], default='staff', max_length=20, verbose_name='Кому доступен'),
+            field=models.CharField(choices=[('staff', 'Все посетители'), ('manager', 'Руководители'), ('developer', 'Разработчики')], default='staff', max_length=20, verbose_name='Кому доступен'),
         ),
     ]

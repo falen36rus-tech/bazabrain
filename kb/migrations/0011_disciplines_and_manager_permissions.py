@@ -21,7 +21,7 @@ def prepare_catalog(apps, schema_editor):
     for position, (slug, title) in enumerate(DISCIPLINES, 1):
         Section.objects.using(db).get_or_create(
             slug=slug,
-            defaults={"title": title, "service_slug": "1c", "catalog": "discipline", "audience": "public", "position": position * 10},
+            defaults={"title": title, "service_slug": "1c", "catalog": "discipline", "position": position * 10},
         )
     group, _ = Group.objects.using(db).get_or_create(name="Руководители")
     Group.objects.using(db).get_or_create(name="Пользователи базы знаний")

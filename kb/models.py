@@ -13,13 +13,11 @@ from .catalog import SERVICES
 from .rich_text import rich_plain_text
 
 
-AUDIENCE_PUBLIC = "public"
 AUDIENCE_STAFF = "staff"
 AUDIENCE_MANAGER = "manager"
 AUDIENCE_DEVELOPER = "developer"
 AUDIENCES = [
-    (AUDIENCE_PUBLIC, "Открыто без входа"),
-    (AUDIENCE_STAFF, "Все сотрудники"),
+    (AUDIENCE_STAFF, "Все посетители"),
     (AUDIENCE_MANAGER, "Руководители"),
     (AUDIENCE_DEVELOPER, "Разработчики"),
 ]

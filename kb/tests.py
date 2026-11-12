@@ -18,7 +18,6 @@ from .access import visible_articles, visible_sections
 from .models import (
     AUDIENCE_DEVELOPER,
     AUDIENCE_MANAGER,
-    AUDIENCE_PUBLIC,
     AUDIENCE_STAFF,
     GROUP_DEVELOPERS,
     GROUP_EDITORS,
@@ -150,17 +149,44 @@ class KnowledgeBaseAccessTests(TestCase):
             [self.public_section],
         )
 
-    def test_guest_sees_only_public_material_and_can_sign_in(self):
-        self.public_section.audience = AUDIENCE_PUBLIC
-        self.public_section.save(update_fields=["audience"])
-        self.public_article.audience = AUDIENCE_PUBLIC
-        self.public_article.save(update_fields=["audience"])
+    def test_guest_sees_only_filled_permitted_material_and_can_sign_in(self):
+        empty_section = Section.objects.create(title="Пустой раздел", slug="empty-section")
+        empty_article = Article.objects.create(
+            title="Пустая статья", slug="empty-article", section=empty_section,
+            status=Article.PUBLISHED,
+        )
+        restricted_section = Section.objects.create(
+            title="Закрытый родитель", slug="restricted-parent", audience=AUDIENCE_MANAGER,
+        )
+        restricted_child = Section.objects.create(
+            title="Открытый дочерний раздел", slug="restricted-child",
+            parent=restricted_section, audience=AUDIENCE_STAFF,
+        )
+        restricted_child_article = Article.objects.create(
+            title="Заполненная статья под закрытым родителем", slug="restricted-child-article",
+            section=restricted_child, status=Article.PUBLISHED, summary="Есть содержимое",
+        )
         self.client.logout()
-        self.assertEqual(self.client.get(reverse("kb:home")).status_code, 200)
+        home = self.client.get(reverse("kb:home"))
+        self.assertEqual(home.status_code, 200)
+        self.assertContains(home, self.public_section.title)
+        self.assertNotContains(home, empty_section.title)
+        self.assertNotContains(home, restricted_child.title)
+        self.assertSetEqual(
+            {section.slug for section in visible_sections(self.client.get("/").wsgi_request.user)},
+            {self.public_section.slug},
+        )
         self.assertEqual(self.client.get(self.public_article.get_absolute_url()).status_code, 200)
+        self.assertEqual(self.client.get(empty_section.get_absolute_url()).status_code, 404)
+        self.assertEqual(self.client.get(empty_article.get_absolute_url()).status_code, 404)
+        self.assertEqual(self.client.get(restricted_child_article.get_absolute_url()).status_code, 404)
         self.assertEqual(self.client.get(self.manager_article.get_absolute_url()).status_code, 404)
         self.assertEqual(self.client.get(self.developer_article.get_absolute_url()).status_code, 404)
-        self.assertContains(self.client.get(reverse("kb:home")), "Войти")
+        self.assertContains(home, "Войти")
+        search = self.client.get(reverse("kb:search"), {"q": "Пустая"})
+        self.assertNotContains(search, empty_article.title)
+        suggestions = self.client.get(reverse("kb:suggest"), {"q": "Пустая"})
+        self.assertEqual(suggestions.json()["results"], [])
 
     def test_regular_user_has_no_edit_controls(self):
         self.client.force_login(self.staff)
@@ -546,12 +572,17 @@ class InitialTreeTests(TestCase):
         self.assertEqual(self.client.get(reverse("kb:service", args=["unknown"])).status_code, 404)
         response = self.client.get(reverse("kb:disciplines"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Общестроительные работы")
+        self.assertNotContains(response, "Общестроительные работы")
         self.assertEqual(Section.objects.filter(service_slug="1c", catalog="discipline", parent__isnull=True).count(), 7)
         self.assertNotContains(self.client.get(reverse("kb:home")), 'href="/sections/discipline-construction/"')
-        section = Section.objects.create(title="Руководство по CIS", slug="cis-guide", service_slug="cis", audience=AUDIENCE_PUBLIC)
+        section = Section.objects.create(title="Руководство по CIS", slug="cis-guide", service_slug="cis")
+        self.assertNotContains(self.client.get(reverse("kb:service", args=["cis"])), section.title)
+        Article.objects.create(title="Заполненный CIS", slug="cis-filled", section=section, summary="Инструкция", status=Article.PUBLISHED)
         self.assertContains(self.client.get(reverse("kb:service", args=["cis"])), section.title)
         self.assertNotContains(self.client.get(reverse("kb:home")), section.title)
+        user = get_user_model().objects.create_user("catalog-reader", password="example-password")
+        self.client.force_login(user)
+        self.assertContains(self.client.get(reverse("kb:disciplines")), "Общестроительные работы")
 
     def test_revised_document_tree_matches_all_titles_and_parent_links(self):
         self.assertEqual(Section.objects.filter(service_slug="1c", catalog="main").count(), 57)
