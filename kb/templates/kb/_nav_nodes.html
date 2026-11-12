@@ -1,0 +1,39 @@
+<ul class="nav-tree" data-depth="{{ depth }}">
+  {% for node in nodes %}
+    <li class="nav-tree-item" data-tree-item data-tree-id="{{ node.section.pk }}" data-tree-level="{{ depth }}">
+      <div class="nav-tree-row">
+        {% if node.children or node.articles %}
+          <button class="nav-tree-toggle" type="button" aria-label="Развернуть {{ node.section.title }}" aria-controls="nav-branch-{{ node.section.pk }}" aria-expanded="{% if depth == 0 %}true{% else %}false{% endif %}" data-tree-toggle>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+          </button>
+        {% else %}
+          <span class="nav-tree-spacer" aria-hidden="true"></span>
+        {% endif %}
+        <span class="nav-node-icon nav-folder-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M2 7a3 3 0 0 1 3-3h4.3c.5 0 1 .2 1.4.6L12.1 6H19a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7Z"/><path d="M2 10.5A2.5 2.5 0 0 1 4.5 8H19a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-7.5Z"/></svg>
+        </span>
+        <a class="nav-tree-link{% if current_section.pk == node.section.pk %} is-active{% endif %}" href="{% url 'kb:section' node.section.slug %}"{% if not current_article and current_section.pk == node.section.pk %} aria-current="page"{% endif %}>{{ node.section.title }}</a>
+      </div>
+      {% if node.children or node.articles %}
+        <div class="nav-tree-children" id="nav-branch-{{ node.section.pk }}" data-tree-children>
+          {% if node.children %}{% include 'kb/_nav_nodes.html' with nodes=node.children depth=depth|add:1 %}{% endif %}
+          {% if node.articles %}
+            <ul class="nav-article-list">
+              {% for nav_article in node.articles %}
+                <li class="nav-article-item">
+                  <div class="nav-article-row">
+                    <span class="nav-tree-spacer" aria-hidden="true"></span>
+                    <span class="nav-node-icon nav-document-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="3"/><path d="M8 10h8M8 14h6"/></svg>
+                    </span>
+                    <a class="nav-article-link{% if current_article.pk == nav_article.pk %} is-active{% endif %}" href="{% url 'kb:article' nav_article.slug %}"{% if current_article.pk == nav_article.pk %} aria-current="page"{% endif %}>{{ nav_article.title }}</a>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>

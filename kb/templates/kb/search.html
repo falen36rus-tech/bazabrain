@@ -1,0 +1,40 @@
+{% extends 'kb/base.html' %}
+{% block title %}Поиск · {{ site_name|default:"База знаний 1С" }}{% endblock %}
+{% block content %}
+<nav class="breadcrumbs" aria-label="Навигационная цепочка"><a href="{% url 'kb:home' %}">Главная</a><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><span aria-current="page">Поиск</span></nav>
+<header class="page-header search-page-header"><div><span class="eyebrow">По всей базе знаний</span><h1>Поиск</h1>{% if q %}<p class="page-lead">Результаты по запросу «{{ q }}»</p>{% else %}<p class="page-lead">Введите название, термин или часть инструкции в строке поиска.</p>{% endif %}</div></header>
+
+{% if q %}
+  <div class="section-heading-row compact"><div><h2>Найдено</h2></div><span class="subtle-count">{{ result_count }}</span></div>
+  {% if section_results %}
+    <div class="section-heading-row compact"><div><h2>Разделы</h2></div></div>
+    <div class="search-result-list">
+      {% for item in section_results %}
+        <a class="search-result" href="{% url 'kb:section' item.slug %}">
+          <span class="result-section">Раздел</span>
+          <strong>{{ item.title }}</strong>
+          {% if item.description %}<span class="result-summary">{{ item.description|truncatechars:220 }}</span>{% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% if search_results %}
+    <div class="section-heading-row compact"><div><h2>Статьи</h2></div></div>
+    <div class="search-result-list">
+      {% for item in search_results %}
+        <a class="search-result" href="{% url 'kb:article' item.slug %}">
+          <span class="result-section">{{ item.section.title }}</span>
+          <strong>{{ item.title }}</strong>
+          {% if item.summary %}<span class="result-summary">{{ item.summary|truncatechars:220 }}</span>{% endif %}
+          <span class="result-date">Обновлено {{ item.updated_at|date:"d.m.Y" }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% if not section_results and not search_results %}
+    <div class="empty-state"><span class="empty-state-icon" aria-hidden="true">⌕</span><h3>Ничего не найдено</h3><p>Попробуйте изменить запрос или использовать меньше слов.</p></div>
+  {% endif %}
+{% else %}
+  <div class="empty-state search-empty"><span class="empty-state-icon" aria-hidden="true">⌕</span><h3>Начните с поиска</h3><p>Поиск охватывает доступные вам разделы и статьи.</p></div>
+{% endif %}
+{% endblock %}

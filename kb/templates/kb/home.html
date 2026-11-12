@@ -1,0 +1,32 @@
+{% extends 'kb/base.html' %}
+{% block title %}Главная · {{ site_name|default:"База знаний 1С" }}{% endblock %}
+{% block content %}
+<header class="home-heading">
+  <div><span class="eyebrow">Каталог</span><h1>Разделы базы знаний</h1><p>Выберите раздел или найдите материал через строку поиска.</p></div>
+  <div class="home-heading-actions">{% if sections %}<span class="subtle-count">{{ sections|length }} на верхнем уровне</span>{% endif %}<a href="{% url 'kb:search' %}">Открыть поиск <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></div>
+</header>
+
+{% if sections %}
+  <div class="section-card-grid">
+    {% for section in sections %}
+      <a class="section-card" href="{% url 'kb:section' section.slug %}">
+        <span class="section-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7.5a2 2 0 0 1 2-2H10l2 2h6.5a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-11Z"/></svg></span>
+        <span class="section-card-title">{{ section.title }}</span>
+        {% if section.description %}<span class="section-card-description">{{ section.description|truncatechars:140 }}</span>{% endif %}
+        <span class="section-card-footer">Открыть раздел <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state"><span class="empty-state-icon" aria-hidden="true">▤</span><h3>Разделы пока не опубликованы</h3><p>Когда появятся материалы, они будут доступны здесь и через поиск.</p></div>
+{% endif %}
+
+{% if recent_articles %}
+  <div class="section-heading-row recent-heading"><div><span class="eyebrow">Обновления</span><h2>Недавние материалы</h2></div></div>
+  <div class="recent-articles">
+    {% for item in recent_articles %}
+      <a href="{% url 'kb:article' item.slug %}"><span>{{ item.section.title }}</span><strong>{{ item.title }}</strong><small>{{ item.updated_at|date:"d.m.Y" }}</small></a>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

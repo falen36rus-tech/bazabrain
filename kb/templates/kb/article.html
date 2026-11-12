@@ -1,0 +1,69 @@
+{% extends 'kb/base.html' %}
+{% block title %}{{ article.title }} · {{ site_name|default:"База знаний 1С" }}{% endblock %}
+{% block content %}
+<nav class="breadcrumbs" aria-label="Навигационная цепочка">
+  <a href="{% url 'kb:home' %}">Главная</a>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+  <a href="{% url 'kb:section' article.section.slug %}">{{ article.section.title }}</a>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+  <span aria-current="page">{{ article.title }}</span>
+</nav>
+
+<div class="article-layout">
+  <article class="article-document" aria-labelledby="article-title">
+    <header class="article-header">
+      <span class="eyebrow">{{ article.section.title }}</span>
+      <h1 id="article-title">{{ article.title }}</h1>
+      {% if article.summary %}<p class="article-summary">{{ article.summary }}</p>{% endif %}
+      <div class="article-meta"><span>Обновлено {{ article.updated_at|date:"d.m.Y" }}</span>{% if can_edit %}<a href="{% url 'admin:kb_article_change' article.pk %}">Редактировать</a>{% endif %}</div>
+    </header>
+
+    <div class="article-content" data-article-content>
+      {% for block in blocks %}
+        {% if block.kind == 'heading' %}
+          <h2 class="article-heading" data-toc-source>{{ block.text }}</h2>
+        {% elif block.kind == 'text' %}
+          <div class="article-text prose">{{ block.text|linebreaks }}</div>
+        {% elif block.kind == 'note' %}
+          <aside class="note-block">
+            <span class="note-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg></span>
+            <div class="prose">{{ block.text|linebreaks }}</div>
+          </aside>
+        {% elif block.kind == 'image' %}
+          <figure class="article-figure">
+            <button type="button" class="image-open" data-lightbox-open data-lightbox-src="{% url 'kb:private_file' block.pk %}" data-lightbox-caption="{{ block.caption|default:article.title }}" aria-label="Увеличить изображение{% if block.caption %}: {{ block.caption }}{% endif %}">
+              <img src="{% url 'kb:private_file' block.pk %}" alt="{{ block.caption|default:article.title }}" loading="lazy">
+              <span class="image-expand" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"/></svg></span>
+            </button>
+            {% if block.caption %}<figcaption>{{ block.caption }}</figcaption>{% endif %}
+          </figure>
+        {% elif block.kind == 'rutube' and block.embed_url %}
+          <figure class="video-figure">
+            <div class="video-frame"><iframe src="{{ block.embed_url }}" title="{% if block.caption %}{{ block.caption }}{% else %}Видео к статье {{ article.title }}{% endif %}" loading="lazy" allow="clipboard-write; autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+            {% if block.caption %}<figcaption>{{ block.caption }}</figcaption>{% endif %}
+          </figure>
+        {% endif %}
+      {% empty %}
+        <div class="empty-state article-empty"><span class="empty-state-icon" aria-hidden="true">▤</span><h2>Материал пока не заполнен</h2></div>
+      {% endfor %}
+    </div>
+
+    {% if attachments %}
+      <section class="attachments" aria-labelledby="attachments-title">
+        <h2 id="attachments-title">Файлы к статье</h2>
+        <ul>
+          {% for attachment in attachments %}
+            <li><a href="{% url 'kb:private_attachment' attachment.pk %}"><span class="attachment-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 12.5 14.8 5.7a3.1 3.1 0 0 1 4.4 4.4l-8.4 8.4a4.8 4.8 0 0 1-6.8-6.8l8.6-8.6"/></svg></span><span>{{ attachment.title }}</span><svg class="attachment-download" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12m-4-4 4 4 4-4M4 20h16"/></svg></a></li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endif %}
+
+    <footer class="article-footer"><a href="{% url 'kb:section' article.section.slug %}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>Вернуться в раздел</a></footer>
+  </article>
+
+  <aside class="article-aside" aria-label="Содержание статьи" data-toc-wrap hidden>
+    <div class="toc-card"><span class="toc-title">На этой странице</span><nav data-toc></nav></div>
+  </aside>
+</div>
+{% endblock %}

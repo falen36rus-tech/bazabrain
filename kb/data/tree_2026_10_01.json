@@ -1,0 +1,3494 @@
+[
+  {
+    "title": "Администрирование",
+    "raw_title": "Администрирование",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 1,
+    "sibling_order": 1,
+    "children": [
+      {
+        "title": "Импортируемые файлы",
+        "raw_title": "Импортируемые файлы",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 2,
+        "sibling_order": 1,
+        "children": [
+          {
+            "title": "Список импорта",
+            "raw_title": "Список импорта",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 3,
+            "sibling_order": 1,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Настройки и справочники",
+        "raw_title": "Настройки и справочники ",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 4,
+        "sibling_order": 2,
+        "children": [
+          {
+            "title": "Журнал изменений",
+            "raw_title": "Журнал изменений",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 5,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Настройка работы с файлами",
+            "raw_title": "Настройка работы с файлами",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 6,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Погода",
+            "raw_title": "Погода",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 7,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Словарь",
+            "raw_title": "Словарь",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 8,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Действия с историей",
+            "raw_title": "Действия с историей",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 9,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Меню",
+            "raw_title": "Меню",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 10,
+            "sibling_order": 6,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Пользователи",
+        "raw_title": "Пользователи",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 11,
+        "sibling_order": 3,
+        "children": [
+          {
+            "title": "Пользователи и роли",
+            "raw_title": "Пользователи и роли",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 12,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Избранное у пользователей",
+            "raw_title": "Избранное у пользователей",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 13,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Роли сотрудников",
+            "raw_title": "Роли сотрудников",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 14,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Роли организаций",
+            "raw_title": "Роли организаций",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 15,
+            "sibling_order": 4,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Передача/обмен данными",
+        "raw_title": "Передача/обмен данными",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 16,
+        "sibling_order": 4,
+        "children": [
+          {
+            "title": "Обмен с CIS",
+            "raw_title": "Обмен с CIS",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 17,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Загрузка в CIS",
+            "raw_title": "Загрузка в CIS",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 18,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Выгрузка объемов для CIS",
+            "raw_title": "Выгрузка объемов для CIS",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 19,
+            "sibling_order": 3,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Отчеты",
+        "raw_title": "Отчеты",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 20,
+        "sibling_order": 5,
+        "children": [
+          {
+            "title": "Отчет Объемы",
+            "raw_title": "Отчет Объемы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 21,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Отчет Объемы Новый",
+            "raw_title": "Отчет Объемы Новый",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 22,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Трубопровод",
+            "raw_title": "Трубопровод",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 23,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Общестрой РД + Приемочный контроль",
+            "raw_title": "Общестрой РД + Приемочный контроль",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 24,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Монтажные чертежи и схемы",
+            "raw_title": "Монтажные чертежи и схемы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 25,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Отчет по прогрессу ИД",
+            "raw_title": "Отчет по прогрессу ИД",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 26,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Отчет по сдаче ИД в архив",
+            "raw_title": "Отчет по сдаче ИД в архив",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 27,
+            "sibling_order": 7,
+            "children": []
+          },
+          {
+            "title": "Отчет по статусу эксплуатационной документации",
+            "raw_title": "Отчет по статусу эксплуатационной документации",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 28,
+            "sibling_order": 8,
+            "children": []
+          },
+          {
+            "title": "Отчет об эффективности пользователей",
+            "raw_title": "Отчет об эффективности пользователей",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 29,
+            "sibling_order": 9,
+            "children": []
+          },
+          {
+            "title": "План-график",
+            "raw_title": "План-график",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 30,
+            "sibling_order": 10,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Другое",
+        "raw_title": "Другое",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 31,
+        "sibling_order": 6,
+        "children": [
+          {
+            "title": "Документы для подписания",
+            "raw_title": "Документы для подписания",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 32,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Активные контракты",
+            "raw_title": "Активные контракты",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 33,
+            "sibling_order": 2,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "База данных цен и объемов работ",
+    "raw_title": "База данных цен и объемов работ",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 34,
+    "sibling_order": 2,
+    "children": [
+      {
+        "title": "Ведомость объемов работ",
+        "raw_title": "Ведомость объемов работ",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 35,
+        "sibling_order": 1,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 36,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 37,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 38,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 39,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 40,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 41,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Инженерные сети",
+            "raw_title": "Инженерные сети",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 42,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Отчеты выполненных работ",
+        "raw_title": "Отчеты выполненных работ",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 43,
+        "sibling_order": 2,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 44,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 45,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 46,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 47,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 48,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 49,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Инженерные сети",
+            "raw_title": "Инженерные сети",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 50,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Справочники",
+        "raw_title": "Справочники",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 51,
+        "sibling_order": 3,
+        "children": [
+          {
+            "title": "Единичные расценки",
+            "raw_title": "Единичные расценки",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 52,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Нормативы потерь и отходов",
+            "raw_title": "Нормативы потерь и отходов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 53,
+            "sibling_order": 2,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Общие данные по Проекту",
+    "raw_title": "Общие данные по Проекту",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 54,
+    "sibling_order": 3,
+    "children": [
+      {
+        "title": "Единичные расценки",
+        "raw_title": "Единичные расценки",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 55,
+        "sibling_order": 1,
+        "children": []
+      },
+      {
+        "title": "Нормативы потерь и отходов",
+        "raw_title": "Нормативы потерь и отходов",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 56,
+        "sibling_order": 2,
+        "children": []
+      },
+      {
+        "title": "Справочники",
+        "raw_title": "Справочники",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 57,
+        "sibling_order": 3,
+        "children": [
+          {
+            "title": "Путеводитель",
+            "raw_title": "Путеводитель",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 58,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Виды, наименования и описание работ",
+            "raw_title": "Виды, наименования и описание работ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 59,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Принадлежность марок РД к дисциплинам",
+            "raw_title": "Принадлежность марок РД к дисциплинам",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 60,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Погода",
+            "raw_title": "Погода",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 61,
+            "sibling_order": 4,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Материалы",
+        "raw_title": "Материалы",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 62,
+        "sibling_order": 4,
+        "children": [
+          {
+            "title": "Перечень ID кодов",
+            "raw_title": "Перечень ID кодов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 63,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "TAG",
+            "raw_title": "TAG",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 64,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Группы стали",
+            "raw_title": "Группы стали",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 65,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Единицы измерений",
+            "raw_title": "Единицы измерений",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 66,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "DN (Условные)",
+            "raw_title": "DN (Условные)",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 67,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Группы DN",
+            "raw_title": "Группы DN",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 68,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Класс давления",
+            "raw_title": "Класс давления",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 69,
+            "sibling_order": 7,
+            "children": []
+          },
+          {
+            "title": "Номинальное давление PN",
+            "raw_title": "Номинальное давление PN",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 70,
+            "sibling_order": 8,
+            "children": []
+          },
+          {
+            "title": "Тип изделия",
+            "raw_title": "Тип изделия",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 71,
+            "sibling_order": 9,
+            "children": []
+          },
+          {
+            "title": "Доп условия",
+            "raw_title": "Доп условия",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 72,
+            "sibling_order": 10,
+            "children": []
+          },
+          {
+            "title": "Изоляция",
+            "raw_title": "Изоляция",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 73,
+            "sibling_order": 11,
+            "children": []
+          },
+          {
+            "title": "Материал изделия",
+            "raw_title": "Материал изделия",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 74,
+            "sibling_order": 12,
+            "children": []
+          },
+          {
+            "title": "Стандарты (Изделие)",
+            "raw_title": "Стандарты (Изделие)",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 75,
+            "sibling_order": 13,
+            "children": []
+          },
+          {
+            "title": "Описание продукции",
+            "raw_title": "Описание продукции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 76,
+            "sibling_order": 14,
+            "children": []
+          },
+          {
+            "title": "Вид стали",
+            "raw_title": "Вид стали",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 77,
+            "sibling_order": 15,
+            "children": []
+          },
+          {
+            "title": "Материалы Электрика",
+            "raw_title": "Материалы Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 78,
+            "sibling_order": 16,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Сварка",
+        "raw_title": "Сварка",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 79,
+        "sibling_order": 5,
+        "children": [
+          {
+            "title": "Сварочные",
+            "raw_title": "Сварочные",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 80,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Сварочные Материалы",
+            "raw_title": "Сварочные Материалы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 81,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Способ сварки",
+            "raw_title": "Способ сварки",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 82,
+            "sibling_order": 3,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Свободно",
+        "raw_title": "Свободно",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 83,
+        "sibling_order": 6,
+        "children": [
+          {
+            "title": "Метизы",
+            "raw_title": "Метизы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 84,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "DN Метизы",
+            "raw_title": "DN Метизы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 85,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Перечень Блоков",
+            "raw_title": "Перечень Блоков",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 86,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Система покраски",
+            "raw_title": "Система покраски",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 87,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Код среды",
+            "raw_title": "Код среды",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 88,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Тип соединения",
+            "raw_title": "Тип соединения",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 89,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Виды Документа о качестве",
+            "raw_title": "Виды Документа о качестве",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 90,
+            "sibling_order": 7,
+            "children": []
+          },
+          {
+            "title": "Категория трубопровода TPTC",
+            "raw_title": "Категория трубопровода TPTC",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 91,
+            "sibling_order": 8,
+            "children": []
+          },
+          {
+            "title": "Категория трубопровода ГОСТ",
+            "raw_title": "Категория трубопровода ГОСТ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 92,
+            "sibling_order": 9,
+            "children": []
+          },
+          {
+            "title": "Категория трубопровода а 536",
+            "raw_title": "Категория трубопровода а 536",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 93,
+            "sibling_order": 10,
+            "children": []
+          },
+          {
+            "title": "Толщины ASME",
+            "raw_title": "Толщины ASME",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 94,
+            "sibling_order": 11,
+            "children": []
+          },
+          {
+            "title": "Объекты",
+            "raw_title": "Объекты",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 95,
+            "sibling_order": 12,
+            "children": []
+          },
+          {
+            "title": "НВК",
+            "raw_title": "НВК",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 96,
+            "sibling_order": 13,
+            "children": []
+          },
+          {
+            "title": "Статусы Исполнительной Документации",
+            "raw_title": "Статусы Исполнительной Документации",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 97,
+            "sibling_order": 14,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Главная ведомость входящей документации",
+    "raw_title": "Главная ведомость входящей документации",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 98,
+    "sibling_order": 4,
+    "children": [
+      {
+        "title": "Перечень рабочей документации",
+        "raw_title": "Перечень рабочей документации",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 99,
+        "sibling_order": 1,
+        "children": []
+      },
+      {
+        "title": "Перечень Изометрий",
+        "raw_title": "Перечень Изометрий",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 100,
+        "sibling_order": 2,
+        "children": []
+      },
+      {
+        "title": "Перечень Линий",
+        "raw_title": "Перечень Линий",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 101,
+        "sibling_order": 3,
+        "children": []
+      },
+      {
+        "title": "Процедуры и регламенты",
+        "raw_title": "Процедуры и регламенты",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 102,
+        "sibling_order": 4,
+        "children": []
+      },
+      {
+        "title": "Перечень документов Поставщиков",
+        "raw_title": "Перечень документов Поставщиков",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 103,
+        "sibling_order": 5,
+        "children": []
+      },
+      {
+        "title": "ЗПИ, изменения РД авторским надзором, технические письма",
+        "raw_title": "ЗПИ, изменения РД авторским надзором, технические письма",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 104,
+        "sibling_order": 6,
+        "children": []
+      },
+      {
+        "title": "Перечень ППРов и ТехКарт",
+        "raw_title": "Перечень ППРов и ТехКарт",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 105,
+        "sibling_order": 7,
+        "children": []
+      },
+      {
+        "title": "Технологические карты на сварку",
+        "raw_title": "Технологические карты на сварку",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 106,
+        "sibling_order": 8,
+        "children": []
+      },
+      {
+        "title": "Иная документация",
+        "raw_title": "Иная документация",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 107,
+        "sibling_order": 9,
+        "children": []
+      },
+      {
+        "title": "Первичная документация",
+        "raw_title": "Первичная документация",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 108,
+        "sibling_order": 10,
+        "children": []
+      },
+      {
+        "title": "Письма и протоколы",
+        "raw_title": "Письма и протоколы",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 109,
+        "sibling_order": 11,
+        "children": []
+      }
+    ]
+  },
+  {
+    "title": "Склад и материалы",
+    "raw_title": "Склад и материалы",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 110,
+    "sibling_order": 5,
+    "children": [
+      {
+        "title": "Общестроительные работы",
+        "raw_title": "Общестроительные работы",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 111,
+        "sibling_order": 1,
+        "children": []
+      },
+      {
+        "title": "Металлоконструкции",
+        "raw_title": "Металлоконструкции",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 112,
+        "sibling_order": 2,
+        "children": []
+      },
+      {
+        "title": "Оборудование",
+        "raw_title": "Оборудование",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 113,
+        "sibling_order": 3,
+        "children": []
+      },
+      {
+        "title": "Трубопроводы",
+        "raw_title": "Трубопроводы",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 114,
+        "sibling_order": 4,
+        "children": []
+      },
+      {
+        "title": "Электрика",
+        "raw_title": "Электрика",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 115,
+        "sibling_order": 5,
+        "children": []
+      },
+      {
+        "title": "КИПиА",
+        "raw_title": "КИПиА",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 116,
+        "sibling_order": 6,
+        "children": []
+      },
+      {
+        "title": "Инженерные сети",
+        "raw_title": "Инженерные сети",
+        "level": 1,
+        "source_level": 2,
+        "source_level_gap": true,
+        "order": 117,
+        "sibling_order": 7,
+        "children": []
+      },
+      {
+        "title": "Документы о качестве на материалы",
+        "raw_title": "Документы о качестве на материалы",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 118,
+        "sibling_order": 8,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 119,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 120,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 121,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 122,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 123,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 124,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Инженерные сети",
+            "raw_title": "Инженерные сети",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 125,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Архив",
+        "raw_title": "Архив",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 126,
+        "sibling_order": 9,
+        "children": [
+          {
+            "title": "Реестр ADQ",
+            "raw_title": "Реестр ADQ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 127,
+            "sibling_order": 1,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Заявки на материалы (ордеры на работу)",
+        "raw_title": "Заявки на материалы (ордеры на работу)",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 128,
+        "sibling_order": 10,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 129,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 130,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 131,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 132,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 133,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 134,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Инженерные сети",
+            "raw_title": "Инженерные сети",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 135,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Склад и расход материалов",
+        "raw_title": "Склад и расход материалов",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 136,
+        "sibling_order": 11,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 137,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 138,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 139,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 140,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 141,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 142,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Инженерные сети",
+            "raw_title": "Инженерные сети",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 143,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Поступление материалов",
+        "raw_title": "Поступление материалов",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 144,
+        "sibling_order": 12,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 145,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 146,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 147,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 148,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 149,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 150,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Инженерные сети",
+            "raw_title": "Инженерные сети",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 151,
+            "sibling_order": 7,
+            "children": []
+          },
+          {
+            "title": "Сварочные материалы",
+            "raw_title": "Сварочные материалы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 152,
+            "sibling_order": 8,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Акты о результатах проверки изделий",
+        "raw_title": "Акты о результатах проверки изделий",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 153,
+        "sibling_order": 13,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 154,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 155,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 156,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 157,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 158,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 159,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Инженерные сети",
+            "raw_title": "Инженерные сети",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 160,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "ОКК и Лаборатория",
+    "raw_title": "ОКК и Лаборатория",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 161,
+    "sibling_order": 6,
+    "children": [
+      {
+        "title": "ОКК и Лаборатория",
+        "raw_title": "ОКК и Лаборатория",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 162,
+        "sibling_order": 1,
+        "children": [
+          {
+            "title": "Реестр RFI",
+            "raw_title": "Реестр RFI",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 163,
+            "sibling_order": 1,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Входной контроль",
+        "raw_title": "Входной контроль",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 164,
+        "sibling_order": 2,
+        "children": [
+          {
+            "title": "Входной контроль",
+            "raw_title": "Входной контроль",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 165,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 166,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 167,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 168,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 169,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 170,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 171,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Операционный контроль (ЗНИ)",
+        "raw_title": "Операционный контроль (ЗНИ)",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 172,
+        "sibling_order": 3,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 173,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 174,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 175,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 176,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 177,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 178,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Инженерные сети",
+            "raw_title": "Инженерные сети",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 179,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Приемочный контроль (ЗНИ)",
+        "raw_title": "Приемочный контроль (ЗНИ)",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 180,
+        "sibling_order": 4,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 181,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 182,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 183,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 184,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 185,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 186,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Инженерные сети",
+            "raw_title": "Инженерные сети",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 187,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Лаборатория и неразрушающий контроль",
+        "raw_title": "Лаборатория и неразрушающий контроль",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 188,
+        "sibling_order": 5,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 189,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 190,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 191,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 192,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 193,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 194,
+            "sibling_order": 6,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Геодезический контроль",
+        "raw_title": "Геодезический контроль",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 195,
+        "sibling_order": 6,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 196,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 197,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 198,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 199,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 200,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 201,
+            "sibling_order": 6,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Монтажные чертежи и схемы",
+        "raw_title": "Монтажные чертежи и схемы",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 202,
+        "sibling_order": 7,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 203,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Металлоконструкции",
+            "raw_title": "Металлоконструкции",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 204,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Оборудование",
+            "raw_title": "Оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 205,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Трубопроводы",
+            "raw_title": "Трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 206,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Электрика",
+            "raw_title": "Электрика",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 207,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "КИПиА",
+            "raw_title": "КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 208,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Инженерные сети",
+            "raw_title": "Инженерные сети",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 209,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Строительный Прогресс",
+    "raw_title": "Строительный Прогресс",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 210,
+    "sibling_order": 7,
+    "children": [
+      {
+        "title": "Общестроительные работы",
+        "raw_title": "Общестроительные работы",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 211,
+        "sibling_order": 1,
+        "children": [
+          {
+            "title": "Общестроительные работы",
+            "raw_title": "Общестроительные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 212,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Земляные работы",
+            "raw_title": "Земляные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 213,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Свайные работы",
+            "raw_title": "Свайные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 214,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Бетонные работы",
+            "raw_title": "Бетонные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 215,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Работы по разделу АР",
+            "raw_title": "Работы по разделу АР",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 216,
+            "sibling_order": 5,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Монтаж трубопроводов",
+        "raw_title": "Монтаж трубопроводов",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 217,
+        "sibling_order": 2,
+        "children": [
+          {
+            "title": "Сварка и монтаж Трубопроводов",
+            "raw_title": "Сварка и монтаж Трубопроводов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 218,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "АКЗ и изоляция Трубопроводов",
+            "raw_title": "АКЗ и изоляция Трубопроводов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 219,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Изготовление и монтаж опор Трубопроводов",
+            "raw_title": "Изготовление и монтаж опор Трубопроводов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 220,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Испытания и пред-ПНР Трубопроводов",
+            "raw_title": "Испытания и пред-ПНР Трубопроводов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 221,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Монтаж трубопроводов ОВКВ",
+            "raw_title": "Монтаж трубопроводов ОВКВ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 222,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Изоляция трубопроводов ОВКВ",
+            "raw_title": "Изоляция трубопроводов ОВКВ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 223,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Монтаж оборудования ОВКВ",
+            "raw_title": "Монтаж оборудования ОВКВ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 224,
+            "sibling_order": 7,
+            "children": []
+          },
+          {
+            "title": "Теплоспутники",
+            "raw_title": "Теплоспутники",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 225,
+            "sibling_order": 8,
+            "children": []
+          },
+          {
+            "title": "Монтаж трубопроводов НВК",
+            "raw_title": "Монтаж трубопроводов НВК",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 226,
+            "sibling_order": 9,
+            "children": []
+          },
+          {
+            "title": "Монтаж колодцев НВК",
+            "raw_title": "Монтаж колодцев НВК",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 227,
+            "sibling_order": 10,
+            "children": []
+          },
+          {
+            "title": "Земляные работы НВК",
+            "raw_title": "Земляные работы НВК",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 228,
+            "sibling_order": 11,
+            "children": []
+          },
+          {
+            "title": "Сварка и монтаж Трубопроводов Субподрядчики",
+            "raw_title": "Сварка и монтаж Трубопроводов Субподрядчики",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 229,
+            "sibling_order": 12,
+            "children": []
+          },
+          {
+            "title": "Запормая арматура трубопровод",
+            "raw_title": "Запормая арматура трубопровод",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 230,
+            "sibling_order": 13,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Монтаж металлоконструкций",
+        "raw_title": "Монтаж металлоконструкций",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 231,
+        "sibling_order": 3,
+        "children": [
+          {
+            "title": "Монтаж основных конструкций",
+            "raw_title": "Монтаж основных конструкций",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 232,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Монтаж второстепенных конструкций (настилы, лестницы, опоры)",
+            "raw_title": "Монтаж второстепенных конструкций (настилы, лестницы, опоры)",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 233,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Сварочные работы",
+            "raw_title": "Сварочные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 234,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Протяжка болтов",
+            "raw_title": "Протяжка болтов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 235,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Нанесение огнезащиты",
+            "raw_title": "Нанесение огнезащиты",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 236,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Покраска (включая ремонт АКЗ)",
+            "raw_title": "Покраска (включая ремонт АКЗ)",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 237,
+            "sibling_order": 6,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Электромонтажные работы",
+        "raw_title": "Электромонтажные работы",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 238,
+        "sibling_order": 4,
+        "children": [
+          {
+            "title": "Осветительные приборы и фонари",
+            "raw_title": "Осветительные приборы и фонари",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 239,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Заземление",
+            "raw_title": "Заземление",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 240,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Монтаж лотков",
+            "raw_title": "Монтаж лотков",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 241,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Протяжка кабеля",
+            "raw_title": "Протяжка кабеля",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 242,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Трансформаторы",
+            "raw_title": "Трансформаторы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 243,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "РЩ, ЩСУ, ЧРП",
+            "raw_title": "РЩ, ЩСУ, ЧРП",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 244,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "ИБП, Выпрямители, АКБ, Источники электроснабжения",
+            "raw_title": "ИБП, Выпрямители, АКБ, Источники электроснабжения",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 245,
+            "sibling_order": 7,
+            "children": []
+          },
+          {
+            "title": "Местные станции управления двигателями",
+            "raw_title": "Местные станции управления двигателями",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 246,
+            "sibling_order": 8,
+            "children": []
+          },
+          {
+            "title": "Греющий провод",
+            "raw_title": "Греющий провод",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 247,
+            "sibling_order": 9,
+            "children": []
+          },
+          {
+            "title": "Основные соединительные коробки",
+            "raw_title": "Основные соединительные коробки",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 248,
+            "sibling_order": 10,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Монтаж оборудования",
+        "raw_title": "Монтаж оборудования",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 249,
+        "sibling_order": 5,
+        "children": [
+          {
+            "title": "Монтаж оборудования",
+            "raw_title": "Монтаж оборудования",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 250,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Изоляция оборудования",
+            "raw_title": "Изоляция оборудования",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 251,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Монтаж сборочного оборудования",
+            "raw_title": "Монтаж сборочного оборудования",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 252,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Футеровка (иные работы) по сборочному оборудованию",
+            "raw_title": "Футеровка (иные работы) по сборочному оборудованию",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 253,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Изоляция сборочного оборудования",
+            "raw_title": "Изоляция сборочного оборудования",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 254,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Сварочные работы сборочного оборудования",
+            "raw_title": "Сварочные работы сборочного оборудования",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 255,
+            "sibling_order": 6,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Работы по монтажу КИПиА",
+        "raw_title": "Работы по монтажу КИПиА",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 256,
+        "sibling_order": 6,
+        "children": [
+          {
+            "title": "Монтаж лотков",
+            "raw_title": "Монтаж лотков",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 257,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Протяжка кабеля",
+            "raw_title": "Протяжка кабеля",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 258,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Соединительные коробки и панели управления",
+            "raw_title": "Соединительные коробки и панели управления",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 259,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Полевые КИПиА",
+            "raw_title": "Полевые КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 260,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Система пожарной сигнализации&Система оповещения и внутренней связи&Системы видеонаблюдения и телекоммуникации",
+            "raw_title": "Система пожарной сигнализации&Система оповещения и внутренней связи&Системы видеонаблюдения и телекоммуникации",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 261,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Система обнаружения газа",
+            "raw_title": "Система обнаружения газа",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 262,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Основные шкафы",
+            "raw_title": "Основные шкафы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 263,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Прочие работы",
+        "raw_title": "Прочие работы",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 264,
+        "sibling_order": 7,
+        "children": []
+      }
+    ]
+  },
+  {
+    "title": "Выпуск исполнительной документации",
+    "raw_title": "Выпуск исполнительной документации",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 265,
+    "sibling_order": 8,
+    "children": [
+      {
+        "title": "Выпуск исполнительной документации",
+        "raw_title": "Выпуск исполнительной документации",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 266,
+        "sibling_order": 1,
+        "children": [
+          {
+            "title": "Главная ведомость исполнительной документации",
+            "raw_title": "Главная ведомость исполнительной документации",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 267,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Общие журналы работ",
+            "raw_title": "Общие журналы работ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 268,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Поиск и проверка наличия документов по РД",
+            "raw_title": "Поиск и проверка наличия документов по РД",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 269,
+            "sibling_order": 3,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "ИД по монтажу металлоконструкций",
+        "raw_title": "ИД по монтажу металлоконструкций",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 270,
+        "sibling_order": 2,
+        "children": [
+          {
+            "title": "Монтаж основных конструкций",
+            "raw_title": "Монтаж основных конструкций",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 271,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Монтаж второстепенных конструкций (настилы, лестницы, опоры)",
+            "raw_title": "Монтаж второстепенных конструкций (настилы, лестницы, опоры)",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 272,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Сварочные работы",
+            "raw_title": "Сварочные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 273,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Протяжка болтов",
+            "raw_title": "Протяжка болтов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 274,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Нанесение огнезащиты",
+            "raw_title": "Нанесение огнезащиты",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 275,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Покраска (включая ремонт АКЗ)",
+            "raw_title": "Покраска (включая ремонт АКЗ)",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 276,
+            "sibling_order": 6,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "ИД на трубопроводы",
+        "raw_title": "ИД на трубопроводы",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 277,
+        "sibling_order": 3,
+        "children": [
+          {
+            "title": "Сварка и монтаж Трубопроводов",
+            "raw_title": "Сварка и монтаж Трубопроводов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 278,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "АКЗ и изоляция Трубопроводов",
+            "raw_title": "АКЗ и изоляция Трубопроводов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 279,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Изготовление и монтаж опор Трубопроводов",
+            "raw_title": "Изготовление и монтаж опор Трубопроводов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 280,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Испытания и пред-ПНР Трубопроводов",
+            "raw_title": "Испытания и пред-ПНР Трубопроводов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 281,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Монтаж трубопроводов ОВКВ",
+            "raw_title": "Монтаж трубопроводов ОВКВ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 282,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Изоляция трубопроводов ОВКВ",
+            "raw_title": "Изоляция трубопроводов ОВКВ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 283,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Монтаж оборудования ОВКВ",
+            "raw_title": "Монтаж оборудования ОВКВ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 284,
+            "sibling_order": 7,
+            "children": []
+          },
+          {
+            "title": "Теплоспутники",
+            "raw_title": "Теплоспутники",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 285,
+            "sibling_order": 8,
+            "children": []
+          },
+          {
+            "title": "Монтаж трубопроводов НВК",
+            "raw_title": "Монтаж трубопроводов НВК",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 286,
+            "sibling_order": 9,
+            "children": []
+          },
+          {
+            "title": "Монтаж колодцев НВК",
+            "raw_title": "Монтаж колодцев НВК",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 287,
+            "sibling_order": 10,
+            "children": []
+          },
+          {
+            "title": "Земляные работы НВК",
+            "raw_title": "Земляные работы НВК",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 288,
+            "sibling_order": 11,
+            "children": []
+          },
+          {
+            "title": "Спецификации",
+            "raw_title": "Спецификации",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 289,
+            "sibling_order": 12,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Специальные журналы работ",
+        "raw_title": "Специальные журналы работ",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 290,
+        "sibling_order": 4,
+        "children": [
+          {
+            "title": "Журнал погружения и забивки свай",
+            "raw_title": "Журнал погружения и забивки свай",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 291,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Журнал бетонных работ",
+            "raw_title": "Журнал бетонных работ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 292,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Журнал по уходу за бетоном",
+            "raw_title": "Журнал по уходу за бетоном",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 293,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Журнал сварочных работ",
+            "raw_title": "Журнал сварочных работ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 294,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Журнал антикоррозионной защиты сварных соединений",
+            "raw_title": "Журнал антикоррозионной защиты сварных соединений",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 295,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Журнал работ по монтажу строительных конструкций",
+            "raw_title": "Журнал работ по монтажу строительных конструкций",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 296,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Журнал замоноличивания монтажных стыков и узлов",
+            "raw_title": "Журнал замоноличивания монтажных стыков и узлов",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 297,
+            "sibling_order": 7,
+            "children": []
+          },
+          {
+            "title": "Журнал выполнения монтажных соединений на болтах",
+            "raw_title": "Журнал выполнения монтажных соединений на болтах",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 298,
+            "sibling_order": 8,
+            "children": []
+          },
+          {
+            "title": "Журнал контрольной тарировки динамометрических ключей",
+            "raw_title": "Журнал контрольной тарировки динамометрических ключей",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 299,
+            "sibling_order": 9,
+            "children": []
+          },
+          {
+            "title": "Журнал производства антикоррозионных работ",
+            "raw_title": "Журнал производства антикоррозионных работ",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 300,
+            "sibling_order": 10,
+            "children": []
+          },
+          {
+            "title": "Журналы входного контроля",
+            "raw_title": "Журналы входного контроля",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 301,
+            "sibling_order": 11,
+            "children": []
+          },
+          {
+            "title": "Журнал КСС",
+            "raw_title": "Журнал КСС",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 302,
+            "sibling_order": 12,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "ИД по электромонтажным работам",
+        "raw_title": "ИД по электромонтажным работам",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 303,
+        "sibling_order": 5,
+        "children": [
+          {
+            "title": "Осветительные приборы и фонари",
+            "raw_title": "Осветительные приборы и фонари",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 304,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Заземление",
+            "raw_title": "Заземление",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 305,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Монтаж лотков",
+            "raw_title": "Монтаж лотков",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 306,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Протяжка кабеля",
+            "raw_title": "Протяжка кабеля",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 307,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Трансформаторы",
+            "raw_title": "Трансформаторы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 308,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "РЩ, ЩСУ, ЧРП",
+            "raw_title": "РЩ, ЩСУ, ЧРП",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 309,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "ИБП, Выпрямители, АКБ, Источники электроснабжения",
+            "raw_title": "ИБП, Выпрямители, АКБ, Источники электроснабжения",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 310,
+            "sibling_order": 7,
+            "children": []
+          },
+          {
+            "title": "Местные станции управления двигателями",
+            "raw_title": "Местные станции управления двигателями",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 311,
+            "sibling_order": 8,
+            "children": []
+          },
+          {
+            "title": "Греющий провод",
+            "raw_title": "Греющий провод",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 312,
+            "sibling_order": 9,
+            "children": []
+          },
+          {
+            "title": "Основные соединительные коробки",
+            "raw_title": "Основные соединительные коробки",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 313,
+            "sibling_order": 10,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "ИД по общестроительным работам",
+        "raw_title": "ИД по общестроительным работам",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 314,
+        "sibling_order": 6,
+        "children": [
+          {
+            "title": "Земляные работы",
+            "raw_title": "Земляные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 315,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Свайные работы",
+            "raw_title": "Свайные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 316,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Бетонные работы",
+            "raw_title": "Бетонные работы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 317,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Работы по разделу АР",
+            "raw_title": "Работы по разделу АР",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 318,
+            "sibling_order": 4,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "ИД по монтажу оборудования",
+        "raw_title": "ИД по монтажу оборудования",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 319,
+        "sibling_order": 7,
+        "children": [
+          {
+            "title": "Монтаж оборудования",
+            "raw_title": "Монтаж оборудования",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 320,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Изоляция оборудования",
+            "raw_title": "Изоляция оборудования",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 321,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Монтаж сборочного оборудования",
+            "raw_title": "Монтаж сборочного оборудования",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 322,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Футеровка (иные работы) по сборочному оборудованию",
+            "raw_title": "Футеровка (иные работы) по сборочному оборудованию",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 323,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Изоляция сборочного оборудования",
+            "raw_title": "Изоляция сборочного оборудования",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 324,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Сварочные работы сборочного оборудования",
+            "raw_title": "Сварочные работы сборочного оборудования",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 325,
+            "sibling_order": 6,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "ИД по КИПиА",
+        "raw_title": "ИД по КИПиА",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 326,
+        "sibling_order": 8,
+        "children": [
+          {
+            "title": "Монтаж лотков",
+            "raw_title": "Монтаж лотков",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 327,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Протяжка кабеля",
+            "raw_title": "Протяжка кабеля",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 328,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Соединительные коробки и панели управления",
+            "raw_title": "Соединительные коробки и панели управления",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 329,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Полевые КИПиА",
+            "raw_title": "Полевые КИПиА",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 330,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Система пожарной сигнализации&Система оповещения и внутренней связи&Системы видеонаблюдения и телекоммуникации",
+            "raw_title": "Система пожарной сигнализации&Система оповещения и внутренней связи&Системы видеонаблюдения и телекоммуникации",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 331,
+            "sibling_order": 5,
+            "children": []
+          },
+          {
+            "title": "Система обнаружения газа",
+            "raw_title": "Система обнаружения газа",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 332,
+            "sibling_order": 6,
+            "children": []
+          },
+          {
+            "title": "Основные шкафы",
+            "raw_title": "Основные шкафы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 333,
+            "sibling_order": 7,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Эксплуатационная документация",
+    "raw_title": "Эксплуатационная документация",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 334,
+    "sibling_order": 9,
+    "children": [
+      {
+        "title": "Эксплуатационная документация",
+        "raw_title": "Эксплуатационная документация",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 335,
+        "sibling_order": 1,
+        "children": [
+          {
+            "title": "Паспорта на трубопроводы",
+            "raw_title": "Паспорта на трубопроводы",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 336,
+            "sibling_order": 1,
+            "children": []
+          },
+          {
+            "title": "Паспорта на оборудование",
+            "raw_title": "Паспорта на оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 337,
+            "sibling_order": 2,
+            "children": []
+          },
+          {
+            "title": "Паспорта на грузоподъемное оборудование",
+            "raw_title": "Паспорта на грузоподъемное оборудование",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 338,
+            "sibling_order": 3,
+            "children": []
+          },
+          {
+            "title": "Паспорта на пассажирские лифты",
+            "raw_title": "Паспорта на пассажирские лифты",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 339,
+            "sibling_order": 4,
+            "children": []
+          },
+          {
+            "title": "Учет эксплуатационно технической документации",
+            "raw_title": "Учет эксплуатационно технической документации",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 340,
+            "sibling_order": 5,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Макеты исполнительной документации",
+    "raw_title": "Макеты исполнительной документации",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 341,
+    "sibling_order": 10,
+    "children": []
+  },
+  {
+    "title": "Управление результатами и отчетность",
+    "raw_title": "Управление результатами и отчетность",
+    "level": 0,
+    "source_level": 0,
+    "source_level_gap": false,
+    "order": 342,
+    "sibling_order": 11,
+    "children": [
+      {
+        "title": "Управление результатами и отчетность",
+        "raw_title": "Управление результатами и отчетность",
+        "level": 1,
+        "source_level": 1,
+        "source_level_gap": false,
+        "order": 343,
+        "sibling_order": 1,
+        "children": [
+          {
+            "title": "Отчет по оплате работ паспортизации",
+            "raw_title": "Отчет по оплате работ паспортизации",
+            "level": 2,
+            "source_level": 2,
+            "source_level_gap": false,
+            "order": 344,
+            "sibling_order": 1,
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+]
