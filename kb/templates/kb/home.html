@@ -1,4 +1,5 @@
 {% extends 'kb/base.html' %}
+{% load kb_rich %}
 {% block title %}Главная · {{ site_name|default:"База знаний 1С" }}{% endblock %}
 {% block content %}
 <header class="home-heading">
@@ -12,7 +13,7 @@
       <a class="section-card" href="{% url 'kb:section' section.slug %}">
         <span class="section-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7.5a2 2 0 0 1 2-2H10l2 2h6.5a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-11Z"/></svg></span>
         <span class="section-card-title">{{ section.title }}</span>
-        {% if section.description %}<span class="section-card-description">{{ section.description|truncatechars:140 }}</span>{% endif %}
+        {% if section.description %}<span class="section-card-description">{{ section.description|plain_excerpt:section.description_is_rich|truncatechars:140 }}</span>{% endif %}
         <span class="section-card-footer">Открыть раздел <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
       </a>
     {% endfor %}
