@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
+from reversion.models import Version
 
 from .access import visible_articles, visible_sections
 from .models import (
@@ -17,6 +18,7 @@ from .models import (
     AUDIENCE_MANAGER,
     AUDIENCE_STAFF,
     GROUP_DEVELOPERS,
+    GROUP_EDITORS,
     GROUP_MANAGERS,
     Article,
     Attachment,
@@ -38,9 +40,11 @@ class KnowledgeBaseAccessTests(TestCase):
         cls.staff = user_model.objects.create_user("employee", password="example-password")
         cls.manager = user_model.objects.create_user("manager", password="example-password")
         cls.developer = user_model.objects.create_user("developer", password="example-password")
+        cls.editor = user_model.objects.create_user("editor", password="example-password", is_staff=True)
         cls.owner = user_model.objects.create_superuser("owner", "owner@example.com", "example-password")
         cls.manager.groups.add(Group.objects.get_or_create(name=GROUP_MANAGERS)[0])
         cls.developer.groups.add(Group.objects.get_or_create(name=GROUP_DEVELOPERS)[0])
+        cls.editor.groups.add(Group.objects.get(name=GROUP_EDITORS))
 
         cls.public_section = Section.objects.create(
             title="Общие инструкции", slug="general", audience=AUDIENCE_STAFF
@@ -165,6 +169,72 @@ class KnowledgeBaseAccessTests(TestCase):
         suggestions = self.client.get(reverse("kb:suggest"), {"q": "неопубликованный"})
         self.assertEqual(suggestions.status_code, 200)
         self.assertEqual(suggestions.json()["results"], [])
+
+    def test_editor_can_read_all_audiences_but_not_drafts_on_site(self):
+        self.assert_visible_everywhere(
+            self.editor,
+            [self.public_article, self.manager_article, self.developer_article,
+             self.nested_article, self.manager_in_public, self.developer_in_public],
+            [self.public_section, self.manager_section, self.developer_section,
+             self.nested_section],
+        )
+
+    def test_editor_can_edit_materials_with_history_but_not_manage_users(self):
+        self.client.force_login(self.editor)
+        article_url = reverse("admin:kb_article_change", args=[self.public_article.pk])
+        section_url = reverse("admin:kb_section_change", args=[self.public_section.pk])
+        self.assertEqual(self.client.get(article_url).status_code, 200)
+        self.assertEqual(self.client.get(section_url).status_code, 200)
+        self.assertEqual(self.client.get(reverse("admin:kb_article_add")).status_code, 200)
+        self.assertEqual(self.client.get(reverse("admin:kb_section_add")).status_code, 200)
+        self.assertEqual(self.client.get(reverse("admin:auth_user_changelist")).status_code, 403)
+        self.assertEqual(self.client.get(reverse("admin:kb_article_delete", args=[self.public_article.pk])).status_code, 403)
+        self.assertEqual(self.client.get(reverse("admin:kb_section_delete", args=[self.public_section.pk])).status_code, 403)
+
+        response = self.client.post(article_url, {
+            "section": self.public_section.pk,
+            "title": "Маркер обновлённая инструкция",
+            "slug": self.public_article.slug,
+            "summary": "Исправлено редактором",
+            "audience": AUDIENCE_STAFF,
+            "status": Article.PUBLISHED,
+            "position": 0,
+            "blocks-TOTAL_FORMS": 1,
+            "blocks-INITIAL_FORMS": 0,
+            "blocks-MIN_NUM_FORMS": 0,
+            "blocks-MAX_NUM_FORMS": 1000,
+            "blocks-0-position": 0,
+            "blocks-0-kind": ContentBlock.TEXT,
+            "blocks-0-text": "Новый текст инструкции",
+            "attachments-TOTAL_FORMS": 0,
+            "attachments-INITIAL_FORMS": 0,
+            "attachments-MIN_NUM_FORMS": 0,
+            "attachments-MAX_NUM_FORMS": 1000,
+        })
+        self.assertEqual(response.status_code, 302, response.context)
+        self.public_article.refresh_from_db()
+        self.assertEqual(self.public_article.summary, "Исправлено редактором")
+        self.assertIn("Новый текст инструкции", self.public_article.search_text)
+        self.assertEqual(Version.objects.get_for_object(self.public_article).count(), 1)
+        block = self.public_article.blocks.get()
+        self.assertEqual(Version.objects.get_for_object(block).count(), 1)
+        history_url = reverse("admin:kb_article_history", args=[self.public_article.pk])
+        self.assertEqual(self.client.get(history_url).status_code, 200)
+
+    def test_replaced_files_remain_available_for_revision_recovery(self):
+        with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
+            block = ContentBlock.objects.create(
+                article=self.public_article,
+                kind=ContentBlock.IMAGE,
+                image=SimpleUploadedFile("first.png", b"first", content_type="image/png"),
+            )
+            first_path = Path(block.image.path)
+            block.image = SimpleUploadedFile("second.png", b"second", content_type="image/png")
+            block.save()
+            self.assertTrue(first_path.exists())
+            second_path = Path(block.image.path)
+            block.delete()
+            self.assertTrue(second_path.exists())
 
     def test_private_image_and_attachment_require_article_access(self):
         with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):

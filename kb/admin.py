@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.forms import FileInput
 from django.utils.html import format_html
+from reversion.admin import VersionAdmin
 
 from .models import Article, Attachment, ContentBlock, Section
 
@@ -10,32 +11,17 @@ admin.site.site_title = "База знаний 1С"
 admin.site.index_title = "Материалы и пользователи"
 
 
-class OwnerOnlyAdminMixin:
-    """Content editing is initially reserved for the site owner."""
-
-    def has_module_permission(self, request):
-        return request.user.is_superuser
-
-    def has_view_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-    def has_add_permission(self, request):
-        return request.user.is_superuser
-
-    def has_change_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-    def has_delete_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-
 @admin.register(Section)
-class SectionAdmin(OwnerOnlyAdminMixin, admin.ModelAdmin):
+class SectionAdmin(VersionAdmin):
+    history_latest_first = True
     list_display = ("title", "parent", "audience", "position", "article_count")
     list_filter = ("audience",)
     search_fields = ("title", "description")
     ordering = ("parent__title", "position", "title")
     fields = ("title", "slug", "description", "parent", "audience", "position")
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
 
     @admin.display(description="Статей")
     def article_count(self, obj):
@@ -60,7 +46,8 @@ class AttachmentInline(admin.StackedInline):
 
 
 @admin.register(Article)
-class ArticleAdmin(OwnerOnlyAdminMixin, admin.ModelAdmin):
+class ArticleAdmin(VersionAdmin):
+    history_latest_first = True
     list_display = ("title", "section", "status", "audience", "updated_at", "view_link")
     list_filter = ("status", "audience", "section")
     search_fields = ("title", "summary", "search_text")
@@ -68,6 +55,9 @@ class ArticleAdmin(OwnerOnlyAdminMixin, admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at")
     fields = ("section", "title", "slug", "summary", "audience", "status", "position", "created_at", "updated_at")
     inlines = [ContentBlockInline, AttachmentInline]
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
 
     @admin.display(description="На сайте")
     def view_link(self, obj):

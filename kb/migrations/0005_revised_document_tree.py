@@ -25,7 +25,9 @@ CHANGES = (
 
 def apply_revised_tree(apps, schema_editor):
     data = SOURCE.read_bytes()
-    if hashlib.sha256(data).hexdigest() != SOURCE_SHA256:
+    # Git checks out text with LF; the source was originally hashed with CRLF.
+    normalized = data.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+    if hashlib.sha256(normalized).hexdigest() != SOURCE_SHA256:
         raise RuntimeError("The revised tree source changed after the migration was created.")
     roots = json.loads(data.decode("utf-8"))
     Section = apps.get_model("kb", "Section")

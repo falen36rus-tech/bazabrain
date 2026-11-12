@@ -7,6 +7,7 @@ from .models import (
     AUDIENCE_MANAGER,
     AUDIENCE_STAFF,
     GROUP_DEVELOPERS,
+    GROUP_EDITORS,
     GROUP_MANAGERS,
     Article,
     Section,
@@ -20,6 +21,8 @@ def allowed_audiences(user):
         return {AUDIENCE_STAFF, AUDIENCE_MANAGER, AUDIENCE_DEVELOPER}
     audiences = {AUDIENCE_STAFF}
     group_names = set(user.groups.values_list("name", flat=True))
+    if GROUP_EDITORS in group_names:
+        return {AUDIENCE_STAFF, AUDIENCE_MANAGER, AUDIENCE_DEVELOPER}
     if GROUP_MANAGERS in group_names:
         audiences.add(AUDIENCE_MANAGER)
     if GROUP_DEVELOPERS in group_names:

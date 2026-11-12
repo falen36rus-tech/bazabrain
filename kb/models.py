@@ -22,6 +22,7 @@ AUDIENCES = [
 
 GROUP_MANAGERS = "Руководители"
 GROUP_DEVELOPERS = "Разработчики"
+GROUP_EDITORS = "Редакторы"
 
 
 def unique_slug(model, title, instance_pk=None):
