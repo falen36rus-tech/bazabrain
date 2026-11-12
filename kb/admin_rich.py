@@ -1,9 +1,11 @@
 """Local rich-text controls for the existing Django admin forms."""
 
 from django import forms
+from django.utils.html import format_html
+import uuid
 
-from .models import Article, ContentBlock, Section
-from .rich_text import clean_rich_html
+from .models import Article, ContentBlock, Section, validate_upload_size
+from .rich_text import clean_rich_html, rich_plain_text
 
 
 class RichTextWidget(forms.Textarea):
@@ -13,6 +15,28 @@ class RichTextWidget(forms.Textarea):
 
     def __init__(self, attrs=None):
         super().__init__({"data-kb-rich-editor": "1", **(attrs or {})})
+
+
+class PrivateImageInput(forms.FileInput):
+    def render(self, name, value, attrs=None, renderer=None):
+        control = super().render(name, value, attrs, renderer)
+        if value and getattr(value, "name", None):
+            return format_html('{}<span class="help">Изображение сохранено: {}</span>', control, value.name.rsplit('/', 1)[-1])
+        return control
+
+
+class MultipleImageInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultipleImageField(forms.ImageField):
+    widget = MultipleImageInput
+
+    def clean(self, data, initial=None):
+        if not data:
+            return []
+        single_clean = super().clean
+        return [single_clean(file) for file in data if file]
 
 
 class RichTextFormMixin:
@@ -61,6 +85,24 @@ class ArticleRichForm(RichTextFormMixin, forms.ModelForm):
 class ContentBlockRichForm(RichTextFormMixin, forms.ModelForm):
     rich_field = "text"
     rich_flag = "text_is_rich"
+    extra_images = MultipleImageField(
+        label="Добавить ещё фото", required=False,
+        validators=[validate_upload_size],
+        help_text="Можно выбрать несколько файлов сразу. Они появятся одной галереей после сохранения.",
+    )
+
+    def clean(self):
+        cleaned = super().clean()
+        extras = cleaned.get("extra_images") or []
+        if extras:
+            if not cleaned.get("image"):
+                cleaned["image"] = extras.pop(0)
+            self.instance.gallery_id = self.instance.gallery_id or uuid.uuid4().hex
+        text = cleaned.get("text") or ""
+        has_text = bool(rich_plain_text(text) if self.instance.text_is_rich else text.strip())
+        if cleaned.get("image") and not has_text:
+            cleaned["kind"] = ContentBlock.IMAGE
+        return cleaned
 
     class Meta:
         model = ContentBlock

@@ -61,10 +61,25 @@ def section_detail(request, slug):
 @login_required
 def article_detail(request, slug):
     article = get_object_or_404(visible_articles(request.user), slug=slug)
+    blocks = list(article.blocks.all())
+    galleries = {}
+    for block in blocks:
+        if block.image and block.gallery_id:
+            galleries.setdefault(block.gallery_id, []).append(block)
+    display_blocks = []
+    displayed_galleries = set()
+    for block in blocks:
+        if block.image and block.gallery_id:
+            if block.gallery_id in displayed_galleries:
+                continue
+            displayed_galleries.add(block.gallery_id)
+            display_blocks.append({"block": block, "images": galleries[block.gallery_id]})
+        else:
+            display_blocks.append({"block": block, "images": [block] if block.image else []})
     context = base_context(request)
     context.update(
         article=article,
-        blocks=list(article.blocks.all()),
+        display_blocks=display_blocks,
         attachments=list(article.attachments.all()),
         current_article=article,
         current_section=article.section,
@@ -112,7 +127,7 @@ def suggest(request):
 
 @login_required
 def private_file(request, pk):
-    block = get_object_or_404(ContentBlock.objects.select_related("article"), pk=pk, kind=ContentBlock.IMAGE)
+    block = get_object_or_404(ContentBlock.objects.select_related("article"), pk=pk)
     if not visible_articles(request.user).filter(pk=block.article_id).exists() or not block.image:
         raise Http404
     guessed_type = mimetypes.guess_type(block.image.name)[0]

@@ -2,6 +2,7 @@
 
 import json
 import tempfile
+from io import BytesIO
 from pathlib import Path
 
 from django.contrib.auth import get_user_model
@@ -11,6 +12,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
 from reversion.models import Version
+from PIL import Image
 
 from .access import visible_articles, visible_sections
 from .models import (
@@ -249,6 +251,7 @@ class KnowledgeBaseAccessTests(TestCase):
             "blocks-0-position": 0,
             "blocks-0-kind": ContentBlock.TEXT,
             "blocks-0-text": "Новый текст инструкции",
+            "blocks-0-display_width": 100,
             "attachments-TOTAL_FORMS": 0,
             "attachments-INITIAL_FORMS": 0,
             "attachments-MIN_NUM_FORMS": 0,
@@ -306,6 +309,85 @@ class KnowledgeBaseAccessTests(TestCase):
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(response["Cache-Control"], "private, no-store")
                 response.close()
+
+    def test_multiple_images_save_as_gallery_with_selected_width(self):
+        def picture(name, color):
+            data = BytesIO()
+            Image.new("RGB", (4, 4), color).save(data, format="PNG")
+            return SimpleUploadedFile(name, data.getvalue(), content_type="image/png")
+
+        with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
+            self.client.force_login(self.owner)
+            response = self.client.post(reverse("admin:kb_article_change", args=[self.public_article.pk]), {
+                "section": self.public_section.pk, "title": self.public_article.title,
+                "slug": self.public_article.slug, "summary": self.public_article.summary,
+                "title_size": "normal", "title_alignment": "left", "title_bold": "on",
+                "audience": AUDIENCE_STAFF, "status": Article.PUBLISHED, "position": 0,
+                "blocks-TOTAL_FORMS": 1, "blocks-INITIAL_FORMS": 0,
+                "blocks-MIN_NUM_FORMS": 0, "blocks-MAX_NUM_FORMS": 1000,
+                "blocks-0-position": 1, "blocks-0-kind": ContentBlock.TEXT,
+                "blocks-0-display_width": 50,
+                "blocks-0-extra_images": [picture("first.png", "red"), picture("second.png", "blue")],
+                "attachments-TOTAL_FORMS": 0, "attachments-INITIAL_FORMS": 0,
+                "attachments-MIN_NUM_FORMS": 0, "attachments-MAX_NUM_FORMS": 1000,
+            })
+            self.assertEqual(response.status_code, 302, response.context[0]["adminform"].form.errors if response.context else "")
+            blocks = list(self.public_article.blocks.order_by("pk"))
+            self.assertEqual(len(blocks), 2)
+            self.assertTrue(all(block.kind == ContentBlock.IMAGE for block in blocks))
+            self.assertTrue(all(block.display_width == 50 for block in blocks))
+            self.assertEqual(blocks[0].gallery_id, blocks[1].gallery_id)
+            self.assertTrue(all(Path(block.image.path).exists() for block in blocks))
+            page = self.client.get(self.public_article.get_absolute_url())
+            self.assertContains(page, 'class="image-gallery image-width-50"')
+            self.assertContains(page, 'data-gallery-slide', count=2)
+            self.assertContains(page, 'data-gallery-count')
+            for block in blocks:
+                image_response = self.client.get(reverse("kb:private_file", args=[block.pk]))
+                self.assertEqual(image_response.status_code, 200)
+                image_response.close()
+
+    def test_image_in_text_block_remains_visible(self):
+        with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
+            image_data = BytesIO()
+            Image.new("RGB", (4, 4), "green").save(image_data, format="PNG")
+            block = ContentBlock.objects.create(
+                article=self.public_article, kind=ContentBlock.TEXT,
+                text="Абзац с рисунком", image=SimpleUploadedFile("older.png", image_data.getvalue(), content_type="image/png"),
+            )
+            self.client.force_login(self.staff)
+            page = self.client.get(self.public_article.get_absolute_url())
+            self.assertContains(page, "Абзац с рисунком")
+            self.assertContains(page, reverse("kb:private_file", args=[block.pk]))
+            image_response = self.client.get(reverse("kb:private_file", args=[block.pk]))
+            self.assertEqual(image_response.status_code, 200)
+            image_response.close()
+
+    def test_text_and_uploaded_photo_stay_together(self):
+        with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
+            image_data = BytesIO()
+            Image.new("RGB", (4, 4), "green").save(image_data, format="PNG")
+            self.client.force_login(self.owner)
+            response = self.client.post(reverse("admin:kb_article_change", args=[self.public_article.pk]), {
+                "section": self.public_section.pk, "title": self.public_article.title,
+                "slug": self.public_article.slug, "summary": self.public_article.summary,
+                "title_size": "normal", "title_alignment": "left", "title_bold": "on",
+                "audience": AUDIENCE_STAFF, "status": Article.PUBLISHED, "position": 0,
+                "blocks-TOTAL_FORMS": 1, "blocks-INITIAL_FORMS": 0,
+                "blocks-MIN_NUM_FORMS": 0, "blocks-MAX_NUM_FORMS": 1000,
+                "blocks-0-position": 1, "blocks-0-kind": ContentBlock.TEXT,
+                "blocks-0-text": "Сначала текст, потом скриншот",
+                "blocks-0-display_width": 60,
+                "blocks-0-extra_images": [SimpleUploadedFile("one.png", image_data.getvalue(), content_type="image/png")],
+                "attachments-TOTAL_FORMS": 0, "attachments-INITIAL_FORMS": 0,
+                "attachments-MIN_NUM_FORMS": 0, "attachments-MAX_NUM_FORMS": 1000,
+            })
+            self.assertEqual(response.status_code, 302)
+            block = self.public_article.blocks.get()
+            self.assertEqual(block.kind, ContentBlock.TEXT)
+            page = self.client.get(self.public_article.get_absolute_url())
+            content = page.content.decode()
+            self.assertLess(content.index("Сначала текст, потом скриншот"), content.index('class="image-gallery image-width-60"'))
 
     def test_section_search_respects_visibility(self):
         self.client.force_login(self.staff)
@@ -395,6 +477,7 @@ class RichFormattingTests(TestCase):
         block_form = ContentBlockRichForm(data={
             'article': self.article.pk, 'kind': ContentBlock.TEXT, 'position': 0,
             'text': '<p>Новый <em>блок</em></p>', 'text__rich': '1',
+            'display_width': 100,
         })
         self.assertTrue(block_form.is_valid(), block_form.errors)
         self.assertTrue(block_form.save().text_is_rich)
