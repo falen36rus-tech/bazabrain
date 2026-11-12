@@ -94,6 +94,10 @@ class Article(models.Model):
     title = models.CharField("Заголовок", max_length=240)
     slug = models.SlugField("Адрес", max_length=200, unique=True, allow_unicode=True, blank=True)
     summary = models.TextField("Краткое описание", blank=True, help_text="Показывается в поиске и в списке статей.")
+    featured_video_url = models.CharField(
+        "Видео под заголовком (Rutube)", max_length=500, blank=True,
+        help_text="Вставьте ссылку на видео Rutube. Плеер появится сразу под названием статьи.",
+    )
     audience = models.CharField("Кому доступна", max_length=20, choices=AUDIENCES, default=AUDIENCE_STAFF)
     status = models.CharField("Статус", max_length=20, choices=STATUSES, default=DRAFT)
     position = models.PositiveIntegerField("Порядок", default=0)
@@ -116,6 +120,23 @@ class Article(models.Model):
         if not self.slug:
             self.slug = unique_slug(Article, self.title, self.pk)
         super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        if self.featured_video_url:
+            try:
+                rutube_embed_url(self.featured_video_url)
+            except ValidationError as exc:
+                raise ValidationError({"featured_video_url": exc.messages}) from exc
+
+    @property
+    def featured_video_embed_url(self):
+        if not self.featured_video_url:
+            return ""
+        try:
+            return rutube_embed_url(self.featured_video_url)
+        except ValidationError:
+            return ""
 
     def rebuild_search_text(self):
         pieces = list(self.blocks.exclude(text="").values_list("text", flat=True))

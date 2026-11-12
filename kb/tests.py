@@ -187,6 +187,27 @@ class KnowledgeBaseAccessTests(TestCase):
         self.assertContains(response, "<p>Первый абзац</p>", html=True)
         self.assertContains(response, "<p>Второй абзац<br>Следующая строка</p>", html=True)
 
+    def test_featured_rutube_video_appears_directly_under_article_title(self):
+        video_id = "0123456789abcdef0123456789abcdef"
+        self.public_article.featured_video_url = f"https://rutube.ru/video/{video_id}/"
+        self.public_article.save(update_fields=["featured_video_url"])
+        self.client.force_login(self.staff)
+        response = self.client.get(self.public_article.get_absolute_url())
+        content = response.content.decode()
+        embed_url = f"https://rutube.ru/play/embed/{video_id}/"
+        self.assertIn(embed_url, content)
+        self.assertLess(content.index('id="article-title"'), content.index(embed_url))
+        self.assertLess(content.index(embed_url), content.index('class="article-summary"'))
+        self.assertNotContains(response, "Материал пока не заполнен")
+
+    def test_featured_video_rejects_non_rutube_links(self):
+        self.public_article.featured_video_url = (
+            "https://rutube.ru.evil.example/video/0123456789abcdef0123456789abcdef/"
+        )
+        with self.assertRaises(ValidationError) as error:
+            self.public_article.full_clean()
+        self.assertIn("featured_video_url", error.exception.message_dict)
+
     def test_editor_can_read_all_audiences_but_not_drafts_on_site(self):
         self.assert_visible_everywhere(
             self.editor,

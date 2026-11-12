@@ -225,6 +225,7 @@ svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; strok
 figure figcaption { margin-top: 9px; color: var(--muted); text-align: center; font-size: 11px; line-height: 1.5; }
 .video-frame { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 10px; background: #19253a; }
 .video-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+.article-featured-video { margin: 23px 0 0; }
 .attachments { margin: 42px 0 0; padding-top: 27px; border-top: 1px solid var(--line); }
 .attachments h2 { margin: 0 0 15px; font-size: 18px; }
 .attachments ul { margin: 0; padding: 0; list-style: none; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; }

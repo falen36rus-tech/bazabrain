@@ -53,7 +53,7 @@ class ArticleAdmin(VersionAdmin):
     search_fields = ("title", "summary", "search_text")
     ordering = ("section__title", "position", "title")
     readonly_fields = ("created_at", "updated_at")
-    fields = ("section", "title", "slug", "summary", "audience", "status", "position", "created_at", "updated_at")
+    fields = ("section", "title", "featured_video_url", "slug", "summary", "audience", "status", "position", "created_at", "updated_at")
     inlines = [ContentBlockInline, AttachmentInline]
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
