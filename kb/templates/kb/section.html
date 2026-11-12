@@ -3,7 +3,7 @@
 {% block content %}
 <nav class="breadcrumbs" aria-label="Навигационная цепочка"><a href="{% url 'kb:home' %}">Главная</a><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><span aria-current="page">{{ section.title }}</span></nav>
 <header class="page-header">
-  <div><span class="eyebrow">Раздел</span><h1>{{ section.title }}</h1>{% if section.description %}<p class="page-lead">{{ section.description }}</p>{% endif %}</div>
+  <div><span class="eyebrow">Раздел</span><h1>{{ section.title }}</h1>{% if section.description %}<div class="page-lead">{{ section.description|linebreaks }}</div>{% endif %}</div>
   {% if can_edit %}<a class="secondary-button" href="{% url 'admin:kb_section_change' section.pk %}">Редактировать раздел</a>{% endif %}
 </header>
 

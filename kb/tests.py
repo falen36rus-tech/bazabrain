@@ -179,6 +179,14 @@ class KnowledgeBaseAccessTests(TestCase):
         self.assertContains(response, "<p>2. Второй шаг<br>Следующая строка</p>", html=True)
         self.assertNotContains(response, "Материал пока не заполнен")
 
+    def test_multiline_section_description_keeps_paragraphs(self):
+        self.public_section.description = "Первый абзац\n\nВторой абзац\nСледующая строка"
+        self.public_section.save(update_fields=["description"])
+        self.client.force_login(self.staff)
+        response = self.client.get(self.public_section.get_absolute_url())
+        self.assertContains(response, "<p>Первый абзац</p>", html=True)
+        self.assertContains(response, "<p>Второй абзац<br>Следующая строка</p>", html=True)
+
     def test_editor_can_read_all_audiences_but_not_drafts_on_site(self):
         self.assert_visible_everywhere(
             self.editor,
