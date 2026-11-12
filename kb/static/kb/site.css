@@ -42,8 +42,12 @@ svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; strok
 .site-header { grid-column: 1 / -1; grid-row: 1; z-index: 30; height: var(--header-height); display: grid; grid-template-columns: var(--sidebar-width) minmax(220px, 1fr) auto; align-items: center; gap: 30px; background: #fff; border-bottom: 1px solid var(--line); position: sticky; top: 0; }
 .header-brand { height: 100%; display: flex; align-items: center; gap: 10px; padding: 0 16px 0 24px; border-right: 1px solid var(--line); position: relative; }
 .service-menu { margin-left: auto; flex: none; }
-.service-menu summary { display: flex; align-items: center; gap: 5px; padding: 8px 9px; border: 1px solid var(--line-strong); border-radius: 8px; color: var(--navy); font-size: 11px; font-weight: 700; list-style: none; cursor: pointer; }
+.service-menu summary { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 34px; padding: 7px 10px; border: 1px solid var(--line-strong); border-radius: 8px; color: var(--navy); font-size: 11px; font-weight: 700; list-style: none; cursor: pointer; }
 .service-menu summary::-webkit-details-marker { display: none; }
+.service-menu summary::marker { content: ""; }
+.service-chevron { width: 14px; height: 14px; flex: none; stroke-width: 1.8; transition: transform .18s ease; }
+.service-menu[open] .service-chevron { transform: rotate(180deg); }
+.service-menu summary:hover, .service-menu[open] summary { background: var(--blue-soft); border-color: #a9c7ee; }
 .service-options { position: absolute; z-index: 90; top: calc(100% - 4px); left: 12px; width: min(390px, calc(100vw - 24px)); max-height: min(70vh, 610px); overflow-y: auto; display: grid; gap: 3px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: 0 20px 45px rgba(20, 38, 65, .18); }
 .service-options a { padding: 9px 11px; border-radius: 7px; font-size: 13px; }
 .service-options a:hover, .service-options a[aria-current="page"] { color: var(--blue); background: var(--blue-soft); font-weight: 700; }
@@ -358,7 +362,7 @@ figure figcaption { margin-top: 9px; color: var(--muted); text-align: center; fo
   .header-brand { padding-left: 8px; }
   .header-brand .brand-copy { display: none; }
   .service-menu summary { font-size: 0; padding: 6px 9px; }
-  .service-menu summary span { font-size: 20px; }
+  .service-menu summary .service-chevron { width: 17px; height: 17px; }
   .global-search-form { height: 38px; padding-left: 9px; }
   .search-submit, .search-shortcut { display: none; }
   .global-search input { font-size: 12px; }
