@@ -56,6 +56,15 @@ class ArticleAdmin(VersionAdmin):
     fields = ("section", "title", "slug", "summary", "audience", "status", "position", "created_at", "updated_at")
     inlines = [ContentBlockInline, AttachmentInline]
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == "summary" and field is not None:
+            field.help_text = (
+                "Короткий анонс для списка и поиска. Полную инструкцию с шагами, "
+                "скриншотами и видео добавляйте ниже в «Содержимое статьи» отдельными блоками."
+            )
+        return field
+
     def has_delete_permission(self, request, obj=None):
         return request.user.is_superuser
 

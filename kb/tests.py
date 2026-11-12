@@ -170,6 +170,15 @@ class KnowledgeBaseAccessTests(TestCase):
         self.assertEqual(suggestions.status_code, 200)
         self.assertEqual(suggestions.json()["results"], [])
 
+    def test_multiline_summary_keeps_steps_readable_without_empty_message(self):
+        self.public_article.summary = "1. Первый шаг\n\n2. Второй шаг\nСледующая строка"
+        self.public_article.save(update_fields=["summary"])
+        self.client.force_login(self.staff)
+        response = self.client.get(self.public_article.get_absolute_url())
+        self.assertContains(response, "<p>1. Первый шаг</p>", html=True)
+        self.assertContains(response, "<p>2. Второй шаг<br>Следующая строка</p>", html=True)
+        self.assertNotContains(response, "Материал пока не заполнен")
+
     def test_editor_can_read_all_audiences_but_not_drafts_on_site(self):
         self.assert_visible_everywhere(
             self.editor,

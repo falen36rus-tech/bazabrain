@@ -14,7 +14,7 @@
     <header class="article-header">
       <span class="eyebrow">{{ article.section.title }}</span>
       <h1 id="article-title">{{ article.title }}</h1>
-      {% if article.summary %}<p class="article-summary">{{ article.summary }}</p>{% endif %}
+      {% if article.summary %}<div class="article-summary">{{ article.summary|linebreaks }}</div>{% endif %}
       <div class="article-meta"><span>Обновлено {{ article.updated_at|date:"d.m.Y" }}</span>{% if can_edit %}<a href="{% url 'admin:kb_article_change' article.pk %}">Редактировать</a>{% endif %}</div>
     </header>
 
@@ -44,7 +44,7 @@
           </figure>
         {% endif %}
       {% empty %}
-        <div class="empty-state article-empty"><span class="empty-state-icon" aria-hidden="true">▤</span><h2>Материал пока не заполнен</h2></div>
+        {% if not article.summary %}<div class="empty-state article-empty"><span class="empty-state-icon" aria-hidden="true">▤</span><h2>Материал пока не заполнен</h2></div>{% endif %}
       {% endfor %}
     </div>
 
