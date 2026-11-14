@@ -65,9 +65,9 @@ docker compose up -d --build
 
 ready=0
 for _ in {1..30}; do
-    if curl --silent --fail --max-time 3 \
-        --header 'X-Forwarded-Proto: https' \
-        --output /dev/null http://127.0.0.1:8000/accounts/login/; then
+    if docker compose exec -T web python -c \
+        'import urllib.request; urllib.request.urlopen(urllib.request.Request("http://127.0.0.1:8000/accounts/login/", headers={"X-Forwarded-Proto": "https"}), timeout=3).close()' \
+        >/dev/null 2>&1; then
         ready=1
         break
     fi
