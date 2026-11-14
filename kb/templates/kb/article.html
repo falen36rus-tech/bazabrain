@@ -15,9 +15,13 @@
     <header class="article-header">
       <span class="eyebrow">{{ article.section.title }}</span>
       <h1 id="article-title" class="title-size-{{ article.title_size }} title-align-{{ article.title_alignment }}{% if not article.title_bold %} title-regular{% endif %}{% if article.title_italic %} title-italic{% endif %}">{{ article.title }}</h1>
-      {% with video_url=article.featured_video_embed_url %}
-        {% if video_url %}<figure class="video-figure article-featured-video"><div class="video-frame"><iframe src="{{ video_url }}" title="Видео к статье {{ article.title }}" loading="lazy" allow="clipboard-write; autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></figure>{% endif %}
-      {% endwith %}
+      {% if article.featured_video_file %}
+        <figure class="video-figure article-featured-video"><div class="video-frame"><video controls preload="metadata" playsinline aria-label="Видео к статье {{ article.title }}"><source src="{% url 'kb:private_video' article.pk %}" type="{% if article.featured_video_file.name|slice:'-5:' == '.webm' %}video/webm{% else %}video/mp4{% endif %}">Ваш браузер не поддерживает воспроизведение этого видео.</video></div></figure>
+      {% else %}
+        {% with video_url=article.featured_video_embed_url %}
+          {% if video_url %}<figure class="video-figure article-featured-video"><div class="video-frame"><iframe src="{{ video_url }}" title="Видео к статье {{ article.title }}" loading="lazy" allow="clipboard-write; autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></figure>{% endif %}
+        {% endwith %}
+      {% endif %}
       {% if article.summary %}<div class="article-summary"><div class="rich-content">{{ article.summary|rich_content:article.summary_is_rich }}</div></div>{% endif %}
       <div class="article-meta"><span>Обновлено {{ article.updated_at|date:"d.m.Y" }}</span>{% if can_edit %}<a href="{% url 'admin:kb_article_change' article.pk %}">Редактировать</a>{% endif %}</div>
     </header>
@@ -43,7 +47,7 @@
         {% if item.images %}{% include 'kb/_image_gallery.html' %}{% endif %}
         {% endwith %}
       {% empty %}
-        {% if not article.summary and not article.featured_video_url %}<div class="empty-state article-empty"><span class="empty-state-icon" aria-hidden="true">▤</span><h2>Материал пока не заполнен</h2></div>{% endif %}
+        {% if not article.summary and not article.featured_video_url and not article.featured_video_file %}<div class="empty-state article-empty"><span class="empty-state-icon" aria-hidden="true">▤</span><h2>Материал пока не заполнен</h2></div>{% endif %}
       {% endfor %}
     </div>
 

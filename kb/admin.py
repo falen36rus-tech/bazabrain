@@ -87,7 +87,7 @@ class ArticleAdmin(VersionAdmin):
     readonly_fields = ("created_at", "updated_at")
     fields = (
         "section", "title", ("title_size", "title_alignment"),
-        ("title_bold", "title_italic"), "featured_video_url", "slug", "summary",
+        ("title_bold", "title_italic"), "featured_video_file", "featured_video_url", "slug", "summary",
         "audience", "status", "position", "created_at", "updated_at",
     )
     inlines = [ContentBlockInline, AttachmentInline]

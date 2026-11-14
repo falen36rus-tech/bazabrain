@@ -35,6 +35,7 @@ def filled_article_filter():
     return (
         Q(summary__regex=r"\S")
         | Q(featured_video_url__regex=r"\S")
+        | ~Q(featured_video_file="")
         | Q(blocks__isnull=False)
         | Q(attachments__isnull=False)
     )
