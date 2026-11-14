@@ -565,6 +565,17 @@ class RichFormattingTests(TestCase):
         self.assertNotIn('alert', cleaned)
         self.assertEqual(rich_plain_text(source), 'Привет мир!')
 
+    def test_bold_words_keep_large_size_after_saving(self):
+        source = (
+            '<p><span class="ql-size-large">Текст перед </span>'
+            '<strong>важным словом</strong>'
+            '<span class="ql-size-large"> и после него.</span></p>'
+        )
+        self.assertIn(
+            '<span class="ql-size-large"><strong>важным словом</strong></span>',
+            clean_rich_html(source),
+        )
+
     def test_formatted_article_and_plain_previews(self):
         ContentBlock.objects.create(
             article=self.article, kind=ContentBlock.TEXT, position=1,
@@ -617,6 +628,46 @@ class RichFormattingTests(TestCase):
         })
         self.assertTrue(block_form.is_valid(), block_form.errors)
         self.assertTrue(block_form.save().text_is_rich)
+
+    def test_admin_can_delete_existing_text_block(self):
+        block = ContentBlock.objects.create(
+            article=self.article, kind=ContentBlock.TEXT, position=1,
+            text='<p>Старый абзац</p>', text_is_rich=True,
+        )
+        self.client.force_login(self.owner)
+        response = self.client.post(reverse('admin:kb_article_change', args=[self.article.pk]), {
+            'section': self.section.pk,
+            'title': self.article.title,
+            'slug': self.article.slug,
+            'summary': self.article.summary,
+            'summary__rich': '1',
+            'network_video_path': '',
+            'featured_video_url': '',
+            'title_alignment': 'center',
+            'title_size': 'large',
+            'title_italic': 'on',
+            'audience': AUDIENCE_STAFF,
+            'status': Article.PUBLISHED,
+            'position': 0,
+            'blocks-TOTAL_FORMS': '1',
+            'blocks-INITIAL_FORMS': '1',
+            'blocks-MIN_NUM_FORMS': '0',
+            'blocks-MAX_NUM_FORMS': '1000',
+            'blocks-0-id': str(block.pk),
+            'blocks-0-article': str(self.article.pk),
+            'blocks-0-position': '1',
+            'blocks-0-kind': ContentBlock.TEXT,
+            'blocks-0-text': block.text,
+            'blocks-0-display_width': '100',
+            'blocks-0-DELETE': 'on',
+            'attachments-TOTAL_FORMS': '0',
+            'attachments-INITIAL_FORMS': '0',
+            'attachments-MIN_NUM_FORMS': '0',
+            'attachments-MAX_NUM_FORMS': '1000',
+            '_save': 'Сохранить',
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(ContentBlock.objects.filter(pk=block.pk).exists())
 
 
 class InitialTreeTests(TestCase):
