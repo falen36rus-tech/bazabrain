@@ -143,7 +143,9 @@ class ArticleAdmin(VersionAdmin):
             if formset.model is not ContentBlock:
                 continue
             for inline_form in formset.forms:
-                if not inline_form.is_valid() or inline_form.cleaned_data.get("DELETE"):
+                # The formset was validated before saving. Revalidating a deleted
+                # form here fails because Django has already cleared its PK.
+                if inline_form.cleaned_data.get("DELETE"):
                     continue
                 extras = inline_form.cleaned_data.get("extra_images") or []
                 parent = inline_form.instance

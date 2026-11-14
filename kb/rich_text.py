@@ -2,6 +2,7 @@
 
 from html import unescape
 from html.parser import HTMLParser
+import re
 
 import nh3
 
@@ -12,15 +13,36 @@ CLASSES = {
     "span": {"ql-size-small", "ql-size-large", "ql-size-huge"},
 }
 
+# Quill can split a uniformly sized paragraph when bold is applied, leaving
+# the bold run without its size span. Restore that size when both neighbours
+# explicitly use the same size.
+_SIZED_BOLD_GAP = re.compile(
+    r'(?P<left><span class="ql-size-(?P<size>small|large|huge)">[^<]*</span>)'
+    r'(?P<bold><strong>[^<]*</strong>)'
+    r'(?P<right><span class="ql-size-(?P=size)">)'
+)
+
 
 def clean_rich_html(value):
-    return nh3.clean(
+    cleaned = nh3.clean(
         value or "",
         tags=TAGS,
         attributes={},
         allowed_classes=CLASSES,
         clean_content_tags={"script", "style", "iframe", "svg", "math"},
     )
+    while True:
+        normalized = _SIZED_BOLD_GAP.sub(
+            lambda match: (
+                match.group("left")
+                + f'<span class="ql-size-{match.group("size")}">{match.group("bold")}</span>'
+                + match.group("right")
+            ),
+            cleaned,
+        )
+        if normalized == cleaned:
+            return cleaned
+        cleaned = normalized
 
 
 class _TextExtractor(HTMLParser):
