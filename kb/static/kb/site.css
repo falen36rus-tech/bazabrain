@@ -39,7 +39,7 @@ svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; strok
 .skip-link:focus { top: 10px; }
 
 .app-shell { min-height: 100vh; display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); grid-template-rows: var(--header-height) minmax(calc(100vh - var(--header-height)), auto); }
-.site-header { grid-column: 1 / -1; grid-row: 1; z-index: 30; height: var(--header-height); display: grid; grid-template-columns: var(--sidebar-width) minmax(220px, 1fr) auto; align-items: center; gap: 30px; background: #fff; border-bottom: 1px solid var(--line); position: sticky; top: 0; }
+.site-header { grid-column: 1 / -1; grid-row: 1; z-index: 30; height: var(--header-height); display: grid; grid-template-columns: min(var(--sidebar-width), calc(50vw - 180px)) minmax(0, 1fr) min(var(--sidebar-width), calc(50vw - 180px)); align-items: center; gap: 0; background: #fff; border-bottom: 1px solid var(--line); position: sticky; top: 0; }
 .header-brand { height: 100%; display: flex; align-items: center; gap: 10px; padding: 0 16px 0 24px; border-right: 1px solid var(--line); position: relative; }
 .service-menu { margin-left: auto; flex: none; }
 .service-menu summary { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 34px; padding: 7px 10px; border: 1px solid var(--line-strong); border-radius: 8px; color: var(--navy); font-size: 11px; font-weight: 700; list-style: none; cursor: pointer; }
@@ -64,7 +64,7 @@ svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; strok
 .icon-button svg { width: 21px; height: 21px; }
 .mobile-menu-button, .sidebar-close { display: none; }
 
-.global-search { position: relative; width: min(100%, 740px); }
+.global-search { position: relative; justify-self: center; width: min(100%, 740px); }
 .global-search-form { height: 42px; display: flex; align-items: center; gap: 9px; padding: 3px 4px 3px 13px; border: 1px solid var(--line-strong); border-radius: 11px; background: #f9fbfe; transition: border-color .18s, box-shadow .18s, background .18s; }
 .global-search-form:focus-within { background: #fff; border-color: #8db4e8; box-shadow: 0 0 0 3px rgba(70, 133, 209, .12); }
 .search-icon { flex: none; width: 19px; height: 19px; color: #7b8ba0; }
@@ -82,7 +82,7 @@ svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; strok
 .suggestion-empty, .suggestion-more { padding: 10px 12px; color: var(--muted); font-size: 12px; }
 .suggestion-more { display: block; border-top: 1px solid var(--line); color: var(--blue); font-weight: 650; }
 .suggestion-more:hover { color: var(--navy); }
-.header-actions { display: flex; align-items: center; height: 100%; padding-right: 32px; }
+.header-actions { display: flex; align-items: center; justify-self: end; height: 100%; padding-right: 32px; }
 .account-menu { position: relative; }
 .account-trigger { display: flex; align-items: center; gap: 9px; list-style: none; cursor: pointer; }
 .account-trigger::-webkit-details-marker { display: none; }
@@ -341,6 +341,7 @@ figure figcaption { margin-top: 9px; color: var(--muted); text-align: center; fo
   .section-card-grid, .recent-articles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .article-layout { grid-template-columns: minmax(0, 1fr); }
   .article-aside { display: none; }
+  .header-brand .brand-copy small { display: none; }
 }
 @media (max-width: 920px) {
   :root { --header-height: 66px; }
