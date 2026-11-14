@@ -283,6 +283,39 @@ class KnowledgeBaseAccessTests(TestCase):
         self.assertLess(content.index(embed_url), content.index('class="article-summary"'))
         self.assertNotContains(response, "Материал пока не заполнен")
 
+    def test_uploaded_video_player_and_authenticated_range_access(self):
+        with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
+            self.public_article.featured_video_file = SimpleUploadedFile(
+                "guide.mp4", b"0123456789", content_type="video/mp4",
+            )
+            self.public_article.save(update_fields=["featured_video_file"])
+            page = self.client.get(self.public_article.get_absolute_url())
+            video_url = reverse("kb:private_video", args=[self.public_article.pk])
+            self.assertContains(page, f'<source src="{video_url}" type="video/mp4">', html=True)
+            self.assertEqual(b"".join(self.client.get(video_url).streaming_content), b"0123456789")
+            part = self.client.get(video_url, HTTP_RANGE="bytes=2-5")
+            self.assertEqual(part.status_code, 206)
+            self.assertEqual(part["Content-Range"], "bytes 2-5/10")
+            self.assertEqual(b"".join(part.streaming_content), b"2345")
+            self.assertEqual(self.client.get(video_url, HTTP_RANGE="bytes=99-").status_code, 416)
+            self.client.force_login(self.staff)
+            self.assertEqual(self.client.get(video_url, HTTP_RANGE="bytes=-3").status_code, 206)
+            self.client.logout()
+            self.manager_article.featured_video_file = SimpleUploadedFile(
+                "secret.mp4", b"secret", content_type="video/mp4",
+            )
+            self.manager_article.save(update_fields=["featured_video_file"])
+            self.assertEqual(self.client.get(reverse("kb:private_video", args=[self.manager_article.pk])).status_code, 404)
+
+    def test_uploaded_video_validates_type_and_size(self):
+        self.public_article.featured_video_file = SimpleUploadedFile("bad.exe", b"x")
+        with self.assertRaises(ValidationError):
+            self.public_article.full_clean()
+        with override_settings(MAX_VIDEO_UPLOAD_BYTES=2):
+            self.public_article.featured_video_file = SimpleUploadedFile("large.mp4", b"123")
+            with self.assertRaises(ValidationError):
+                self.public_article.full_clean()
+
     def test_featured_video_rejects_non_rutube_links(self):
         self.public_article.featured_video_url = (
             "https://rutube.ru.evil.example/video/0123456789abcdef0123456789abcdef/"

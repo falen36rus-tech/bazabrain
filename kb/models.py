@@ -48,6 +48,18 @@ def attachment_upload_path(instance, filename):
     return f"attachments/{uuid.uuid4().hex}{suffix}"
 
 
+def video_upload_path(instance, filename):
+    suffix = Path(filename).suffix.lower()
+    return f"videos/{uuid.uuid4().hex}{suffix}"
+
+
+def validate_video(file):
+    if Path(file.name).suffix.lower() not in {".mp4", ".webm"}:
+        raise ValidationError("Загрузите видео MP4 или WebM.")
+    if file.size > settings.MAX_VIDEO_UPLOAD_BYTES:
+        raise ValidationError("Видео больше 250 МБ. Уменьшите файл перед загрузкой.")
+
+
 def validate_upload_size(file):
     if file.size > settings.MAX_UPLOAD_BYTES:
         raise ValidationError("Файл больше 25 МБ. Уменьшите его перед загрузкой.")
@@ -117,6 +129,11 @@ class Article(models.Model):
     featured_video_url = models.CharField(
         "Видео под заголовком (Rutube)", max_length=500, blank=True,
         help_text="Вставьте ссылку на видео Rutube. Плеер появится сразу под названием статьи.",
+    )
+    featured_video_file = models.FileField(
+        "Видео под заголовком (файл без рекламы)", upload_to=video_upload_path,
+        blank=True, validators=[validate_video],
+        help_text="MP4 или WebM, до 250 МБ. Если файл загружен, он показывается вместо ссылки Rutube.",
     )
     audience = models.CharField("Кому доступна", max_length=20, choices=AUDIENCES, default=AUDIENCE_STAFF)
     status = models.CharField("Статус", max_length=20, choices=STATUSES, default=DRAFT)

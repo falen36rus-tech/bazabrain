@@ -1,8 +1,9 @@
 import mimetypes
+import re
 from pathlib import Path
 
 from django.db.models import Q
-from django.http import FileResponse, Http404, JsonResponse
+from django.http import FileResponse, Http404, HttpResponse, JsonResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
@@ -175,6 +176,65 @@ def private_attachment(request, pk):
         response = FileResponse(attachment.file.open("rb"), as_attachment=True, filename=filename, content_type="application/octet-stream")
     except FileNotFoundError as exc:
         raise Http404 from exc
+    response["Cache-Control"] = "private, no-store"
+    response["X-Content-Type-Options"] = "nosniff"
+    return response
+
+
+def private_video(request, pk):
+    article = get_object_or_404(visible_articles(request.user), pk=pk)
+    if not article.featured_video_file:
+        raise Http404
+    content_type = {".mp4": "video/mp4", ".webm": "video/webm"}.get(Path(article.featured_video_file.name).suffix.lower())
+    if not content_type:
+        raise Http404
+    try:
+        video = article.featured_video_file.open("rb")
+        size = article.featured_video_file.size
+    except (FileNotFoundError, OSError) as exc:
+        raise Http404 from exc
+    range_header = request.headers.get("Range", "")
+    if not range_header:
+        response = FileResponse(video, content_type=content_type)
+        response["Accept-Ranges"] = "bytes"
+    else:
+        match = re.fullmatch(r"bytes=(\d*)-(\d*)", range_header)
+        if not match or not any(match.groups()):
+            video.close()
+            response = HttpResponse(status=416)
+            response["Content-Range"] = f"bytes */{size}"
+            return response
+        start_text, end_text = match.groups()
+        if start_text:
+            start = int(start_text)
+            end = min(int(end_text), size - 1) if end_text else size - 1
+        else:
+            suffix = int(end_text)
+            start = max(0, size - suffix)
+            end = size - 1
+        if start >= size or start > end or (not start_text and suffix == 0):
+            video.close()
+            response = HttpResponse(status=416)
+            response["Content-Range"] = f"bytes */{size}"
+            return response
+
+        def chunks():
+            try:
+                video.seek(start)
+                remaining = end - start + 1
+                while remaining:
+                    data = video.read(min(65536, remaining))
+                    if not data:
+                        break
+                    remaining -= len(data)
+                    yield data
+            finally:
+                video.close()
+
+        response = StreamingHttpResponse(chunks(), status=206, content_type=content_type)
+        response["Content-Range"] = f"bytes {start}-{end}/{size}"
+        response["Content-Length"] = str(end - start + 1)
+        response["Accept-Ranges"] = "bytes"
     response["Cache-Control"] = "private, no-store"
     response["X-Content-Type-Options"] = "nosniff"
     return response
