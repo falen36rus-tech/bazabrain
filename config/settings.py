@@ -112,6 +112,21 @@ MAX_UPLOAD_BYTES = 25 * 1024 * 1024
 MAX_VIDEO_UPLOAD_BYTES = 250 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
 
+# Keep tracebacks for failed production requests in the container log.
+# The default Django handler emails ADMINS and otherwise hides these errors.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "kb:home"
