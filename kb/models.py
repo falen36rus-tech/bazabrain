@@ -135,6 +135,10 @@ class Article(models.Model):
         blank=True, validators=[validate_video],
         help_text="MP4 или WebM, до 250 МБ. Если файл загружен, он показывается вместо ссылки Rutube.",
     )
+    network_video_path = models.CharField(
+        "Видео с сетевого диска", max_length=500, blank=True,
+        help_text="Выберите файл из общей папки. Видео показывается под заголовком без рекламы Rutube.",
+    )
     audience = models.CharField("Кому доступна", max_length=20, choices=AUDIENCES, default=AUDIENCE_STAFF)
     status = models.CharField("Статус", max_length=20, choices=STATUSES, default=DRAFT)
     position = models.PositiveIntegerField("Порядок", default=0)
@@ -160,6 +164,9 @@ class Article(models.Model):
 
     def clean(self):
         super().clean()
+        if self.network_video_path:
+            from .video_library import video_path
+            video_path(self.network_video_path)
         if self.featured_video_url:
             try:
                 rutube_embed_url(self.featured_video_url)

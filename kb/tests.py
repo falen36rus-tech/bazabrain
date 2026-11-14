@@ -316,6 +316,29 @@ class KnowledgeBaseAccessTests(TestCase):
             with self.assertRaises(ValidationError):
                 self.public_article.full_clean()
 
+    def test_network_video_is_listed_and_streamed_only_for_allowed_articles(self):
+        with tempfile.TemporaryDirectory() as library, override_settings(VIDEO_LIBRARY_ROOT=library):
+            Path(library, "guide.mp4").write_bytes(b"0123456789")
+            Path(library, "notes.txt").write_text("not a video")
+            self.assertIn(("guide.mp4", "guide.mp4"), ArticleRichForm().fields["network_video_path"].choices)
+            self.assertNotIn(("notes.txt", "notes.txt"), ArticleRichForm().fields["network_video_path"].choices)
+            self.public_article.network_video_path = "guide.mp4"
+            self.public_article.save(update_fields=["network_video_path"])
+            video_url = reverse("kb:private_video", args=[self.public_article.pk])
+            self.assertContains(self.client.get(self.public_article.get_absolute_url()), video_url)
+            part = self.client.get(video_url, HTTP_RANGE="bytes=2-5")
+            self.assertEqual(part.status_code, 206)
+            self.assertEqual(b"".join(part.streaming_content), b"2345")
+            self.manager_article.network_video_path = "guide.mp4"
+            self.manager_article.save(update_fields=["network_video_path"])
+            self.assertEqual(self.client.get(reverse("kb:private_video", args=[self.manager_article.pk])).status_code, 404)
+
+    def test_network_video_rejects_path_escape(self):
+        with tempfile.TemporaryDirectory() as library, override_settings(VIDEO_LIBRARY_ROOT=library):
+            self.public_article.network_video_path = "../outside.mp4"
+            with self.assertRaises(ValidationError):
+                self.public_article.full_clean()
+
     def test_featured_video_rejects_non_rutube_links(self):
         self.public_article.featured_video_url = (
             "https://rutube.ru.evil.example/video/0123456789abcdef0123456789abcdef/"

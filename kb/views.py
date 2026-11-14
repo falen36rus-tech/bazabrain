@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 
 from django.db.models import Q
+from django.core.exceptions import ValidationError
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -13,6 +14,7 @@ from .catalog import SERVICES, SERVICE_NAMES
 from .models import Article, Attachment, ContentBlock
 from .rich_text import rich_plain_text
 from .search import search_articles, search_sections
+from .video_library import VIDEO_TYPES, video_path
 
 
 SITE_NAME = "База знаний 1С"
@@ -183,16 +185,25 @@ def private_attachment(request, pk):
 
 def private_video(request, pk):
     article = get_object_or_404(visible_articles(request.user), pk=pk)
-    if not article.featured_video_file:
+    if article.network_video_path:
+        try:
+            path = video_path(article.network_video_path)
+            video = path.open("rb")
+            size = path.stat().st_size
+        except (ValidationError, FileNotFoundError, OSError) as exc:
+            raise Http404 from exc
+        content_type = VIDEO_TYPES[path.suffix.lower()]
+    elif article.featured_video_file:
+        content_type = VIDEO_TYPES.get(Path(article.featured_video_file.name).suffix.lower())
+        if not content_type:
+            raise Http404
+        try:
+            video = article.featured_video_file.open("rb")
+            size = article.featured_video_file.size
+        except (FileNotFoundError, OSError) as exc:
+            raise Http404 from exc
+    else:
         raise Http404
-    content_type = {".mp4": "video/mp4", ".webm": "video/webm"}.get(Path(article.featured_video_file.name).suffix.lower())
-    if not content_type:
-        raise Http404
-    try:
-        video = article.featured_video_file.open("rb")
-        size = article.featured_video_file.size
-    except (FileNotFoundError, OSError) as exc:
-        raise Http404 from exc
     range_header = request.headers.get("Range", "")
     if not range_header:
         response = FileResponse(video, content_type=content_type)

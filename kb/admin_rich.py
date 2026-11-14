@@ -75,6 +75,19 @@ class SectionRichForm(RichTextFormMixin, forms.ModelForm):
 class ArticleRichForm(RichTextFormMixin, forms.ModelForm):
     rich_field = "summary"
     rich_flag = "summary_is_rich"
+    network_video_path = forms.ChoiceField(label="Видео с сетевого диска", required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from .video_library import available_videos
+        names = available_videos()
+        current = self.instance.network_video_path
+        if current and current not in names:
+            names.insert(0, current)
+        self.fields["network_video_path"].choices = [("", "Без видео с сетевого диска")] + [
+            (name, name) for name in names
+        ]
+        self.fields["network_video_path"].help_text = "Файлы из общей папки; выберите нужный ролик."
 
     class Meta:
         model = Article
