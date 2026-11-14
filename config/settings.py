@@ -107,6 +107,7 @@ STORAGES = {
 # This directory must never be exposed through the web server's static-file rules.
 PRIVATE_MEDIA_ROOT = Path(os.getenv("PRIVATE_MEDIA_ROOT", BASE_DIR / "private_media"))
 MEDIA_ROOT = PRIVATE_MEDIA_ROOT
+VIDEO_LIBRARY_ROOT = Path(os.getenv("VIDEO_LIBRARY_ROOT", BASE_DIR / "video_library"))
 MAX_UPLOAD_BYTES = 25 * 1024 * 1024
 MAX_VIDEO_UPLOAD_BYTES = 250 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
