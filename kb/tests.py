@@ -221,6 +221,94 @@ class KnowledgeBaseAccessTests(TestCase):
         self.public_article.refresh_from_db()
         self.assertEqual(self.public_article.section_id, self.public_section.pk)
 
+    def test_admin_copies_article_and_content_into_discipline(self):
+        discipline = Section.objects.create(
+            title="Металлоконструкции", slug="copy-discipline", catalog="discipline",
+        )
+        source = self.public_article
+        source.summary_is_rich = True
+        source.title_size = "large"
+        source.save(update_fields=["summary_is_rich", "title_size"])
+        ContentBlock.objects.create(
+            article=source, kind=ContentBlock.TEXT, text="<p>Инструкция</p>",
+            text_is_rich=True, position=1,
+        )
+        ContentBlock.objects.create(
+            article=source, kind=ContentBlock.IMAGE, image="images/example.png",
+            gallery_id="gallery", display_width=65, position=2,
+        )
+        Attachment.objects.create(
+            article=source, title="Образец", file="attachments/example.pdf", position=3,
+        )
+        self.client.force_login(self.owner)
+        url = reverse("admin:kb_article_copy_to_discipline", args=[source.pk])
+        self.assertContains(self.client.get(reverse("admin:kb_article_change", args=[source.pk])), "Скопировать в дисциплину")
+        self.assertContains(self.client.get(url), discipline.title)
+        response = self.client.post(url, {"destination": discipline.pk})
+        self.assertEqual(response.status_code, 302)
+
+        copied = Article.objects.get(section=discipline)
+        self.assertEqual(response.url, reverse("admin:kb_article_change", args=[copied.pk]))
+        self.assertNotEqual(copied.slug, source.slug)
+        self.assertEqual(copied.title, source.title)
+        self.assertEqual(copied.title_size, "large")
+        self.assertTrue(copied.summary_is_rich)
+        self.assertEqual(copied.status, source.status)
+        self.assertEqual(copied.blocks.count(), 2)
+        self.assertEqual(copied.blocks.get(kind=ContentBlock.IMAGE).image.name, "images/example.png")
+        self.assertEqual(copied.blocks.get(kind=ContentBlock.IMAGE).display_width, 65)
+        self.assertEqual(copied.attachments.get().file.name, "attachments/example.pdf")
+        self.assertIn("Инструкция", copied.search_text)
+        self.assertEqual(source.section_id, self.public_section.pk)
+        self.assertEqual(source.blocks.count(), 2)
+        self.assertEqual(self.client.get(copied.get_absolute_url()).status_code, 200)
+
+    def test_copy_destination_must_be_editable_discipline(self):
+        discipline = Section.objects.create(
+            title="Дисциплина руководителя", slug="manager-discipline", catalog="discipline",
+        )
+        other = Section.objects.create(title="Чужая дисциплина", slug="other-discipline", catalog="discipline")
+        self.manager.is_staff = True
+        self.manager.save(update_fields=["is_staff"])
+        self.public_section.manager = self.manager
+        self.public_section.save(update_fields=["manager"])
+        discipline.manager = self.manager
+        discipline.save(update_fields=["manager"])
+        self.client.force_login(self.manager)
+        url = reverse("admin:kb_article_copy_to_discipline", args=[self.public_article.pk])
+        source_section_count = Article.objects.filter(section=self.public_section).count()
+        self.assertContains(self.client.get(url), discipline.title)
+        self.assertNotContains(self.client.get(url), other.title)
+        self.assertEqual(self.client.post(url, {"destination": other.pk}).status_code, 200)
+        self.assertFalse(Article.objects.filter(section=other).exists())
+        self.assertEqual(self.client.post(url, {"destination": self.public_section.pk}).status_code, 200)
+        self.assertEqual(Article.objects.filter(section=self.public_section).count(), source_section_count)
+        self.assertEqual(self.client.post(url, {"destination": discipline.pk}).status_code, 302)
+        self.assertTrue(Article.objects.filter(section=discipline).exists())
+        self.assertEqual(
+            self.client.get(reverse("admin:kb_article_copy_to_discipline", args=[self.manager_article.pk])).status_code,
+            403,
+        )
+
+    def test_copy_keeps_source_section_access_restriction(self):
+        discipline = Section.objects.create(
+            title="Открытая дисциплина", slug="public-discipline", catalog="discipline",
+        )
+        source = Article.objects.create(
+            section=self.manager_section, title="Инструкция отдела", slug="restricted-copy-source",
+            summary="Секретный текст", status=Article.PUBLISHED,
+        )
+        self.client.force_login(self.owner)
+        response = self.client.post(
+            reverse("admin:kb_article_copy_to_discipline", args=[source.pk]),
+            {"destination": discipline.pk},
+        )
+        self.assertEqual(response.status_code, 302)
+        copied = Article.objects.get(section=discipline)
+        self.assertEqual(copied.audience, AUDIENCE_MANAGER)
+        self.client.logout()
+        self.assertEqual(self.client.get(copied.get_absolute_url()).status_code, 404)
+
     def test_admin_logout_returns_to_public_site(self):
         self.client.force_login(self.owner)
         response = self.client.post("/admin/logout/")
