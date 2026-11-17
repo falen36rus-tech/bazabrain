@@ -145,6 +145,14 @@ class Article(models.Model):
     search_text = models.TextField("Текст для поиска", blank=True, editable=False)
     created_at = models.DateTimeField("Создана", auto_now_add=True)
     updated_at = models.DateTimeField("Обновлена", auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, verbose_name="Создал", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="created_kb_articles",
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, verbose_name="Обновил", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="updated_kb_articles",
+    )
 
     class Meta:
         verbose_name = "Статья"

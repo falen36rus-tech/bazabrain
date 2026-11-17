@@ -1,0 +1,23 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Главная</a> ›
+    <a href="{% url 'admin:kb_article_changelist' %}">Статьи</a> ›
+    <a href="{% url 'admin:kb_article_change' source.pk %}">{{ source.title }}</a> ›
+    Скопировать в дисциплину
+  </div>
+{% endblock %}
+
+{% block content %}
+  <p>Выберите дисциплину или вложенный раздел. Исходная статья останется на месте; копия будет редактироваться отдельно.</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="submit-row">
+      <input type="submit" value="Создать копию" class="default">
+      <a href="{% url 'admin:kb_article_change' source.pk %}" class="button cancel-link">Отмена</a>
+    </div>
+  </form>
+{% endblock %}
