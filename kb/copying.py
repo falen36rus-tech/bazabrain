@@ -21,7 +21,7 @@ def source_audience(article: Article):
 
 
 @transaction.atomic
-def copy_article_to_section(source: Article, destination: Section) -> Article:
+def copy_article_to_section(source: Article, destination: Section, actor) -> Article:
     if destination.service_slug != "1c" or destination.catalog != "discipline":
         raise ValueError("Статью можно скопировать только в дисциплину 1С.")
     audience = source_audience(source)
@@ -41,6 +41,8 @@ def copy_article_to_section(source: Article, destination: Section) -> Article:
         audience=audience,
         status=source.status,
         position=source.position,
+        created_by=actor,
+        updated_by=actor,
     )
     ContentBlock.objects.bulk_create([
         ContentBlock(

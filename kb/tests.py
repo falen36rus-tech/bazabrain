@@ -254,6 +254,8 @@ class KnowledgeBaseAccessTests(TestCase):
         self.assertEqual(copied.title_size, "large")
         self.assertTrue(copied.summary_is_rich)
         self.assertEqual(copied.status, source.status)
+        self.assertEqual(copied.created_by, self.owner)
+        self.assertEqual(copied.updated_by, self.owner)
         self.assertEqual(copied.blocks.count(), 2)
         self.assertEqual(copied.blocks.get(kind=ContentBlock.IMAGE).image.name, "images/example.png")
         self.assertEqual(copied.blocks.get(kind=ContentBlock.IMAGE).display_width, 65)
@@ -262,6 +264,8 @@ class KnowledgeBaseAccessTests(TestCase):
         self.assertEqual(source.section_id, self.public_section.pk)
         self.assertEqual(source.blocks.count(), 2)
         self.assertEqual(self.client.get(copied.get_absolute_url()).status_code, 200)
+        self.client.logout()
+        self.assertNotContains(self.client.get(copied.get_absolute_url()), self.owner.username)
 
     def test_copy_destination_must_be_editable_discipline(self):
         discipline = Section.objects.create(
@@ -483,12 +487,47 @@ class KnowledgeBaseAccessTests(TestCase):
         self.assertEqual(response.status_code, 302, response.context)
         self.public_article.refresh_from_db()
         self.assertEqual(self.public_article.summary, "Исправлено редактором")
+        self.assertEqual(self.public_article.updated_by, self.editor)
+        self.assertIsNone(self.public_article.created_by)
+        self.assertContains(self.client.get(article_url), self.editor.username)
         self.assertIn("Новый текст инструкции", self.public_article.search_text)
         self.assertEqual(Version.objects.get_for_object(self.public_article).count(), 1)
         block = self.public_article.blocks.get()
         self.assertEqual(Version.objects.get_for_object(block).count(), 1)
         history_url = reverse("admin:kb_article_history", args=[self.public_article.pk])
         self.assertEqual(self.client.get(history_url).status_code, 200)
+        self.client.logout()
+        self.assertNotContains(self.client.get(self.public_article.get_absolute_url()), self.editor.username)
+
+    def test_new_article_records_creator_only_in_admin(self):
+        self.client.force_login(self.owner)
+        response = self.client.post(reverse("admin:kb_article_add"), {
+            "section": self.public_section.pk,
+            "title": "Инструкция нового автора",
+            "slug": "new-authored-guide",
+            "summary": "Текст инструкции",
+            "title_size": "normal",
+            "title_alignment": "left",
+            "title_bold": "on",
+            "audience": AUDIENCE_STAFF,
+            "status": Article.PUBLISHED,
+            "position": 0,
+            "blocks-TOTAL_FORMS": 0,
+            "blocks-INITIAL_FORMS": 0,
+            "blocks-MIN_NUM_FORMS": 0,
+            "blocks-MAX_NUM_FORMS": 1000,
+            "attachments-TOTAL_FORMS": 0,
+            "attachments-INITIAL_FORMS": 0,
+            "attachments-MIN_NUM_FORMS": 0,
+            "attachments-MAX_NUM_FORMS": 1000,
+        })
+        self.assertEqual(response.status_code, 302, response.context)
+        article = Article.objects.get(slug="new-authored-guide")
+        self.assertEqual(article.created_by, self.owner)
+        self.assertEqual(article.updated_by, self.owner)
+        self.assertContains(self.client.get(reverse("admin:kb_article_change", args=[article.pk])), self.owner.username)
+        self.client.logout()
+        self.assertNotContains(self.client.get(article.get_absolute_url()), self.owner.username)
 
     def test_replaced_files_remain_available_for_revision_recovery(self):
         with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):

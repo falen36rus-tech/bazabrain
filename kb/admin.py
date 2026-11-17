@@ -86,15 +86,15 @@ class ArticleAdmin(VersionAdmin):
     form = ArticleRichForm
     change_form_template = "admin/kb/article/change_form.html"
     history_latest_first = True
-    list_display = ("title", "section", "status", "audience", "updated_at", "view_link")
+    list_display = ("title", "section", "status", "audience", "created_by", "updated_by", "updated_at", "view_link")
     list_filter = ("status", "audience", "section")
     search_fields = ("title", "summary", "search_text")
     ordering = ("section__title", "position", "title")
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = ("created_at", "updated_at", "created_by", "updated_by")
     fields = (
         "section", "title", ("title_size", "title_alignment"),
         ("title_bold", "title_italic"), "network_video_path", "featured_video_file", "featured_video_url", "slug", "summary",
-        "audience", "status", "position", "created_at", "updated_at",
+        "audience", "status", "position", "created_at", "created_by", "updated_at", "updated_by",
     )
     inlines = [ContentBlockInline, AttachmentInline]
 
@@ -135,7 +135,7 @@ class ArticleAdmin(VersionAdmin):
         form = CopyForm(request.POST or None)
         if request.method == "POST" and form.is_valid():
             try:
-                copied = copy_article_to_section(source, form.cleaned_data["destination"])
+                copied = copy_article_to_section(source, form.cleaned_data["destination"], request.user)
             except ValueError as exc:
                 form.add_error(None, str(exc))
             else:
@@ -177,6 +177,9 @@ class ArticleAdmin(VersionAdmin):
     def save_model(self, request, obj, form, change):
         if scoped_manager(request.user) and obj.section_id not in editable_section_ids(request.user):
             raise PermissionDenied
+        if not change:
+            obj.created_by = request.user
+        obj.updated_by = request.user
         super().save_model(request, obj, form, change)
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
