@@ -7,3 +7,11 @@
 .kb-rich-editor .ql-snow .ql-fill { fill: var(--body-fg, #333); }
 .kb-rich-editor .ql-snow .ql-picker { color: var(--body-fg, #333); }
 .kb-rich-editor .ql-snow .ql-picker-options { background: var(--body-bg, #fff); border-color: var(--border-color, #c5c5c5); }
+.kb-image-dropzone { box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: min(100%, 880px); padding: 12px; border: 2px dashed var(--border-color, #8fa7bd); border-radius: 7px; background: var(--darkened-bg, #f7f9fc); cursor: pointer; }
+.kb-image-dropzone:hover, .kb-image-dropzone:focus-visible, .kb-image-dropzone.kb-image-dragover { border-color: var(--link-fg, #2c7db3); background: var(--body-bg, #fff); outline: none; }
+.kb-image-instruction { color: var(--body-fg, #333); font-weight: 600; }
+.kb-image-dropzone input[type="file"] { max-width: 100%; cursor: pointer; }
+.kb-image-selection { color: var(--body-quiet-color, #667); }
+.kb-image-selection:empty, .kb-image-preview:empty { display: none; }
+.kb-image-preview { display: flex; flex-wrap: wrap; gap: 6px; }
+.kb-image-preview img { width: 74px; height: 58px; object-fit: cover; border: 1px solid var(--border-color, #c5c5c5); border-radius: 4px; }
