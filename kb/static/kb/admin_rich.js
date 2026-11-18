@@ -60,6 +60,21 @@
     document.querySelectorAll("textarea[data-kb-rich-editor]").forEach(initialize);
     document.querySelectorAll('.inline-related input[type="file"][name$="-image"]').forEach(initializeImageInput);
     document.querySelectorAll('.inline-related input[type="file"][name$="-extra_images"]').forEach(initializeImageInput);
+    document.querySelectorAll('.inline-related select[name$="-kind"]').forEach(updateBlockFields);
+  }
+
+  function updateBlockFields(kindSelect) {
+    const inline = kindSelect.closest(".inline-related");
+    if (!inline || inline.classList.contains("empty-form")) return;
+    const visible = {
+      text: ["text"], heading: ["text"], note: ["text"],
+      image: ["image", "extra_images", "display_width"],
+      rutube: ["video_url"],
+    }[kindSelect.value] || [];
+    for (const name of ["text", "image", "extra_images", "display_width", "video_url", "caption"]) {
+      const row = inline.querySelector(`.field-${name}`);
+      if (row) row.classList.toggle("kb-block-hidden", !visible.includes(name) && !row.querySelector(".errorlist"));
+    }
   }
 
   function imageFiles(files) {
@@ -102,17 +117,31 @@
     for (const url of zone._previewUrls || []) URL.revokeObjectURL(url);
     zone._previewUrls = [];
     preview.replaceChildren();
-    for (const file of Array.from(input.files).slice(0, 5)) {
+    for (const [index, file] of Array.from(input.files).entries()) {
       const url = URL.createObjectURL(file);
       zone._previewUrls.push(url);
       const thumb = document.createElement("img");
       thumb.src = url;
       thumb.alt = file.name;
-      preview.append(thumb);
+      const item = document.createElement("span");
+      item.className = "kb-image-preview-item";
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "kb-image-remove";
+      remove.textContent = "Удалить";
+      remove.setAttribute("aria-label", `Убрать изображение ${file.name}`);
+      remove.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const remaining = Array.from(input.files).filter((_, current) => current !== index);
+        if (remaining.length) setFiles(input, remaining);
+        else { input.value = ""; input.dispatchEvent(new Event("change", { bubbles: true })); }
+      });
+      item.append(thumb, remove);
+      preview.append(item);
     }
     const count = input.files.length;
     zone.querySelector(".kb-image-selection").textContent = count
-      ? `Выбрано изображений: ${count}${count > 5 ? " (показаны первые 5)" : ""}`
+      ? `Выбрано изображений: ${count}`
       : "";
   }
 
@@ -162,6 +191,10 @@
   new MutationObserver(initializeAll).observe(document.documentElement, { childList: true, subtree: true });
   document.addEventListener("change", (event) => {
     const input = event.target;
+    if (input instanceof HTMLSelectElement && input.name.endsWith("-kind")) {
+      updateBlockFields(input);
+      return;
+    }
     if (!(input instanceof HTMLInputElement) || input.type !== "file" || !input.files?.length) return;
     if (!/-(image|extra_images)$/.test(input.name)) return;
     const inline = input.closest(".inline-related");
