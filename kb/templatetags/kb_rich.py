@@ -16,5 +16,10 @@ def rich_content(value, is_rich):
 
 
 @register.filter
+def article_body(value):
+    return mark_safe(clean_rich_html(value, allow_images=True))
+
+
+@register.filter
 def plain_excerpt(value, is_rich):
     return " ".join((rich_plain_text(value) if is_rich else value or "").split())

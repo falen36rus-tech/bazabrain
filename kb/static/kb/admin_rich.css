@@ -19,3 +19,6 @@
 .kb-image-preview-item { display: flex; flex-direction: column; align-items: center; gap: 3px; max-width: 110px; }
 .kb-image-remove { padding: 2px 7px; border: 1px solid var(--border-color, #c5c5c5); border-radius: 4px; background: var(--body-bg, #fff); color: var(--body-fg, #222); cursor: pointer; }
 .kb-image-remove:hover { border-color: var(--link-fg, #2c7db3); }
+.kb-article-body-editor { width: min(100%, 1100px); }
+.kb-article-body-editor .ql-editor { min-height: 420px; }
+.kb-article-body-editor .ql-editor img { display: block; max-width: 100%; height: auto; margin: 14px 0; }

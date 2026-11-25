@@ -14,15 +14,16 @@
     textarea.dataset.kbRichReady = "1";
 
     const wrapper = document.createElement("div");
-    wrapper.className = "kb-rich-editor";
+    const articleBody = textarea.dataset.kbArticleBody === "1";
+    wrapper.className = `kb-rich-editor${articleBody ? " kb-article-body-editor" : ""}`;
     const editor = document.createElement("div");
     wrapper.append(editor);
     textarea.before(wrapper);
 
     const quill = new window.Quill(editor, {
       theme: "snow",
-      modules: { toolbar },
-      formats,
+      modules: { toolbar: articleBody ? [...toolbar, ["image"]] : toolbar },
+      formats: articleBody ? [...formats, "image"] : formats,
       placeholder: "Введите текст и выделите фрагмент для форматирования",
     });
     if (textarea.dataset.kbOriginalRich === "1") {
@@ -31,6 +32,16 @@
       quill.setText(textarea.value);
     }
     textarea.style.display = "none";
+    if (articleBody) {
+      const picker = document.createElement("input");
+      picker.type = "file";
+      picker.accept = "image/png,image/jpeg,image/webp,image/gif";
+      picker.multiple = true;
+      picker.hidden = true;
+      wrapper.append(picker);
+      picker.addEventListener("change", () => { insertArticleImages(quill, picker.files); picker.value = ""; });
+      quill.getModule("toolbar").addHandler("image", () => picker.click());
+    }
 
     const marker = document.createElement("input");
     marker.type = "hidden";
@@ -52,8 +63,29 @@
     }
 
     textarea.closest("form")?.addEventListener("submit", () => {
-      textarea.value = quill.getText().trim() ? quill.root.innerHTML : "";
+      if (articleBody) {
+        for (const image of quill.root.querySelectorAll("img")) {
+          const source = new URL(image.getAttribute("src"), window.location.href);
+          if (source.origin === window.location.origin && /^\/private\/article-image\/\d+\/$/.test(source.pathname)) {
+            image.setAttribute("src", source.pathname);
+          }
+        }
+      }
+      textarea.value = quill.getText().trim() || quill.root.querySelector("img") ? quill.root.innerHTML : "";
     });
+  }
+
+  function insertArticleImages(quill, files) {
+    for (const file of imageFiles(files)) {
+      if (file.size > 8 * 1024 * 1024) { alert("Скриншот должен быть меньше 8 МБ."); continue; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const index = quill.getSelection()?.index ?? Math.max(0, quill.getLength() - 1);
+        quill.insertEmbed(index, "image", reader.result, "user");
+        quill.setSelection(index + 1, 0, "silent");
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   function initializeAll() {
@@ -206,7 +238,7 @@
   document.addEventListener("dragover", (event) => {
     if (!Array.from(event.dataTransfer?.items || []).some((item) => item.kind === "file")) return;
     const zone = event.target.closest?.(".kb-image-dropzone");
-    if (!zone && !event.target.closest?.(".inline-related .ql-editor")) return;
+    if (!zone && !event.target.closest?.(".inline-related .ql-editor") && !event.target.closest?.(".kb-article-body-editor .ql-editor")) return;
     event.preventDefault();
     event.dataTransfer.dropEffect = "copy";
     zone?.classList.add("kb-image-dragover");
@@ -215,6 +247,12 @@
     event.target.closest?.(".kb-image-dropzone")?.classList.remove("kb-image-dragover");
   });
   document.addEventListener("drop", (event) => {
+    const bodyEditor = event.target.closest?.(".kb-article-body-editor .ql-editor");
+    if (bodyEditor && imageFiles(event.dataTransfer.files).length) {
+      event.preventDefault();
+      insertArticleImages(window.Quill.find(bodyEditor.closest(".ql-container")), event.dataTransfer.files);
+      return;
+    }
     const zone = event.target.closest?.(".kb-image-dropzone");
     const editor = event.target.closest?.(".inline-related .ql-editor");
     if (!zone && !editor) return;
@@ -225,6 +263,12 @@
       input ? (input.name.endsWith("-extra_images") ? "gallery" : "primary") : "auto");
   });
   document.addEventListener("paste", (event) => {
+    const bodyEditor = event.target.closest?.(".kb-article-body-editor .ql-editor");
+    if (bodyEditor && imageFiles(event.clipboardData?.files).length) {
+      event.preventDefault();
+      insertArticleImages(window.Quill.find(bodyEditor.closest(".ql-container")), event.clipboardData.files);
+      return;
+    }
     const inline = event.target.closest?.(".inline-related");
     if (!inline || !imageFiles(event.clipboardData?.files).length) return;
     const zoneInput = event.target.closest(".kb-image-dropzone")?.querySelector('input[type="file"]');

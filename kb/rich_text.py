@@ -8,6 +8,7 @@ import nh3
 
 
 TAGS = {"p", "br", "strong", "em", "u", "span"}
+_PRIVATE_IMAGE = re.compile(r'^/private/article-image/[0-9]+/$')
 CLASSES = {
     "p": {"ql-align-center", "ql-align-right", "ql-align-justify"},
     "span": {"ql-size-small", "ql-size-large", "ql-size-huge"},
@@ -23,14 +24,18 @@ _SIZED_BOLD_GAP = re.compile(
 )
 
 
-def clean_rich_html(value):
+def clean_rich_html(value, allow_images=False):
     cleaned = nh3.clean(
         value or "",
-        tags=TAGS,
-        attributes={},
+        tags=TAGS | ({"img"} if allow_images else set()),
+        attributes={"img": {"src", "alt"}} if allow_images else {},
         allowed_classes=CLASSES,
         clean_content_tags={"script", "style", "iframe", "svg", "math"},
     )
+    if allow_images:
+        cleaned = re.sub(r'<img\b[^>]*>', lambda match: match.group(0) if any(
+            _PRIVATE_IMAGE.fullmatch(src) for src in re.findall(r'\bsrc="([^"]*)"', match.group(0))
+        ) else '', cleaned)
     while True:
         normalized = _SIZED_BOLD_GAP.sub(
             lambda match: (
