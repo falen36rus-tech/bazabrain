@@ -34,6 +34,7 @@ def filled_article_filter():
     """A title alone is not enough to publish an article to anonymous visitors."""
     return (
         Q(summary__regex=r"\S")
+        | Q(body__regex=r"\S")
         | Q(featured_video_url__regex=r"\S")
         | ~Q(featured_video_file="")
         | ~Q(network_video_path="")

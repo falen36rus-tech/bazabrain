@@ -1,6 +1,7 @@
 """Behavioral checks for visibility and the RUTUBE embed boundary."""
 
 import json
+import base64
 import tempfile
 from io import BytesIO
 from pathlib import Path
@@ -23,6 +24,7 @@ from .models import (
     GROUP_EDITORS,
     GROUP_MANAGERS,
     Article,
+    ArticleInlineImage,
     Attachment,
     ContentBlock,
     Section,
@@ -756,46 +758,46 @@ class RichFormattingTests(TestCase):
         self.assertTrue(block_form.is_valid(), block_form.errors)
         self.assertTrue(block_form.save().text_is_rich)
 
-    def test_admin_can_delete_existing_text_block(self):
+    def test_new_editor_keeps_legacy_blocks_until_article_is_rewritten(self):
         block = ContentBlock.objects.create(
             article=self.article, kind=ContentBlock.TEXT, position=1,
             text='<p>Старый абзац</p>', text_is_rich=True,
         )
         self.client.force_login(self.owner)
-        response = self.client.post(reverse('admin:kb_article_change', args=[self.article.pk]), {
-            'section': self.section.pk,
-            'title': self.article.title,
-            'slug': self.article.slug,
-            'summary': self.article.summary,
-            'summary__rich': '1',
-            'network_video_path': '',
-            'featured_video_url': '',
-            'title_alignment': 'center',
-            'title_size': 'large',
-            'title_italic': 'on',
-            'audience': AUDIENCE_STAFF,
-            'status': Article.PUBLISHED,
-            'position': 0,
-            'blocks-TOTAL_FORMS': '1',
-            'blocks-INITIAL_FORMS': '1',
-            'blocks-MIN_NUM_FORMS': '0',
-            'blocks-MAX_NUM_FORMS': '1000',
-            'blocks-0-id': str(block.pk),
-            'blocks-0-article': str(self.article.pk),
-            'blocks-0-position': '1',
-            'blocks-0-kind': ContentBlock.TEXT,
-            'blocks-0-text': block.text,
-            'blocks-0-display_width': '100',
-            'blocks-0-DELETE': 'on',
-            'attachments-TOTAL_FORMS': '0',
-            'attachments-INITIAL_FORMS': '0',
-            'attachments-MIN_NUM_FORMS': '0',
-            'attachments-MAX_NUM_FORMS': '1000',
-            '_save': 'Сохранить',
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertFalse(ContentBlock.objects.filter(pk=block.pk).exists())
+        response = self.client.get(reverse('admin:kb_article_change', args=[self.article.pk]))
+        self.assertContains(response, 'data-kb-article-body="1"')
+        self.assertNotContains(response, 'blocks-TOTAL_FORMS')
+        self.article.body = '<p>Новый текст</p>'
+        self.article.body_is_rich = True
+        self.article.save(update_fields=['body', 'body_is_rich'])
+        response = self.client.get(self.article.get_absolute_url())
+        self.assertContains(response, 'Новый текст')
+        self.assertNotContains(response, 'Старый абзац')
+        self.assertTrue(ContentBlock.objects.filter(pk=block.pk).exists())
 
+    def test_article_body_rejects_external_images(self):
+        self.assertNotIn('<img', clean_rich_html('<p>Текст<img src="https://evil.example/a.png"></p>', allow_images=True))
+        self.assertIn('<img', clean_rich_html('<p><img src="/private/article-image/12/" alt="Скриншот"></p>', allow_images=True))
+
+    def test_article_editor_extracts_inline_image_and_private_access(self):
+        picture = BytesIO()
+        Image.new("RGB", (2, 2), "blue").save(picture, format="PNG")
+        encoded = base64.b64encode(picture.getvalue()).decode("ascii")
+        form = ArticleRichForm(data={
+            'section': self.section.pk, 'title': self.article.title, 'slug': self.article.slug,
+            'summary': self.article.summary, 'body': f'<p>Шаг 1<img src="data:image/png;base64,{encoded}"></p>',
+            'body__rich': '1', 'title_alignment': 'center', 'title_size': 'large',
+            'audience': AUDIENCE_STAFF, 'status': Article.PUBLISHED, 'position': 0,
+        }, instance=self.article)
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertEqual(len(form.pending_inline_images), 1)
+        self.assertNotIn('data:image', form.cleaned_data['body'])
+        with tempfile.TemporaryDirectory() as media_dir, override_settings(MEDIA_ROOT=media_dir):
+            image = ArticleInlineImage.objects.create(article=self.article, image=form.pending_inline_images[0][1])
+            self.article.body = f'<p>Шаг 1<img src="/private/article-image/{image.pk}/"></p>'
+            self.article.body_is_rich = True
+            self.article.save(update_fields=['body', 'body_is_rich'])
+            self.assertEqual(self.client.get(reverse('kb:private_article_image', args=[image.pk])).status_code, 200)
 
 class InitialTreeTests(TestCase):
     def test_service_catalog_and_disciplines(self):

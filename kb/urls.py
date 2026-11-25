@@ -13,6 +13,7 @@ urlpatterns = [
     path("sections/<str:slug>/", views.section_detail, name="section"),
     path("articles/<str:slug>/", views.article_detail, name="article"),
     path("private/image/<int:pk>/", views.private_file, name="private_file"),
+    path("private/article-image/<int:pk>/", views.private_article_image, name="private_article_image"),
     path("private/attachment/<int:pk>/", views.private_attachment, name="private_attachment"),
     path("private/video/<int:pk>/", views.private_video, name="private_video"),
 ]

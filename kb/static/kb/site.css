@@ -388,3 +388,4 @@ figure figcaption { margin-top: 9px; color: var(--muted); text-align: center; fo
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+.kb-article-body img { display: block; max-width: 100%; height: auto; margin: 20px 0; border-radius: 8px; cursor: zoom-in; }

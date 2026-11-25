@@ -116,6 +116,8 @@ class Article(models.Model):
     slug = models.SlugField("Адрес", max_length=200, unique=True, allow_unicode=True, blank=True)
     summary = models.TextField("Краткое описание", blank=True, help_text="Показывается в поиске и в списке статей.")
     summary_is_rich = models.BooleanField(default=False, editable=False)
+    body = models.TextField("Содержимое статьи", blank=True)
+    body_is_rich = models.BooleanField(default=False, editable=False)
     title_alignment = models.CharField(
         "Выравнивание заголовка", max_length=10, default="left",
         choices=[("left", "Слева"), ("center", "По центру"), ("right", "Справа"), ("justify", "По ширине")],
@@ -191,7 +193,8 @@ class Article(models.Model):
             return ""
 
     def rebuild_search_text(self):
-        pieces = [
+        pieces = [rich_plain_text(self.body) if self.body_is_rich else self.body]
+        pieces += [
             rich_plain_text(text) if is_rich else text
             for text, is_rich in self.blocks.exclude(text="").values_list("text", "text_is_rich")
         ]
@@ -200,6 +203,11 @@ class Article(models.Model):
         self.search_text = "\n".join(pieces)
         self.updated_at = timezone.now()
         self.save(update_fields=["search_text", "updated_at"])
+
+
+class ArticleInlineImage(models.Model):
+    article = models.ForeignKey(Article, related_name="inline_images", on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=image_upload_path, validators=[validate_upload_size])
 
 
 class ContentBlock(models.Model):

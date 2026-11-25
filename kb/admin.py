@@ -9,7 +9,8 @@ from django.utils.html import format_html
 from reversion.admin import VersionAdmin
 
 from .admin_rich import ArticleRichForm, ContentBlockRichForm, PrivateImageInput, SectionRichForm
-from .models import Article, Attachment, ContentBlock, Section
+from .models import Article, ArticleInlineImage, Attachment, ContentBlock, Section
+from .rich_text import clean_rich_html
 from .access import editable_section_ids
 from .copying import copy_article_to_section
 from .models import GROUP_EDITORS, GROUP_MANAGERS
@@ -93,10 +94,10 @@ class ArticleAdmin(VersionAdmin):
     readonly_fields = ("created_at", "updated_at", "created_by", "updated_by")
     fields = (
         "section", "title", ("title_size", "title_alignment"),
-        ("title_bold", "title_italic"), "network_video_path", "featured_video_file", "featured_video_url", "slug", "summary",
+        ("title_bold", "title_italic"), "network_video_path", "slug", "summary", "body",
         "audience", "status", "position", "created_at", "created_by", "updated_at", "updated_by",
     )
-    inlines = [ContentBlockInline, AttachmentInline]
+    inlines = [AttachmentInline]
 
     def get_urls(self):
         custom_urls = [
@@ -181,6 +182,13 @@ class ArticleAdmin(VersionAdmin):
             obj.created_by = request.user
         obj.updated_by = request.user
         super().save_model(request, obj, form, change)
+        if form.pending_inline_images:
+            body = obj.body
+            for token, file in form.pending_inline_images:
+                image = ArticleInlineImage.objects.create(article=obj, image=file)
+                body = body.replace(token, f'<img src="/private/article-image/{image.pk}/" alt="Скриншот">')
+            obj.body = clean_rich_html(body, allow_images=True)
+            obj.save(update_fields=["body"])
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)

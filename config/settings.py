@@ -111,6 +111,7 @@ VIDEO_LIBRARY_ROOT = Path(os.getenv("VIDEO_LIBRARY_ROOT", BASE_DIR / "video_libr
 MAX_UPLOAD_BYTES = 25 * 1024 * 1024
 MAX_VIDEO_UPLOAD_BYTES = 250 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
+DATA_UPLOAD_MAX_MEMORY_SIZE = 64 * 1024 * 1024
 
 # Keep tracebacks for failed production requests in the container log.
 # The default Django handler emails ADMINS and otherwise hides these errors.

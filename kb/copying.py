@@ -3,7 +3,7 @@
 from django.db import transaction
 
 from .models import (
-    AUDIENCE_STAFF, Article, Attachment, ContentBlock, Section,
+    AUDIENCE_STAFF, Article, ArticleInlineImage, Attachment, ContentBlock, Section,
 )
 
 
@@ -31,6 +31,8 @@ def copy_article_to_section(source: Article, destination: Section, actor) -> Art
         title=source.title,
         summary=source.summary,
         summary_is_rich=source.summary_is_rich,
+        body=source.body,
+        body_is_rich=source.body_is_rich,
         title_alignment=source.title_alignment,
         title_size=source.title_size,
         title_bold=source.title_bold,
@@ -44,6 +46,14 @@ def copy_article_to_section(source: Article, destination: Section, actor) -> Art
         created_by=actor,
         updated_by=actor,
     )
+    for image in source.inline_images.all():
+        copied_image = ArticleInlineImage.objects.create(article=copy, image=image.image.name)
+        copy.body = copy.body.replace(
+            f"/private/article-image/{image.pk}/",
+            f"/private/article-image/{copied_image.pk}/",
+        )
+    if source.inline_images.exists():
+        copy.save(update_fields=["body"])
     ContentBlock.objects.bulk_create([
         ContentBlock(
             article=copy,

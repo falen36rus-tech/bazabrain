@@ -11,7 +11,7 @@ from django.urls import reverse
 from .access import navigation_tree, visible_articles, visible_sections
 from .access import editable_section_ids
 from .catalog import SERVICES, SERVICE_NAMES
-from .models import Article, Attachment, ContentBlock
+from .models import Article, ArticleInlineImage, Attachment, ContentBlock
 from .rich_text import rich_plain_text
 from .search import search_articles, search_sections
 from .video_library import VIDEO_TYPES, video_path
@@ -162,6 +162,22 @@ def private_file(request, pk):
         raise Http404
     try:
         response = FileResponse(block.image.open("rb"), content_type=guessed_type)
+    except FileNotFoundError as exc:
+        raise Http404 from exc
+    response["Cache-Control"] = "private, no-store"
+    response["X-Content-Type-Options"] = "nosniff"
+    return response
+
+
+def private_article_image(request, pk):
+    image = get_object_or_404(ArticleInlineImage.objects.select_related("article"), pk=pk)
+    if not visible_articles(request.user).filter(pk=image.article_id).exists():
+        raise Http404
+    guessed_type = mimetypes.guess_type(image.image.name)[0]
+    if guessed_type not in {"image/jpeg", "image/png", "image/webp", "image/gif"}:
+        raise Http404
+    try:
+        response = FileResponse(image.image.open("rb"), content_type=guessed_type)
     except FileNotFoundError as exc:
         raise Http404 from exc
     response["Cache-Control"] = "private, no-store"

@@ -27,6 +27,8 @@
     </header>
 
     <div class="article-content" data-article-content>
+      {% if article.body %}<div class="article-text prose rich-content kb-article-body">{{ article.body|article_body }}</div>{% endif %}
+      {% if not article.body %}
       {% for item in display_blocks %}
         {% with block=item.block %}
         {% if block.kind == 'heading' %}
@@ -49,6 +51,7 @@
       {% empty %}
         {% if not article.summary and not article.featured_video_url and not article.featured_video_file and not article.network_video_path %}<div class="empty-state article-empty"><span class="empty-state-icon" aria-hidden="true">▤</span><h2>Материал пока не заполнен</h2></div>{% endif %}
       {% endfor %}
+      {% endif %}
     </div>
 
     {% if attachments %}
