@@ -388,4 +388,8 @@ figure figcaption { margin-top: 9px; color: var(--muted); text-align: center; fo
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
-.kb-article-body img { display: block; max-width: 100%; height: auto; margin: 20px 0; border-radius: 8px; cursor: zoom-in; }
+.kb-article-body img { display: block; max-width: 100%; height: auto; margin: 20px auto; border-radius: 8px; cursor: zoom-in; }
+.kb-article-body { overflow-x: auto; }
+.kb-article-body table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+.kb-article-body th, .kb-article-body td { border: 1px solid #b7c5d5; padding: 7px 10px; text-align: left; vertical-align: top; }
+.kb-article-body th { background: #eaf0f7; font-weight: 700; }

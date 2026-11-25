@@ -187,7 +187,7 @@ class ArticleAdmin(VersionAdmin):
             for token, file in form.pending_inline_images:
                 image = ArticleInlineImage.objects.create(article=obj, image=file)
                 body = body.replace(token, f'<img src="/private/article-image/{image.pk}/" alt="Скриншот">')
-            obj.body = clean_rich_html(body, allow_images=True)
+            obj.body = clean_rich_html(body, allow_images=True, allow_tables=True)
             obj.save(update_fields=["body"])
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):

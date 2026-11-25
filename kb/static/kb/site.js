@@ -205,6 +205,20 @@
 
   const lightbox = document.querySelector("[data-lightbox]");
   if (lightbox) {
+    document.querySelectorAll(".kb-article-body img").forEach((inlineImage) => {
+      inlineImage.dataset.lightboxOpen = "";
+      inlineImage.dataset.lightboxSrc = inlineImage.currentSrc || inlineImage.src;
+      inlineImage.dataset.lightboxCaption = inlineImage.alt || "Скриншот статьи";
+      inlineImage.setAttribute("role", "button");
+      inlineImage.setAttribute("aria-label", "Открыть скриншот для увеличения");
+      inlineImage.tabIndex = 0;
+      inlineImage.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          inlineImage.click();
+        }
+      });
+    });
     const image = lightbox.querySelector("[data-lightbox-image]");
     const caption = lightbox.querySelector("[data-lightbox-caption]");
     const stage = lightbox.querySelector(".lightbox-stage");

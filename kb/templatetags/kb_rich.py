@@ -17,7 +17,7 @@ def rich_content(value, is_rich):
 
 @register.filter
 def article_body(value):
-    return mark_safe(clean_rich_html(value, allow_images=True))
+    return mark_safe(clean_rich_html(value, allow_images=True, allow_tables=True))
 
 
 @register.filter

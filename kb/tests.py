@@ -712,6 +712,43 @@ class RichFormattingTests(TestCase):
         self.assertNotIn('<img', clean_rich_html('<p>Текст<img src="https://evil.example/a.png"></p>', allow_images=True))
         self.assertIn('<img', clean_rich_html('<p><img src="/private/article-image/12/" alt="Скриншот"></p>', allow_images=True))
 
+    def test_article_table_keeps_cells_and_drops_unsafe_markup(self):
+        source = (
+            '<table onclick="alert(1)"><tbody><tr>'
+            '<td data-row="row-1" style="color:red">Название</td>'
+            '<td data-row="row-1">Назначение</td></tr>'
+            '<tr><td data-row="row-2">电缆名称</td>'
+            '<td data-row="row-2"><strong>Обозначение кабеля</strong></td></tr>'
+            '</tbody></table><script>alert(2)</script>'
+        )
+        cleaned = clean_rich_html(source, allow_images=True, allow_tables=True)
+        self.assertIn('<table>', cleaned)
+        self.assertEqual(cleaned.count('<tr>'), 2)
+        self.assertEqual(cleaned.count('<td'), 4)
+        self.assertIn('data-row="row-1"', cleaned)
+        self.assertIn('<strong>Обозначение кабеля</strong>', cleaned)
+        self.assertNotIn('onclick', cleaned)
+        self.assertNotIn('style=', cleaned)
+        self.assertNotIn('script', cleaned)
+        self.assertEqual(rich_plain_text(cleaned), 'Название Назначение \n电缆名称 Обозначение кабеля')
+
+    def test_mislabeled_pasted_image_keeps_original_bytes(self):
+        picture = BytesIO()
+        Image.new("RGB", (3, 2), "blue").save(picture, format="PNG")
+        original = picture.getvalue()
+        encoded = base64.b64encode(original).decode("ascii")
+        form = ArticleRichForm(data={
+            'section': self.section.pk, 'title': self.article.title, 'slug': self.article.slug,
+            'summary': self.article.summary,
+            'body': f'<p>Текст и скриншот<img src="data:image/jpeg;base64,{encoded}"></p>',
+            'body__rich': '1', 'title_alignment': 'center', 'title_size': 'large',
+            'audience': AUDIENCE_STAFF, 'status': Article.PUBLISHED, 'position': 0,
+        }, instance=self.article)
+        self.assertTrue(form.is_valid(), form.errors)
+        pending = form.pending_inline_images[0][1]
+        self.assertTrue(pending.name.endswith('.png'))
+        self.assertEqual(pending.read(), original)
+
     def test_article_editor_extracts_inline_image_and_private_access(self):
         picture = BytesIO()
         Image.new("RGB", (2, 2), "blue").save(picture, format="PNG")

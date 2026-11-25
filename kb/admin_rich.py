@@ -102,7 +102,7 @@ class ArticleRichForm(RichTextFormMixin, forms.ModelForm):
         raw = cleaned.get("body") or ""
         if self.data.get(f"{self.add_prefix('body')}__rich") == "1" or self.instance.body_is_rich:
             def capture(match):
-                mime, encoded = match.group(1), match.group(2)
+                _, encoded = match.group(1), match.group(2)
                 try:
                     data = base64.b64decode(encoded, validate=True)
                 except (ValueError, binascii.Error):
@@ -111,13 +111,15 @@ class ArticleRichForm(RichTextFormMixin, forms.ModelForm):
                     raise forms.ValidationError("Изображение в тексте не должно превышать 8 МБ.")
                 try:
                     with Image.open(BytesIO(data)) as picture:
-                        if picture.format != {"png": "PNG", "jpeg": "JPEG", "webp": "WEBP", "gif": "GIF"}[mime]:
-                            raise forms.ValidationError("Формат скриншота не совпадает с содержимым файла.")
+                        actual_format = picture.format
+                        if actual_format not in {"PNG", "JPEG", "WEBP", "GIF"}:
+                            raise forms.ValidationError("Поддерживаются скриншоты PNG, JPEG, WebP и GIF.")
                         picture.verify()
                 except (UnidentifiedImageError, OSError) as exc:
                     raise forms.ValidationError("Некорректное изображение в тексте.") from exc
                 token = f"KBINLINEIMAGE{uuid.uuid4().hex}"
-                self.pending_inline_images.append((token, ContentFile(data, name=f"{token}.{mime.replace('jpeg', 'jpg')}")))
+                extension = {"PNG": "png", "JPEG": "jpg", "WEBP": "webp", "GIF": "gif"}[actual_format]
+                self.pending_inline_images.append((token, ContentFile(data, name=f"{token}.{extension}")))
                 return token
             def replace_image(match):
                 source = re.search(r'\bsrc="data:image/(png|jpeg|webp|gif);base64,([A-Za-z0-9+/=]+)"', match.group(0))
@@ -126,7 +128,7 @@ class ArticleRichForm(RichTextFormMixin, forms.ModelForm):
                 raw = re.sub(r'<img\b[^>]*>', replace_image, raw)
             except forms.ValidationError as exc:
                 self.add_error("body", exc)
-            cleaned["body"] = clean_rich_html(raw, allow_images=True)
+            cleaned["body"] = clean_rich_html(raw, allow_images=True, allow_tables=True)
             self.instance.body_is_rich = True
         return cleaned
 
