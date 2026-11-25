@@ -194,8 +194,8 @@ class ArticleAdmin(VersionAdmin):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name == "summary" and field is not None:
             field.help_text = (
-                "Короткий анонс для списка и поиска. Полную инструкцию с шагами, "
-                "скриншотами и видео добавляйте ниже в «Содержимое статьи» отдельными блоками."
+                "Короткий анонс для списка и поиска. Полную инструкцию с текстом "
+                "и скриншотами добавляйте ниже в одно поле «Содержимое статьи»."
             )
         return field
 

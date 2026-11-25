@@ -28,7 +28,7 @@
 
     <div class="article-content" data-article-content>
       {% if article.body %}<div class="article-text prose rich-content kb-article-body">{{ article.body|article_body }}</div>{% endif %}
-      {% if not article.body %}
+      {% if not article.body_is_rich %}
       {% for item in display_blocks %}
         {% with block=item.block %}
         {% if block.kind == 'heading' %}

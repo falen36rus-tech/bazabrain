@@ -704,6 +704,9 @@ class RichFormattingTests(TestCase):
         self.assertContains(response, 'Новый текст')
         self.assertNotContains(response, 'Старый абзац')
         self.assertTrue(ContentBlock.objects.filter(pk=block.pk).exists())
+        self.article.body = ''
+        self.article.save(update_fields=['body'])
+        self.assertNotContains(self.client.get(self.article.get_absolute_url()), 'Старый абзац')
 
     def test_article_body_rejects_external_images(self):
         self.assertNotIn('<img', clean_rich_html('<p>Текст<img src="https://evil.example/a.png"></p>', allow_images=True))
