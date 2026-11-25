@@ -21,4 +21,7 @@
 .kb-image-remove:hover { border-color: var(--link-fg, #2c7db3); }
 .kb-article-body-editor { width: min(100%, 1100px); }
 .kb-article-body-editor .ql-editor { min-height: 420px; }
-.kb-article-body-editor .ql-editor img { display: block; max-width: 100%; height: auto; margin: 14px 0; }
+.kb-article-body-editor .ql-editor img { display: block; max-width: 100%; height: auto; margin: 14px auto; }
+.kb-article-body-editor .ql-editor table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+.kb-article-body-editor .ql-editor th,
+.kb-article-body-editor .ql-editor td { border: 1px solid var(--border-color, #8fa7bd); padding: 6px 9px; text-align: left; vertical-align: top; }

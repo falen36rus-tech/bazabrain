@@ -8,6 +8,7 @@ import nh3
 
 
 TAGS = {"p", "br", "strong", "em", "u", "span"}
+TABLE_TAGS = {"table", "thead", "tbody", "tr", "th", "td"}
 _PRIVATE_IMAGE = re.compile(r'^/private/article-image/[0-9]+/$')
 CLASSES = {
     "p": {"ql-align-center", "ql-align-right", "ql-align-justify"},
@@ -24,11 +25,14 @@ _SIZED_BOLD_GAP = re.compile(
 )
 
 
-def clean_rich_html(value, allow_images=False):
+def clean_rich_html(value, allow_images=False, allow_tables=False):
     cleaned = nh3.clean(
         value or "",
-        tags=TAGS | ({"img"} if allow_images else set()),
-        attributes={"img": {"src", "alt"}} if allow_images else {},
+        tags=TAGS | ({"img"} if allow_images else set()) | (TABLE_TAGS if allow_tables else set()),
+        attributes={
+            **({"img": {"src", "alt"}} if allow_images else {}),
+            **({"td": {"data-row"}} if allow_tables else {}),
+        },
         allowed_classes=CLASSES,
         clean_content_tags={"script", "style", "iframe", "svg", "math"},
     )
@@ -62,6 +66,10 @@ class _TextExtractor(HTMLParser):
     def handle_endtag(self, tag):
         if tag == "p":
             self.parts.append("\n")
+        elif tag in {"th", "td"}:
+            self.parts.append(" ")
+        elif tag == "tr":
+            self.parts.append("\n")
 
     def handle_data(self, data):
         self.parts.append(data)
@@ -69,5 +77,5 @@ class _TextExtractor(HTMLParser):
 
 def rich_plain_text(value):
     parser = _TextExtractor()
-    parser.feed(clean_rich_html(value))
+    parser.feed(clean_rich_html(value, allow_tables=True))
     return unescape("".join(parser.parts)).strip()

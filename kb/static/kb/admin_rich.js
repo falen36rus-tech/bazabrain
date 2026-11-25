@@ -22,8 +22,8 @@
 
     const quill = new window.Quill(editor, {
       theme: "snow",
-      modules: { toolbar: articleBody ? [...toolbar, ["image"]] : toolbar },
-      formats: articleBody ? [...formats, "image"] : formats,
+      modules: { toolbar: articleBody ? [...toolbar, ["image"]] : toolbar, table: articleBody },
+      formats: articleBody ? [...formats, "image", "table"] : formats,
       placeholder: "Введите текст и выделите фрагмент для форматирования",
     });
     if (textarea.dataset.kbOriginalRich === "1") {
@@ -85,6 +85,45 @@
         quill.setSelection(index + 1, 0, "silent");
       };
       reader.readAsDataURL(file);
+    }
+  }
+
+  function readImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function pasteArticleContent(quill, html, plainText, files, index) {
+    try {
+      const sources = await Promise.all(files.map(readImage));
+      let content;
+      if (html) {
+        const document = new DOMParser().parseFromString(html, "text/html");
+        const images = [...document.body.querySelectorAll("img")];
+        images.forEach((image, position) => {
+          if (sources[position]) image.setAttribute("src", sources[position]);
+        });
+        for (const source of sources.slice(images.length)) {
+          const paragraph = document.createElement("p");
+          const image = document.createElement("img");
+          image.src = source;
+          paragraph.append(image);
+          document.body.append(paragraph);
+        }
+        content = document.body.innerHTML;
+      } else {
+        const safeText = document.createElement("div");
+        safeText.textContent = plainText;
+        content = `<p>${safeText.innerHTML.replace(/\r?\n/g, "<br>")}</p>`
+          + sources.map((source) => `<p><img src="${source}"></p>`).join("");
+      }
+      quill.clipboard.dangerouslyPasteHTML(index, content, "user");
+    } catch (error) {
+      alert("Не удалось вставить скриншот из буфера. Попробуйте выбрать файл вручную.");
     }
   }
 
@@ -264,9 +303,17 @@
   });
   document.addEventListener("paste", (event) => {
     const bodyEditor = event.target.closest?.(".kb-article-body-editor .ql-editor");
-    if (bodyEditor && imageFiles(event.clipboardData?.files).length) {
+    const clipboardHtml = event.clipboardData?.getData("text/html") || "";
+    const files = imageFiles(event.clipboardData?.files);
+    if (bodyEditor && files.length) {
       event.preventDefault();
-      insertArticleImages(window.Quill.find(bodyEditor.closest(".ql-container")), event.clipboardData.files);
+      if (files.some((file) => file.size > 8 * 1024 * 1024)) {
+        alert("Каждый скриншот должен быть меньше 8 МБ.");
+        return;
+      }
+      const quill = window.Quill.find(bodyEditor.closest(".ql-container"));
+      const index = quill.getSelection()?.index ?? Math.max(0, quill.getLength() - 1);
+      pasteArticleContent(quill, clipboardHtml, event.clipboardData?.getData("text/plain") || "", files, index);
       return;
     }
     const inline = event.target.closest?.(".inline-related");
