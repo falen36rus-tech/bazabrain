@@ -63,6 +63,14 @@
     }
 
     textarea.closest("form")?.addEventListener("submit", () => {
+      if (articleBody) {
+        for (const image of quill.root.querySelectorAll("img")) {
+          const source = new URL(image.getAttribute("src"), window.location.href);
+          if (source.origin === window.location.origin && /^\/private\/article-image\/\d+\/$/.test(source.pathname)) {
+            image.setAttribute("src", source.pathname);
+          }
+        }
+      }
       textarea.value = quill.getText().trim() || quill.root.querySelector("img") ? quill.root.innerHTML : "";
     });
   }
