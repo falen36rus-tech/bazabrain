@@ -8,7 +8,7 @@ from django.http import FileResponse, Http404, HttpResponse, JsonResponse, Strea
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from .access import navigation_tree, visible_articles, visible_sections
+from .access import filled_article_filter, navigation_tree, visible_articles, visible_sections
 from .access import editable_section_ids
 from .catalog import SERVICES, SERVICE_NAMES
 from .models import Article, ArticleInlineImage, Attachment, ContentBlock
@@ -62,7 +62,7 @@ def catalog_home(request, service_slug, catalog):
     context.update(
         sections=[section for section in sections if section.parent_id is None],
         recent_articles=list(filled_articles.only("id", "title", "slug", "section_id", "updated_at", "section__title").order_by("-updated_at")[:6]),
-        article_count=articles.count(),
+        article_count=articles.filter(filled_article_filter()).distinct().count(),
     )
     return render(request, "kb/home.html", context)
 

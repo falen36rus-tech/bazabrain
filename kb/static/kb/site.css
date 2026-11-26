@@ -200,6 +200,13 @@ svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; strok
 .empty-state-icon { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 8px; border-radius: 13px; background: var(--blue-soft); color: var(--blue); font-size: 27px; line-height: 1; }
 .empty-state h2, .empty-state h3 { margin: 7px 0 5px; font-size: 15px; }
 .empty-state p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.work-in-progress { max-width: 810px; margin-top: 28px; padding: 34px; border: 1px solid #d7e3f0; border-radius: 18px; background: #fff; box-shadow: var(--shadow); }
+.work-in-progress-icon { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 15px; background: var(--blue-soft); color: var(--blue); }
+.work-in-progress-icon svg { width: 31px; height: 31px; }
+.work-in-progress h2 { margin: 28px 0 15px; font-size: clamp(22px, 2.4vw, 26px); line-height: 1.2; letter-spacing: -.035em; }
+.work-in-progress > p { max-width: 680px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+.work-in-progress-contact { display: grid; justify-items: start; gap: 12px; margin-top: 25px; padding-top: 24px; border-top: 1px solid var(--line); color: #344259; font-size: 14px; line-height: 1.5; }
+.work-in-progress-contact strong { padding: 8px 13px; border-radius: 8px; background: var(--accent-soft); color: #137d7a; font-size: 13px; }
 .search-page-header { padding-bottom: 25px; }
 .search-result-list { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .search-result { display: grid; gap: 7px; padding: 21px 24px; }
@@ -375,6 +382,7 @@ figure figcaption { margin-top: 9px; color: var(--muted); text-align: center; fo
   .home-heading-actions { justify-content: space-between; margin-top: 16px; }
   .section-card-grid, .recent-articles, .subsection-grid { grid-template-columns: 1fr; }
   .section-card { min-height: 175px; }
+  .work-in-progress { padding: 24px; }
   .section-heading-row { margin-top: 32px; }
   .page-header { display: block; }
   .page-header .secondary-button { margin-top: 18px; }

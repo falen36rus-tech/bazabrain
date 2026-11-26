@@ -88,7 +88,7 @@ def visible_articles(user, sections=None) -> QuerySet[Article]:
         section_id__in=section_ids,
         audience__in=allowed_audiences(user),
     )
-    if not user.is_authenticated:
+    if not user.is_staff:
         queryset = queryset.filter(filled_article_filter()).distinct()
     return queryset.select_related("section")
 
