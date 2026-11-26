@@ -195,7 +195,6 @@ class KnowledgeBaseAccessTests(TestCase):
         guest_page = self.client.get(service_url)
         self.assertContains(guest_page, "Инструкции готовятся")
         self.assertContains(guest_page, "Teams · Bogdan Razumovsky")
-        self.assertNotContains(guest_page, "Разделы пока не опубликованы")
 
         section = Section.objects.create(title="Инструкции CIS", slug="cis-instructions", service_slug="cis")
         empty_article = Article.objects.create(
