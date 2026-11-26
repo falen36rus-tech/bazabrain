@@ -190,6 +190,34 @@ class KnowledgeBaseAccessTests(TestCase):
         suggestions = self.client.get(reverse("kb:suggest"), {"q": "Пустая"})
         self.assertEqual(suggestions.json()["results"], [])
 
+    def test_empty_service_shows_guidance_until_instruction_is_filled(self):
+        service_url = reverse("kb:service", args=["cis"])
+        guest_page = self.client.get(service_url)
+        self.assertContains(guest_page, "Инструкции готовятся")
+        self.assertContains(guest_page, "Teams · Bogdan Razumovsky")
+
+        section = Section.objects.create(title="Инструкции CIS", slug="cis-instructions", service_slug="cis")
+        empty_article = Article.objects.create(
+            title="Пустая инструкция CIS", slug="empty-cis-instruction", section=section,
+            status=Article.PUBLISHED,
+        )
+        self.client.force_login(self.staff)
+        reader_page = self.client.get(service_url)
+        self.assertContains(reader_page, "Инструкции готовятся")
+        self.assertNotContains(reader_page, empty_article.title)
+
+        self.client.force_login(self.owner)
+        editor_page = self.client.get(service_url)
+        self.assertNotContains(editor_page, "Инструкции готовятся")
+        self.assertContains(editor_page, empty_article.title)
+
+        empty_article.summary = "Готовая инструкция по CIS"
+        empty_article.save(update_fields=["summary"])
+        self.client.logout()
+        filled_page = self.client.get(service_url)
+        self.assertNotContains(filled_page, "Инструкции готовятся")
+        self.assertContains(filled_page, empty_article.title)
+
     def test_regular_user_has_no_edit_controls(self):
         self.client.force_login(self.staff)
         self.assertNotContains(self.client.get(self.public_article.get_absolute_url()), "Редактировать")
