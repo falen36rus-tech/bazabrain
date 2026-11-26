@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>{% block title %}{{ site_name|default:"База знаний 1С" }}{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'kb/site.css' %}?v=20261114-centered-search">
+  <link rel="stylesheet" href="{% static 'kb/site.css' %}?v=20261126-service-help">
   <script src="{% static 'kb/site.js' %}?v=20261001-tree" defer></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -46,6 +46,7 @@
       </div>
 
       <div class="header-actions">
+        <a class="header-help" href="{% url 'kb:service_help' service_slug|default:'1c' %}" aria-label="Справка по {{ current_service|default:'1С' }}" title="Справка по {{ current_service|default:'1С' }}">?</a>
         {% if user.is_authenticated %}
           <details class="account-menu">
             <summary class="account-trigger" aria-label="Меню пользователя">

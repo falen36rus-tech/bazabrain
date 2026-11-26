@@ -5,7 +5,7 @@ from pathlib import Path
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse, StreamingHttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from .access import filled_article_filter, navigation_tree, visible_articles, visible_sections
@@ -24,7 +24,7 @@ def base_context(request, *, sections=None, articles=None, service_slug="1c", ca
     sections = visible_sections(request.user) if sections is None else sections
     sections = [section for section in sections if section.service_slug == service_slug and section.catalog == catalog]
     current_service = SERVICE_NAMES.get(service_slug, SERVICE_NAMES["1c"])
-    home_url = reverse("kb:disciplines") if catalog == "discipline" else (reverse("kb:home") if service_slug == "1c" else reverse("kb:service", args=[service_slug]))
+    home_url = reverse("kb:disciplines") if catalog == "discipline" else (reverse("kb:home") if service_slug == "1c" else reverse("kb:service_catalog", args=[service_slug]))
     return {
         "site_name": SITE_NAME if service_slug == "1c" else f"База знаний · {current_service}",
         "services": SERVICES,
@@ -47,7 +47,27 @@ def home(request):
 def service_home(request, slug):
     if slug not in SERVICE_NAMES or slug == "1c":
         raise Http404
+    return service_help(request, slug)
+
+
+def service_catalog(request, slug):
+    if slug not in SERVICE_NAMES or slug == "1c":
+        raise Http404
     return catalog_home(request, slug, "main")
+
+
+def service_help(request, slug):
+    if slug not in SERVICE_NAMES:
+        raise Http404
+    guide = visible_articles(request.user).filter(
+        help_for_service=slug,
+    ).filter(filled_article_filter()).first()
+    if guide is not None:
+        return redirect("kb:article", slug=guide.slug)
+    if any(section.service_slug == slug and section.catalog == "main" for section in visible_sections(request.user)):
+        return catalog_home(request, slug, "main")
+    context = base_context(request, sections=[], service_slug=slug)
+    return render(request, "kb/service_help.html", context)
 
 
 def discipline_home(request):

@@ -82,7 +82,9 @@ svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; strok
 .suggestion-empty, .suggestion-more { padding: 10px 12px; color: var(--muted); font-size: 12px; }
 .suggestion-more { display: block; border-top: 1px solid var(--line); color: var(--blue); font-weight: 650; }
 .suggestion-more:hover { color: var(--navy); }
-.header-actions { display: flex; align-items: center; justify-self: end; height: 100%; padding-right: 32px; }
+.header-actions { display: flex; align-items: center; justify-self: end; gap: 14px; height: 100%; padding-right: 32px; }
+.header-help { display: grid; place-items: center; width: 34px; height: 34px; flex: none; border: 1px solid var(--line-strong); border-radius: 9px; color: var(--navy); background: #fff; font-size: 18px; font-weight: 700; line-height: 1; }
+.header-help:hover, .header-help:focus-visible { border-color: #a9c7ee; background: var(--blue-soft); }
 .account-menu { position: relative; }
 .account-trigger { display: flex; align-items: center; gap: 9px; list-style: none; cursor: pointer; }
 .account-trigger::-webkit-details-marker { display: none; }
@@ -207,6 +209,18 @@ svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; strok
 .work-in-progress > p { max-width: 680px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
 .work-in-progress-contact { display: grid; justify-items: start; gap: 12px; margin-top: 25px; padding-top: 24px; border-top: 1px solid var(--line); color: #344259; font-size: 14px; line-height: 1.5; }
 .work-in-progress-contact strong { padding: 8px 13px; border-radius: 8px; background: var(--accent-soft); color: #137d7a; font-size: 13px; }
+.service-help-page { max-width: 820px; margin: 42px auto 0; }
+.service-help-page > h1 { margin: 14px 0 28px; font-size: clamp(32px, 3.2vw, 44px); line-height: 1.15; letter-spacing: -.04em; }
+.service-help-placeholder { padding: 34px; border: 1px solid var(--line-strong); border-radius: 18px; background: #fff; box-shadow: var(--shadow); }
+.service-help-placeholder-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--blue-soft); color: var(--blue); font-size: 24px; font-weight: 700; }
+.service-help-placeholder h2 { margin: 24px 0 10px; font-size: 24px; letter-spacing: -.03em; }
+.service-help-placeholder p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+.service-help-contact { margin-top: 22px !important; padding-top: 20px; border-top: 1px solid var(--line); }
+.service-help-contact strong { color: var(--ink); }
+.service-help-admin-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.service-help-admin-actions a { padding: 9px 13px; border-radius: 8px; background: var(--blue-soft); color: var(--navy); font-size: 13px; font-weight: 700; }
+.service-help-admin-actions a:hover { background: #d9e9ff; }
+.service-help-admin-tip { margin-top: 12px !important; font-size: 12px !important; }
 .search-page-header { padding-bottom: 25px; }
 .search-result-list { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .search-result { display: grid; gap: 7px; padding: 21px 24px; }

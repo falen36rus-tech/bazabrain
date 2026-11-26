@@ -1,0 +1,21 @@
+{% extends 'kb/base.html' %}
+{% block title %}Справка · {{ current_service }}{% endblock %}
+{% block content %}
+<div class="service-help-page">
+  <span class="eyebrow">{{ current_service }}</span>
+  <h1>Справка по {{ current_service }}</h1>
+  <div class="service-help-placeholder">
+    <span class="service-help-placeholder-icon" aria-hidden="true">?</span>
+    <h2>Инструкции готовятся</h2>
+    <p>Здесь появится инструкция по работе с {{ current_service }}. Проверяйте страницу — мы добавляем материалы по мере готовности.</p>
+    <p class="service-help-contact">Если у вас есть готовая инструкция, поделитесь ею: <strong>Teams · Bogdan Razumovsky</strong>.</p>
+    {% if user.is_superuser %}
+      <div class="service-help-admin-actions">
+        <a href="{% url 'admin:kb_section_add' %}">Создать раздел</a>
+        <a href="{% url 'admin:kb_article_add' %}">Добавить статью справки</a>
+      </div>
+      <p class="service-help-admin-tip">В статье выберите этот сервис в поле «Справка сервиса» и опубликуйте её для всех посетителей.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

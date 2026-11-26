@@ -93,7 +93,7 @@ class ArticleAdmin(VersionAdmin):
     ordering = ("section__title", "position", "title")
     readonly_fields = ("created_at", "updated_at", "created_by", "updated_by")
     fields = (
-        "section", "title", ("title_size", "title_alignment"),
+        "section", "help_for_service", "title", ("title_size", "title_alignment"),
         ("title_bold", "title_italic"), "network_video_path", "slug", "summary", "body",
         "audience", "status", "position", "created_at", "created_by", "updated_at", "updated_by",
     )
