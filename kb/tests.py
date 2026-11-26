@@ -208,7 +208,7 @@ class KnowledgeBaseAccessTests(TestCase):
 
         self.client.force_login(self.owner)
         editor_page = self.client.get(service_url)
-        self.assertNotContains(editor_page, "Инструкции готовятся")
+        self.assertContains(editor_page, "Инструкции готовятся")
         self.assertContains(editor_page, empty_article.title)
 
         empty_article.summary = "Готовая инструкция по CIS"
