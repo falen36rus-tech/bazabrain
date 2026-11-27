@@ -112,6 +112,10 @@ class Article(models.Model):
     STATUSES = [(DRAFT, "Черновик"), (PUBLISHED, "Опубликована")]
 
     section = models.ForeignKey(Section, verbose_name="Раздел", related_name="articles", on_delete=models.PROTECT)
+    help_for_service = models.CharField(
+        "Справка сервиса", max_length=40, blank=True, choices=SERVICES,
+        help_text="Выберите сервис, если эта статья должна открываться по значку ? и ссылке «Инструкция» на портале.",
+    )
     title = models.CharField("Заголовок", max_length=240)
     slug = models.SlugField("Адрес", max_length=200, unique=True, allow_unicode=True, blank=True)
     summary = models.TextField("Краткое описание", blank=True, help_text="Показывается в поиске и в списке статей.")
@@ -160,6 +164,12 @@ class Article(models.Model):
         verbose_name = "Статья"
         verbose_name_plural = "Статьи"
         ordering = ["position", "title"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["help_for_service"], condition=~models.Q(help_for_service=""),
+                name="kb_one_help_article_per_service",
+            ),
+        ]
 
     def __str__(self):
         return self.title
@@ -174,6 +184,16 @@ class Article(models.Model):
 
     def clean(self):
         super().clean()
+        if self.help_for_service:
+            if self.section_id and self.section.service_slug != self.help_for_service:
+                raise ValidationError({"help_for_service": "Справка должна находиться в разделе выбранного сервиса."})
+            if self.audience != AUDIENCE_STAFF:
+                raise ValidationError({"audience": "Справка сервиса должна быть доступна всем посетителям."})
+            ancestor = self.section if self.section_id else None
+            while ancestor is not None:
+                if ancestor.audience != AUDIENCE_STAFF:
+                    raise ValidationError({"section": "Раздел справки и его родительские разделы должны быть доступны всем посетителям."})
+                ancestor = ancestor.parent
         if self.network_video_path:
             from .video_library import video_path
             video_path(self.network_video_path)

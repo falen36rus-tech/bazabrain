@@ -203,12 +203,13 @@ class KnowledgeBaseAccessTests(TestCase):
         )
         self.client.force_login(self.staff)
         reader_page = self.client.get(service_url)
-        self.assertContains(reader_page, "Инструкции готовятся")
+        self.assertNotContains(reader_page, "Инструкции готовятся")
+        self.assertContains(reader_page, section.title)
         self.assertNotContains(reader_page, empty_article.title)
 
         self.client.force_login(self.owner)
         editor_page = self.client.get(service_url)
-        self.assertContains(editor_page, "Инструкции готовятся")
+        self.assertNotContains(editor_page, "Инструкции готовятся")
         self.assertContains(editor_page, empty_article.title)
 
         empty_article.summary = "Готовая инструкция по CIS"
@@ -217,6 +218,33 @@ class KnowledgeBaseAccessTests(TestCase):
         filled_page = self.client.get(service_url)
         self.assertNotContains(filled_page, "Инструкции готовятся")
         self.assertContains(filled_page, empty_article.title)
+
+    def test_service_help_icon_opens_public_guide_for_current_service(self):
+        service_url = reverse("kb:service", args=["cis"])
+        help_url = reverse("kb:service_help", args=["cis"])
+        self.assertContains(self.client.get(service_url), 'href="' + help_url + '"')
+        self.assertEqual(self.client.get(reverse("kb:service_help", args=["unknown"])).status_code, 404)
+
+        section = Section.objects.create(title="Инструкция CIS", service_slug="cis")
+        guide = Article.objects.create(
+            title="Как работать с CIS", section=section, help_for_service="cis",
+            body="Порядок работы в сервисе CIS", status=Article.PUBLISHED,
+        )
+        self.assertRedirects(self.client.get(service_url), guide.get_absolute_url())
+        self.assertRedirects(self.client.get(help_url), guide.get_absolute_url())
+        self.assertContains(self.client.get(guide.get_absolute_url()), 'href="' + help_url + '"')
+
+        guide.audience = AUDIENCE_MANAGER
+        guide.save(update_fields=["audience"])
+        self.assertContains(self.client.get(help_url), "Инструкции готовятся")
+
+    def test_service_help_must_match_public_section(self):
+        guide = Article(
+            title="Неверная справка", section=self.public_section,
+            help_for_service="cis", body="Текст", status=Article.PUBLISHED,
+        )
+        with self.assertRaises(ValidationError):
+            guide.full_clean()
 
     def test_regular_user_has_no_edit_controls(self):
         self.client.force_login(self.staff)

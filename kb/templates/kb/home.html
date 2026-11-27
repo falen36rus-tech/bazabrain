@@ -3,11 +3,11 @@
 {% block title %}Главная · {{ site_name|default:"База знаний 1С" }}{% endblock %}
 {% block content %}
 <header class="home-heading">
-  <div><span class="eyebrow">{{ current_service }}</span><h1>{% if not article_count and service_slug != '1c' %}Инструкции: {{ current_service }}{% else %}{{ catalog_name }}{% endif %}</h1><p>{% if not article_count %}Материалы по этому направлению появятся здесь.{% else %}Выберите раздел или найдите материал через строку поиска.{% endif %}</p></div>
+  <div><span class="eyebrow">{{ current_service }}</span><h1>{{ catalog_name }}</h1><p>Выберите раздел или найдите материал через строку поиска.</p></div>
   <div class="home-heading-actions">{% if sections %}<span class="subtle-count">{{ sections|length }} на верхнем уровне</span>{% endif %}<a href="{% url 'kb:search' %}">Открыть поиск <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></div>
 </header>
 
-{% if not article_count %}
+{% if not article_count and not sections %}
   <section class="work-in-progress" aria-labelledby="work-in-progress-title">
     <span class="work-in-progress-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="7" y="5" width="18" height="22" rx="3"/><path d="M11 12h10M11 17h10M11 22h7"/></svg></span>
     <h2 id="work-in-progress-title">Инструкции готовятся</h2>
