@@ -111,7 +111,7 @@ class ArticleAdmin(VersionAdmin):
 
     def copy_to_discipline_view(self, request, object_id):
         source = self.get_object(request, object_id)
-        if source is None or not self.has_change_permission(request, source) or not self.has_add_permission(request):
+        if source is None or source.help_for_service or not self.has_change_permission(request, source) or not self.has_add_permission(request):
             raise PermissionDenied
 
         destinations = Section.objects.filter(service_slug="1c", catalog="discipline")
@@ -164,6 +164,7 @@ class ArticleAdmin(VersionAdmin):
         form = super().get_form(request, obj, **kwargs)
         if scoped_manager(request.user) and "section" in form.base_fields:
             form.base_fields["section"].queryset = Section.objects.filter(pk__in=editable_section_ids(request.user))
+            form.base_fields["help_for_service"].disabled = True
         return form
 
     def has_add_permission(self, request):
@@ -194,7 +195,7 @@ class ArticleAdmin(VersionAdmin):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name == "summary" and field is not None:
             field.help_text = (
-                "Короткий анонс для списка и поиска. Полную инструкцию с текстом "
+                "Короткий анонс для списка и поиска обычных статей. Полную инструкцию с текстом "
                 "и скриншотами добавляйте ниже в одно поле «Содержимое статьи»."
             )
         return field

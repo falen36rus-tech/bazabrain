@@ -238,6 +238,56 @@ class KnowledgeBaseAccessTests(TestCase):
         guide.save(update_fields=["audience"])
         self.assertContains(self.client.get(help_url), "Инструкции готовятся")
 
+    def test_general_service_help_can_be_created_without_a_section(self):
+        self.client.force_login(self.owner)
+        response = self.client.post(reverse("admin:kb_article_add"), {
+            "section": "",
+            "help_for_service": "daily-obp",
+            "title": "Общая инструкция Daily OBP",
+            "body": "Как начать работу с Daily OBP",
+            "slug": "daily-obp-general-help",
+            "title_size": "normal",
+            "title_alignment": "left",
+            "title_bold": "on",
+            "audience": AUDIENCE_STAFF,
+            "status": Article.PUBLISHED,
+            "position": 0,
+            "attachments-TOTAL_FORMS": 0,
+            "attachments-INITIAL_FORMS": 0,
+            "attachments-MIN_NUM_FORMS": 0,
+            "attachments-MAX_NUM_FORMS": 1000,
+        })
+        self.assertEqual(response.status_code, 302, response.context)
+        guide = Article.objects.get(slug="daily-obp-general-help")
+        self.assertIsNone(guide.section_id)
+        self.client.logout()
+        self.assertRedirects(self.client.get(reverse("kb:service_help", args=["daily-obp"])), guide.get_absolute_url())
+        self.assertContains(self.client.get(guide.get_absolute_url()), guide.title)
+        self.assertNotContains(self.client.get(reverse("kb:service_catalog", args=["daily-obp"])), guide.title)
+        self.assertNotContains(self.client.get(reverse("kb:search"), {"q": "Daily OBP"}), guide.title)
+        self.assertNotContains(self.client.get(reverse("kb:suggest"), {"q": "Daily OBP"}), guide.title)
+
+    def test_legacy_help_only_section_is_not_listed(self):
+        section = Section.objects.create(title="Общая справка CIS", service_slug="cis")
+        guide = Article.objects.create(
+            title="Общая инструкция CIS", section=section, help_for_service="cis",
+            body="Порядок работы", status=Article.PUBLISHED,
+        )
+        self.assertRedirects(self.client.get(reverse("kb:service_help", args=["cis"])), guide.get_absolute_url())
+        self.assertNotContains(self.client.get(guide.get_absolute_url()), section.title)
+        self.assertNotContains(self.client.get(reverse("kb:service_catalog", args=["cis"])), section.title)
+        self.assertEqual(self.client.get(section.get_absolute_url()).status_code, 404)
+        self.assertNotContains(self.client.get(reverse("kb:search"), {"q": "Общая справка CIS"}), section.get_absolute_url())
+
+        regular = Article.objects.create(
+            title="Инструкция по разделу CIS", section=section,
+            body="Обычный материал", status=Article.PUBLISHED,
+        )
+        self.assertContains(self.client.get(reverse("kb:service_catalog", args=["cis"])), section.title)
+        section_page = self.client.get(section.get_absolute_url())
+        self.assertContains(section_page, regular.title)
+        self.assertNotContains(section_page, guide.title)
+
     def test_service_help_must_match_public_section(self):
         guide = Article(
             title="Неверная справка", section=self.public_section,
@@ -245,6 +295,10 @@ class KnowledgeBaseAccessTests(TestCase):
         )
         with self.assertRaises(ValidationError):
             guide.full_clean()
+
+        ordinary = Article(title="Без раздела", body="Текст", status=Article.PUBLISHED)
+        with self.assertRaises(ValidationError):
+            ordinary.full_clean()
 
     def test_regular_user_has_no_edit_controls(self):
         self.client.force_login(self.staff)

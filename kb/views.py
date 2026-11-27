@@ -8,10 +8,10 @@ from django.http import FileResponse, Http404, HttpResponse, JsonResponse, Strea
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
-from .access import filled_article_filter, navigation_tree, visible_articles, visible_sections
+from .access import catalog_sections, filled_article_filter, navigation_tree, visible_articles
 from .access import editable_section_ids
 from .catalog import SERVICES, SERVICE_NAMES
-from .models import Article, ArticleInlineImage, Attachment, ContentBlock
+from .models import GROUP_EDITORS, Article, ArticleInlineImage, Attachment, ContentBlock
 from .rich_text import rich_plain_text
 from .search import search_articles, search_sections
 from .video_library import VIDEO_TYPES, video_path
@@ -21,10 +21,13 @@ SITE_NAME = "База знаний 1С"
 
 
 def base_context(request, *, sections=None, articles=None, service_slug="1c", catalog="main"):
-    sections = visible_sections(request.user) if sections is None else sections
+    sections = catalog_sections(request.user) if sections is None else sections
     sections = [section for section in sections if section.service_slug == service_slug and section.catalog == catalog]
     current_service = SERVICE_NAMES.get(service_slug, SERVICE_NAMES["1c"])
-    home_url = reverse("kb:disciplines") if catalog == "discipline" else (reverse("kb:home") if service_slug == "1c" else reverse("kb:service_catalog", args=[service_slug]))
+    home_url = reverse("kb:disciplines") if catalog == "discipline" else (
+        reverse("kb:home") if service_slug == "1c" else
+        reverse("kb:service_catalog" if sections else "kb:service", args=[service_slug])
+    )
     return {
         "site_name": SITE_NAME if service_slug == "1c" else f"База знаний · {current_service}",
         "services": SERVICES,
@@ -64,7 +67,7 @@ def service_help(request, slug):
     ).filter(filled_article_filter()).first()
     if guide is not None:
         return redirect("kb:article", slug=guide.slug)
-    if any(section.service_slug == slug and section.catalog == "main" for section in visible_sections(request.user)):
+    if any(section.service_slug == slug and section.catalog == "main" for section in catalog_sections(request.user)):
         return catalog_home(request, slug, "main")
     context = base_context(request, sections=[], service_slug=slug)
     return render(request, "kb/service_help.html", context)
@@ -75,7 +78,7 @@ def discipline_home(request):
 
 
 def catalog_home(request, service_slug, catalog):
-    sections = [section for section in visible_sections(request.user) if section.service_slug == service_slug and section.catalog == catalog]
+    sections = [section for section in catalog_sections(request.user) if section.service_slug == service_slug and section.catalog == catalog]
     articles = visible_articles(request.user, sections)
     context = base_context(request, sections=sections, service_slug=service_slug, catalog=catalog)
     filled_articles = articles.filter(Q(blocks__isnull=False) | Q(attachments__isnull=False)).distinct()
@@ -88,17 +91,17 @@ def catalog_home(request, service_slug, catalog):
 
 
 def section_detail(request, slug):
-    sections = visible_sections(request.user)
+    sections = catalog_sections(request.user)
     section = next((item for item in sections if item.slug == slug), None)
     if section is None:
         raise Http404
-    catalog_sections = [item for item in sections if item.service_slug == section.service_slug and item.catalog == section.catalog]
-    articles = list(visible_articles(request.user, catalog_sections).filter(section_id=section.pk))
-    context = base_context(request, sections=catalog_sections, service_slug=section.service_slug, catalog=section.catalog)
+    service_sections = [item for item in sections if item.service_slug == section.service_slug and item.catalog == section.catalog]
+    articles = list(visible_articles(request.user, service_sections).filter(section_id=section.pk))
+    context = base_context(request, sections=service_sections, service_slug=section.service_slug, catalog=section.catalog)
     context.update(
         section=section,
         current_section=section,
-        child_sections=[item for item in catalog_sections if item.parent_id == section.pk],
+        child_sections=[item for item in service_sections if item.parent_id == section.pk],
         articles=articles,
         can_edit=section.pk in editable_section_ids(request.user),
     )
@@ -122,14 +125,19 @@ def article_detail(request, slug):
             display_blocks.append({"block": block, "images": galleries[block.gallery_id]})
         else:
             display_blocks.append({"block": block, "images": [block] if block.image else []})
-    context = base_context(request, service_slug=article.section.service_slug, catalog=article.section.catalog)
+    service_slug = article.help_for_service if article.section_id is None else article.section.service_slug
+    catalog = "main" if article.section_id is None else article.section.catalog
+    context = base_context(request, service_slug=service_slug, catalog=catalog)
     context.update(
         article=article,
         display_blocks=display_blocks,
         attachments=list(article.attachments.all()),
         current_article=article,
-        current_section=article.section,
-        can_edit=article.section_id in editable_section_ids(request.user),
+        current_section=article.section if article.section_id and not article.help_for_service else None,
+        can_edit=(
+            article.section_id in editable_section_ids(request.user) if article.section_id else
+            request.user.is_superuser or request.user.groups.filter(name=GROUP_EDITORS).exists()
+        ),
     )
     return render(request, "kb/article.html", context)
 

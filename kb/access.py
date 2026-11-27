@@ -79,22 +79,39 @@ def visible_sections(user):
     return [section for section in accessible if section.pk in visible_ids]
 
 
+def catalog_sections(user):
+    """Keep a legacy help-only folder out of the public catalog and navigation."""
+    sections = visible_sections(user)
+    help_ids = set(Article.objects.exclude(help_for_service="").exclude(section_id=None).values_list("section_id", flat=True))
+    regular_ids = set(
+        Article.objects.filter(help_for_service="", status=Article.PUBLISHED)
+        .filter(filled_article_filter()).exclude(section_id=None)
+        .values_list("section_id", flat=True)
+    )
+    parent_ids = {section.parent_id for section in sections if section.parent_id}
+    hidden_ids = help_ids - regular_ids - parent_ids
+    return [section for section in sections if section.pk not in hidden_ids]
+
+
 def visible_articles(user, sections=None) -> QuerySet[Article]:
     section_ids = [section.pk for section in (visible_sections(user) if sections is None else sections)]
-    if not section_ids:
-        return Article.objects.none()
+    location = Q(section_id__in=section_ids)
+    if sections is None:
+        location |= Q(section_id__isnull=True, help_for_service__gt="")
     queryset = Article.objects.filter(
+        location,
         status=Article.PUBLISHED,
-        section_id__in=section_ids,
         audience__in=allowed_audiences(user),
     )
+    if sections is not None:
+        queryset = queryset.filter(help_for_service="")
     if not user.is_staff:
         queryset = queryset.filter(filled_article_filter()).distinct()
     return queryset.select_related("section")
 
 
 def navigation_tree(user, sections=None, articles=None):
-    sections = visible_sections(user) if sections is None else sections
+    sections = catalog_sections(user) if sections is None else sections
     articles = (
         list(visible_articles(user, sections).select_related(None).only("id", "title", "slug", "section_id", "position"))
         if articles is None else articles

@@ -111,7 +111,10 @@ class Article(models.Model):
     PUBLISHED = "published"
     STATUSES = [(DRAFT, "Черновик"), (PUBLISHED, "Опубликована")]
 
-    section = models.ForeignKey(Section, verbose_name="Раздел", related_name="articles", on_delete=models.PROTECT)
+    section = models.ForeignKey(
+        Section, verbose_name="Раздел", related_name="articles", on_delete=models.PROTECT,
+        null=True, blank=True, help_text="Для общей справки сервиса оставьте пустым.",
+    )
     help_for_service = models.CharField(
         "Справка сервиса", max_length=40, blank=True, choices=SERVICES,
         help_text="Выберите сервис, если эта статья должна открываться по значку ? и ссылке «Инструкция» на портале.",
@@ -184,6 +187,8 @@ class Article(models.Model):
 
     def clean(self):
         super().clean()
+        if not self.section_id and not self.help_for_service:
+            raise ValidationError({"section": "Выберите раздел для обычной статьи или сервис для общей справки."})
         if self.help_for_service:
             if self.section_id and self.section.service_slug != self.help_for_service:
                 raise ValidationError({"help_for_service": "Справка должна находиться в разделе выбранного сервиса."})
