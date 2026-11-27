@@ -95,13 +95,13 @@ def section_detail(request, slug):
     section = next((item for item in sections if item.slug == slug), None)
     if section is None:
         raise Http404
-    catalog_sections = [item for item in sections if item.service_slug == section.service_slug and item.catalog == section.catalog]
-    articles = list(visible_articles(request.user, catalog_sections).filter(section_id=section.pk))
-    context = base_context(request, sections=catalog_sections, service_slug=section.service_slug, catalog=section.catalog)
+    service_sections = [item for item in sections if item.service_slug == section.service_slug and item.catalog == section.catalog]
+    articles = list(visible_articles(request.user, service_sections).filter(section_id=section.pk))
+    context = base_context(request, sections=service_sections, service_slug=section.service_slug, catalog=section.catalog)
     context.update(
         section=section,
         current_section=section,
-        child_sections=[item for item in catalog_sections if item.parent_id == section.pk],
+        child_sections=[item for item in service_sections if item.parent_id == section.pk],
         articles=articles,
         can_edit=section.pk in editable_section_ids(request.user),
     )
