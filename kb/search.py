@@ -3,7 +3,7 @@
 from django.db import connection
 from django.db.models import Q
 
-from .access import visible_articles, visible_sections
+from .access import catalog_sections, visible_articles
 from .rich_text import rich_plain_text
 
 
@@ -11,7 +11,7 @@ def search_articles(user, raw_query, limit=40):
     query = " ".join(raw_query.strip().split())[:160]
     if not query:
         return []
-    queryset = visible_articles(user)
+    queryset = visible_articles(user).filter(help_for_service="")
     if connection.vendor == "postgresql":
         from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector, TrigramSimilarity
         from django.db.models import ExpressionWrapper, F, FloatField, Value
@@ -51,7 +51,7 @@ def search_sections(user, raw_query, limit=20):
         return []
     terms = query.casefold().split()
     ranked = []
-    for section in visible_sections(user):
+    for section in catalog_sections(user):
         title = section.title.casefold()
         description = (rich_plain_text(section.description) if section.description_is_rich else section.description).casefold()
         if not all(term in title or term in description for term in terms):

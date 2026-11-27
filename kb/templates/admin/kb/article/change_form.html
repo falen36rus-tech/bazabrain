@@ -2,7 +2,7 @@
 {% load i18n admin_urls %}
 
 {% block object-tools-items %}
-  {% if change and has_change_permission and has_add_permission %}
+  {% if change and not original.help_for_service and has_change_permission and has_add_permission %}
     <li><a href="{% url 'admin:kb_article_copy_to_discipline' original.pk %}">Скопировать в дисциплину</a></li>
   {% endif %}
   {{ block.super }}

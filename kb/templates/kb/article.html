@@ -5,15 +5,15 @@
 <nav class="breadcrumbs" aria-label="Навигационная цепочка">
   <a href="{{ home_url }}">{{ catalog_name }}</a>
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
-  <a href="{% url 'kb:section' article.section.slug %}">{{ article.section.title }}</a>
-  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+  {% if not article.help_for_service %}<a href="{% url 'kb:section' article.section.slug %}">{{ article.section.title }}</a>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>{% endif %}
   <span aria-current="page">{{ article.title }}</span>
 </nav>
 
 <div class="article-layout">
   <article class="article-document" aria-labelledby="article-title">
     <header class="article-header">
-      <span class="eyebrow">{{ article.section.title }}</span>
+      <span class="eyebrow">{% if article.help_for_service %}Справка · {{ current_service }}{% else %}{{ article.section.title }}{% endif %}</span>
       <h1 id="article-title" class="title-size-{{ article.title_size }} title-align-{{ article.title_alignment }}{% if not article.title_bold %} title-regular{% endif %}{% if article.title_italic %} title-italic{% endif %}">{{ article.title }}</h1>
       {% if article.network_video_path or article.featured_video_file %}
         <figure class="video-figure article-featured-video"><div class="video-frame"><video controls preload="metadata" playsinline aria-label="Видео к статье {{ article.title }}"><source src="{% url 'kb:private_video' article.pk %}" type="{% if article.network_video_path|slice:'-5:' == '.webm' or article.featured_video_file.name|slice:'-5:' == '.webm' %}video/webm{% else %}video/mp4{% endif %}">Ваш браузер не поддерживает воспроизведение этого видео.</video></div></figure>
@@ -65,7 +65,7 @@
       </section>
     {% endif %}
 
-    <footer class="article-footer"><a href="{% url 'kb:section' article.section.slug %}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>Вернуться в раздел</a></footer>
+    {% if not article.help_for_service %}<footer class="article-footer"><a href="{% url 'kb:section' article.section.slug %}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>Вернуться в раздел</a></footer>{% endif %}
   </article>
 
   <aside class="article-aside" aria-label="Содержание статьи" data-toc-wrap hidden>
