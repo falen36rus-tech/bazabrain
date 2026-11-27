@@ -277,7 +277,7 @@ class KnowledgeBaseAccessTests(TestCase):
         self.assertNotContains(self.client.get(guide.get_absolute_url()), section.title)
         self.assertNotContains(self.client.get(reverse("kb:service_catalog", args=["cis"])), section.title)
         self.assertEqual(self.client.get(section.get_absolute_url()).status_code, 404)
-        self.assertNotContains(self.client.get(reverse("kb:search"), {"q": "Общая справка CIS"}), section.title)
+        self.assertNotContains(self.client.get(reverse("kb:search"), {"q": "Общая справка CIS"}), section.get_absolute_url())
 
         regular = Article.objects.create(
             title="Инструкция по разделу CIS", section=section,
